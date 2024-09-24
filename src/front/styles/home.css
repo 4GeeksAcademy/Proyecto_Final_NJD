@@ -67,26 +67,57 @@
   }
   
   .cuisine-card {
+    position: relative; /* Para permitir posicionamiento absoluto del span */
     min-width: 250px;
     height: 150px;
-    background-color: #eee;
     border-radius: 10px;
+    overflow: hidden; /* Evitar que cualquier contenido extra se salga */
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    display: flex; /* Añadimos flex para asegurarnos de que todo el contenido ocupe el mismo espacio */
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .cuisine-image {
+    width: 100%;
+    height: 100%; /* Asegura que la imagen rellene todo el espacio de la card */
+    object-fit: cover; /* La imagen cubrirá la card sin distorsionarse */
+  }
+  
+  .cuisine-card span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    color: white; /* Color del texto */
+    font-size: 1.5rem;
     font-weight: bold;
-    color: #333;
-    cursor: pointer;
-    transition: transform 0.2s ease;
+    background: rgba(0, 0, 0, 0.4); /* Fondo semitransparente para el texto */
+    z-index: 2; /* Aseguramos que el texto esté por encima de la imagen */
   }
   
   .cuisine-card:hover {
     transform: scale(1.05);
   }
   
+  
   /* Botones de scroll */
+  .scroll-container {
+    display: flex;
+    overflow-x: hidden; /* Ocultamos la barra de scroll */
+    gap: 20px;
+    padding: 10px 0;
+    scroll-behavior: smooth;
+}
+
+
   .scroll-btn {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
     color: white;
     border: none;
     font-size: 2rem;
@@ -107,6 +138,6 @@
   }
   
   .scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.6);
   }
   
