@@ -1,17 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import logoImage from "../../img/logoblanco.png";
+import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"
+
 
 export const Navbar = () => {
 	return (
-		<nav className="navbar navbar-light bg-light">
+		<nav className="navbar">
 			<div className="container">
 				<Link to="/">
-					<span className="navbar-brand mb-0 h1">React Boilerplate</span>
+					<span className="navbar-brand">
+						<img src={logoImage} />
+					</span>
 				</Link>
-				<div className="ml-auto">
-					<Link to="/demo">
-						<button className="btn btn-primary">Check the Context in action</button>
-					</Link>
+				<div className="ml-auto nav-links">
+
+					<a className="iniciar" href="/login">Iniciar Sesión</a>
+					<a className="registrar" href="/register">Registro</a>
+
 				</div>
 			</div>
 		</nav>
