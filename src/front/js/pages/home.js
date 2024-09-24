@@ -1,26 +1,50 @@
-import React, { useContext } from "react";
-import { Context } from "../store/appContext";
-import rigoImageUrl from "../../img/rigo-baby.jpg";
+import React, { useRef } from "react";
 import "../../styles/home.css";
 
 export const Home = () => {
-	const { store, actions } = useContext(Context);
+	const scrollContainerRef = useRef(null);
+
+	// Función para desplazarse a la izquierda
+	const scrollLeft = () => {
+		scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
+	};
+
+	// Función para desplazarse a la derecha
+	const scrollRight = () => {
+		scrollContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
+	};
 
 	return (
-		<div className="text-center mt-5">
-			<h1>Hello Rigo!!</h1>
-			<p>
-				<img src={rigoImageUrl} />
-			</p>
-			<div className="alert alert-info">
-				{store.message || "Loading message from the backend (make sure your python backend is running)..."}
+		<div>
+			<div className="image-header">
+				<div className="overlay">
+					<h1>¡Bienvenido a Hoy No Cocino!</h1>
+					<p>Encuentra los mejores restaurantes y realiza tus reservas de forma rápida y sencilla.</p>
+				</div>
 			</div>
-			<p>
-				This boilerplate comes with lots of documentation:{" "}
-				<a href="https://start.4geeksacademy.com/starters/react-flask">
-					Read documentation
-				</a>
-			</p>
+
+			<div className="cuisine-scroll">
+				<h2>Explora Tipos de Cocina</h2>
+				<div className="scroll-wrapper">
+					<button className="scroll-btn left" onClick={scrollLeft}>
+						&lt;
+					</button>
+
+					<div className="scroll-container" ref={scrollContainerRef}>
+						<div className="cuisine-card">Italiana</div>
+						<div className="cuisine-card">Argentina</div>
+						<div className="cuisine-card">Mexicana</div>
+						<div className="cuisine-card">China</div>
+						<div className="cuisine-card">Japonesa</div>
+						<div className="cuisine-card">India</div>
+						<div className="cuisine-card">Mediterránea</div>
+					</div>
+
+					<button className="scroll-btn right" onClick={scrollRight}>
+						&gt;
+					</button>
+				</div>
+			</div>
 		</div>
 	);
 };
