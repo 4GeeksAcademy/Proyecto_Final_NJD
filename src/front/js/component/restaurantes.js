@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 
-const Restaurantes = () => {
+export const Restaurantes = () => {
     const { tipo } = useParams();  // Captura el parámetro dinámico "tipo"
     
     // Simulación de un listado de restaurantes
@@ -27,4 +27,3 @@ const Restaurantes = () => {
     );
 };
 
-export default Restaurantes;

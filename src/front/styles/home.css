@@ -69,7 +69,7 @@
   .cuisine-card {
     position: relative; /* Para permitir posicionamiento absoluto del span */
     min-width: 250px;
-    height: 150px;
+    height: 140px;
     border-radius: 10px;
     overflow: hidden; /* Evitar que cualquier contenido extra se salga */
     cursor: pointer;
