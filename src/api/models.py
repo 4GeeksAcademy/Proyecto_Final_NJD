@@ -1,4 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy, ForeigKey
+from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
@@ -40,10 +40,12 @@ class Restaurantes(db.Model):
         franja_horaria = db.Column(db.Integer)
         reservas_por_dia = db.Column(db.Integer)
         valoracion = db.Column(db.Integer)
-        categoria_id = db.Column(db.Integer, ForeigKey=('Categorias.id'))
+        categorias_id = db.Column(db.Integer, db.ForeignKey('Categorias.id'))
 
         restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='restaurantes')
-
+        restaurantes_cat = db.relationship('Categorias', backref='restaurantes')
+        restaurantes_res = db.relationship('Reservas', backref='restaurantes')
+        restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
 
         def __repr__(self):
             return f'<Restaurantes {self.email}>'
@@ -66,14 +68,14 @@ class Restaurantes(db.Model):
 class Reservas(db.Model):
         __tablename__ = 'reservas' 
         id = db.Column(db.Integer, primary_key=True)
-        user_id = db.Column(db.Integer, ForeigKey=(Usuario.id))
+        user_id = db.Column(db.Integer, db.ForeignKey('Usuario.id'))
         trona = db.Column(db.Boolean(), unique=True, nullable=False)
         adultos = db.Column(db.Integer, nullable=False)
         niños = db.Column(db.Integer, nullable=False)
         hora_inicio = db.Column(db.Datetime, nullable=False)
         hora_fin = db.Column(db.DateTime, nullable=False)
         estado_de_la_reserva = db.Column(db.String(20), nullable=False)
-        restaurante_id = db.Column(db.String(20), ForeigKey=('Restaurantes.id'))
+        restaurante_id = db.Column(db.String(20), db.ForeignKey('Restaurantes.id'))
     
         def __repr__(self):
             return f'<Reservas {self.email}>'
@@ -94,7 +96,7 @@ class Reservas(db.Model):
 class Mesas(db.Model):
         __tablename__ = 'mesas' 
         id = db.Column(db.Integer, primary_key=True)
-        restaurante_id = db.Column(db.String(20), ForeigKey=('Restaurantes.id'))
+        restaurante_id = db.Column(db.String(20), db.ForeigKey('Restaurantes.id'))
         ubicacion = db.Column(db.String(30))
         capacidad = db.Column(db.Integer)
         disponibilidad = db.Column(db.Boolean(), unique=True, nullable=False)
@@ -115,7 +117,11 @@ class Categorias(db.Model):
         __tablename__ = 'categorias' 
         id = db.Column(db.Integer, primary_key=True)
         nombre_de_categoria = db.Column(db.String(30), nullable=False)
-        restaurantes_id = db.Column(db.Integer, ForeigKey=('Restaurantes.id'))
+        restaurantes_id = db.Column(db.Integer, db.ForeigKey('Restaurantes.id'))
+
+        categorias_resto = db.relationship('Restaurantes', backref=('categorias'))
+
+
 
         def __repr__(self):
             return f'<Categorias {self.email}>'
@@ -130,8 +136,8 @@ class Categorias(db.Model):
 class Restaurantes_Favoritos(db.Model):
         __tablename__ = 'restaurantes_favoritos'
         id = db.Column(db.Integer, primary_key=True)
-        usuario_id = db.Column(db.Integer, ForeigKey=(Usuario.id))
-        restaurantes_id = db.Column(db.Integer, ForeigKey=(Restaurantes.id))
+        usuario_id = db.Column(db.Integer, db.ForeigKey('Usuario.id'))
+        restaurantes_id = db.Column(db.Integer, db.ForeigKey('Restaurantes.id'))
 
         def __repr__(self):
             return f'<Restaurantes_favoritos {self.email}>'
