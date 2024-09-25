@@ -1,3 +1,51 @@
-/* 
-    General Styles used on every website (Don't Repeat Yourself)
-*/
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado azul elegante */
+  padding: 0.5rem 1.5rem; /* Espaciado reducido para un diseño más fino */
+  color: #fff;
+  box-shadow: none; /* Eliminamos la sombra para un aspecto más limpio */
+  font-family: 'Poppins', sans-serif;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #f1c40f; /* Dorado elegante */
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.navbar-brand img {
+  height: 3.5rem; /* Aumentamos el tamaño del logo */
+  width: auto;
+  
+}
+
+.nav-links {
+  display: flex;
+  gap: 15px; /* Espacio entre enlaces */
+}
+
+.nav-links a {
+  color: #fff;
+  text-decoration: none;
+  padding: 0.3rem 1rem; /* Espaciado reducido */
+  font-size: 1rem; /* Aumentamos el tamaño de fuente de los enlaces */
+  transition: all 0.3s ease;
+  font-weight: 500; /* Peso de fuente más ligero */
+}
+
+.nav-links a:hover {
+  color: #00000064; /* Efecto hover dorado en el texto */
+ 
+}
+
