@@ -38,6 +38,7 @@ export const Home = () => {
 
 	return (
 		<div>
+			<div className="container-background"></div>
 			<div className="image-header">
 				<div className="overlay">
 					<h1>¡Bienvenido a Hoy No Cocino!</h1>
