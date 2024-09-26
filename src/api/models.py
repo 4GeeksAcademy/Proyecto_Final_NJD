@@ -1,58 +1,73 @@
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime, timezone
 
 db = SQLAlchemy()
+
 
 class Usuario(db.Model):
     __tablename__ = 'usuario' 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    nombre = db.Column(db.String(30), nullable=False)
-    apellido = db. Column(db.String(20), nullable=False)
-    password = db.Column(db.String(80), unique=False, nullable=False)
-    telefono = db.Column(db.String(20), unique=False, nullable=False)
-
-    reservas_de_usuarios = db.relationship('Reservas', backref='usuario')
+    nombres = db.Column(db.String(30), nullable=False)
+    apellidos = db.Column(db.String(20), nullable=False)
+    password_hash = db.Column(db.String(300), nullable=False)
+    telefono = db.Column(db.String(20), nullable=False)   
+    creado = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+   
+    reserva_de_usuarios = db.relationship('Reserva', backref='usuario')
     restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='usuario')
-
-
 
     def __repr__(self):
         return f'<Usuario {self.email}>'
+
+    # Método para generar el hash de la contraseña
+    def set_password(self, password):
+        """Genera el hash de la contraseña para almacenarlo"""
+        self.password_hash = generate_password_hash(password)
+
+    # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
+    def check_password(self, password):
+        """Verifica si la contraseña proporcionada es válida"""
+        return check_password_hash(self.password_hash, password)
 
     def serialize(self):
         return {
             "id": self.id,
             "email": self.email,
-            "nombre": self.nombre,
-            "apellido": self.apellido,
-            "telefono": self. telefono,
+            "nombres": self.nombres,
+            "apellidos": self.apellidos,
+            "telefono": self.telefono,
+            "creado": self.creado,
         }
     
 class Restaurantes(db.Model):
         __tablename__ = 'restaurantes' 
-        id = db.Column(db.Integer, primary_key=True),
-        nombre = db.Column(db.String(30), unique=True, nullable=False),
+        id = db.Column(db.Integer, primary_key=True)
+        email = db.Column(db.String(30), unique=True, nullable=False)
+        nombre = db.Column(db.String(30), unique=True, nullable=False)
         direccion = db.Column(db.String(40), nullable=False)
-        latitud = db.Column(db.String(20), unique=True, nullable=False)
-        longitud = db.Column(db.String(20), unique=True, nullable=False)
-        telefono = db.Column(db.String(20), unique=True, nullable=False)
+        latitud = db.Column(db.String(20), nullable=False)
+        longitud = db.Column(db.String(20), nullable=False)
+        telefono = db.Column(db.String(20), nullable=False)
         cubiertos = db.Column(db.Integer)
         franja_horaria = db.Column(db.Integer)
         reservas_por_dia = db.Column(db.Integer)
         valoracion = db.Column(db.Integer)
-        categorias_id = db.Column(db.Integer, db.ForeignKey('Categorias.id'))
+        categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'))
 
-        restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='restaurantes')
-        restaurantes_cat = db.relationship('Categorias', backref='restaurantes')
-        restaurantes_res = db.relationship('Reservas', backref='restaurantes')
+        restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
+        restaurantes_cat = db.relationship('Categorias', backref='restaurantes') #preguntar a Javi
+        restaurantes_res = db.relationship('Reserva', backref='restaurantes')
         restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
 
         def __repr__(self):
-            return f'<Restaurantes {self.email}>'
+            return f'<Restaurantes {self.nombre}>'
 
         def serialize(self):
             return {
             "id": self.id,
+            "email": self.email,
             "nombre": self.nombre,
             "direccion": self.direccion,
             "latitud": self.latitud,
@@ -65,20 +80,23 @@ class Restaurantes(db.Model):
             "categorias_id": self.categorias_id,
         }
 
-class Reservas(db.Model):
-        __tablename__ = 'reservas' 
+class Reserva(db.Model):
+        __tablename__ = 'reserva' 
         id = db.Column(db.Integer, primary_key=True)
-        user_id = db.Column(db.Integer, db.ForeignKey('Usuario.id'))
-        trona = db.Column(db.Boolean(), unique=True, nullable=False)
+        user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+        trona = db.Column(db.Boolean(), nullable=False)
         adultos = db.Column(db.Integer, nullable=False)
         niños = db.Column(db.Integer, nullable=False)
-        hora_inicio = db.Column(db.Datetime, nullable=False)
+        hora_inicio = db.Column(db.DateTime, nullable=False)
         hora_fin = db.Column(db.DateTime, nullable=False)
         estado_de_la_reserva = db.Column(db.String(20), nullable=False)
-        restaurante_id = db.Column(db.String(20), db.ForeignKey('Restaurantes.id'))
-    
+        restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
+        creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+        modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+
+
         def __repr__(self):
-            return f'<Reservas {self.email}>'
+            return f'<Reserva {self.id}>'
 
         def serialize(self):
             return {
@@ -91,18 +109,20 @@ class Reservas(db.Model):
             "hora_fin": self.hora_fin,
             "estado_de_la_reserva": self.estado_de_la_reserva,
             "restaurante_id": self.restaurante_id,
-        }
+            "creada": self.creada,
+            "modificada": self.modificada,
+          }
 
 class Mesas(db.Model):
         __tablename__ = 'mesas' 
         id = db.Column(db.Integer, primary_key=True)
-        restaurante_id = db.Column(db.String(20), db.ForeigKey('Restaurantes.id'))
+        restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
         ubicacion = db.Column(db.String(30))
         capacidad = db.Column(db.Integer)
-        disponibilidad = db.Column(db.Boolean(), unique=True, nullable=False)
+        disponibilidad = db.Column(db.Boolean(), nullable=False)
     
         def __repr__(self):
-            return f'<Mesas {self.email}>'
+            return f'<Mesas {self.id}>'
 
         def serialize(self):
             return {
@@ -117,14 +137,13 @@ class Categorias(db.Model):
         __tablename__ = 'categorias' 
         id = db.Column(db.Integer, primary_key=True)
         nombre_de_categoria = db.Column(db.String(30), nullable=False)
-        restaurantes_id = db.Column(db.Integer, db.ForeigKey('Restaurantes.id'))
+        restaurantes_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id')) #es redundante??
 
-        categorias_resto = db.relationship('Restaurantes', backref=('categorias'))
-
+        categorias_resto = db.relationship('Restaurantes', backref=('categorias')) #es redundante??
 
 
         def __repr__(self):
-            return f'<Categorias {self.email}>'
+            return f'<Categorias {self.nombre_de_categoria}>'
 
         def serialize(self):
             return {
@@ -136,11 +155,11 @@ class Categorias(db.Model):
 class Restaurantes_Favoritos(db.Model):
         __tablename__ = 'restaurantes_favoritos'
         id = db.Column(db.Integer, primary_key=True)
-        usuario_id = db.Column(db.Integer, db.ForeigKey('Usuario.id'))
-        restaurantes_id = db.Column(db.Integer, db.ForeigKey('Restaurantes.id'))
+        usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+        restaurantes_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
 
         def __repr__(self):
-            return f'<Restaurantes_favoritos {self.email}>'
+            return f'<Restaurantes_favoritos {self.id}>'
 
         def serialize(self):
             return {
@@ -148,9 +167,3 @@ class Restaurantes_Favoritos(db.Model):
             "usuario_id": self.usuario_id,
             "restaurantes_id": self.restaurantes_id
         }
-
-   
-
-
-
-      
