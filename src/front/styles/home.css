@@ -1,10 +1,10 @@
 
 footer {
-    background-color: #2c2c2c;
-    color: white;
-    padding: 40px 0;
-    text-align: center;
-  }
+  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado azul elegante */
+  color: white;
+  padding: 40px 0;
+  text-align: center;
+}
   
   .footer-container {
     display: flex;
@@ -62,10 +62,35 @@ footer {
     on that page only (the ones not reused in other pages).
 */
 /* Contenedor de la imagen de fondo */
+
+.container-background {
+  height: 150px;
+  background: linear-gradient(to right, #1a1a1a, #4a4a4a); /* Gris oscuro a gris más claro */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  box-shadow: none;
+}
+
+.cuisine-scroll {
+  padding: 25px 20px;
+  background: linear-gradient(to right, #1a1a1a, #4a4a4a); /* Degradado gris oscuro visible */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  box-shadow: none;
+}
+
+
+
+
+
 .image-header {
     width: 100vw;
     height: 400px; /* Tamaño de la imagen reducido */
-    background-image: url('https://media.istockphoto.com/id/1361899698/es/foto/juego-de-cubiertos-dorados-con-plato-oscuro.jpg?s=612x612&w=0&k=20&c=uNXbTbbHaxsZZG4URIU08GEe9szaJUlvP0lJx6AAtL8=');
+    background-image: url("https://i.ibb.co/vB5GRtW/vajilla.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -83,6 +108,8 @@ footer {
     justify-content: center;
     align-items: center;
     background: rgba(0, 0, 0, 0.4);
+    padding-left: 5%;
+    padding-right: 5%;
   }
   
   h1 {
@@ -95,16 +122,11 @@ footer {
     color: white;
   }
   
-  /* Sección de scroll con cards de cocina */
-  .cuisine-scroll {
-    padding: 50px 20px;
-    background-color: #fff;
-    text-align: center;
-  }
   
   h2 {
     margin-bottom: 20px;
     font-size: 2rem;
+    color: white;
   }
   
   /* Scroll lateral de las cards */
