@@ -202,9 +202,8 @@ def delete_user(usuario_id):
     return jsonify({'msg': 'Usuario eliminado con éxito'}), 200
 
 # Crear un restaurante (POST /restaurantes)
-@api.route('/restaurantes', methods=['POST'])
-@jwt_required()  # Requiere que el usuario esté autenticado
-def create_restaurante():
+@api.route('/signup/restaurante', methods=['POST'])
+def signup_restaurante():
     body = request.get_json()
 
     nombre = body.get('nombre')
@@ -217,19 +216,17 @@ def create_restaurante():
     cantidad_mesas = body.get('cantidad_mesas')
     franja_horaria = body.get('franja_horaria')
     reservas_por_dia = body.get('reservas_por_dia')
-    valoracion = body.get('valoracion')
     categorias_id = body.get('categorias_id')
 
     # Validaciones de campos obligatorios
     if not nombre or not email or not direccion:
         return jsonify({'msg': 'Faltan datos obligatorios'}), 400
 
-    # Verificar si el restaurante ya existe por nombre o email
-    if Restaurantes.query.filter_by(nombre=nombre).first() or Restaurantes.query.filter_by(email=email).first():
+    if Restaurantes.query.filter_by(email=email).first():
         return jsonify({'msg': 'El restaurante ya existe'}), 409
 
     # Crear el nuevo restaurante
-    new_restaurante = Restaurantes(
+    nuevo_restaurante = Restaurantes(
         nombre=nombre,
         email=email,
         direccion=direccion,
@@ -240,13 +237,46 @@ def create_restaurante():
         cantidad_mesas=cantidad_mesas,
         franja_horaria=franja_horaria,
         reservas_por_dia=reservas_por_dia,
-        valoracion=valoracion,
         categorias_id=categorias_id
     )
-    db.session.add(new_restaurante)
+    
+    db.session.add(nuevo_restaurante)
     db.session.commit()
 
-    return jsonify({'msg': 'Restaurante creado con éxito'}), 201
+    return jsonify({'msg': 'Restaurante registrado con éxito'}), 201
+
+
+# Implementar la ruta /login/restaurante para iniciar sesión de restaurantes
+@api.route('/login/restaurante', methods=['POST'])
+def login_restaurante():
+    body = request.get_json()
+    email = body.get('email')
+    password = body.get('password')
+
+    if not email or not password:
+        return jsonify({'msg': 'Credenciales inválidas'}), 401
+
+    # Verificar si el restaurante existe en la base de datos
+    restaurante = Restaurantes.query.filter_by(email=email).first()
+    if restaurante is None:
+        return jsonify({'msg': 'El restaurante no está registrado'}), 404
+
+    # Verificar si la contraseña es correcta (si tienes un campo para almacenar contraseñas)
+    # Aquí se asume que tienes una función para validar contraseñas (similar a los usuarios)
+    # if not restaurante.check_password(password):
+    #    return jsonify({'msg': 'Contraseña incorrecta'}), 401
+
+    # Generar el Access Token y Refresh Token
+    access_token = create_access_token(identity=restaurante.id)
+    refresh_token = create_refresh_token(identity=restaurante.id)
+
+    return jsonify({
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }), 200
+
+
+
 
 # Obtener todos los restaurantes (GET /restaurantes)
 @api.route('/restaurantes', methods=['GET'])
