@@ -1,5 +1,3 @@
-
-
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
@@ -50,7 +48,7 @@ def signup():
     telefono = body.get('telefono')
 
     # Validaciones de campos
-    if not email or not password or not nombres or not apellidos or not telefono:
+    if not email or not password or not nombres o no apellidos or not telefono:
         return jsonify({'msg': 'Faltan datos'}), 400
 
     if not is_valid_email(email):
@@ -134,3 +132,56 @@ def validate_token():
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
     return jsonify({'msg': 'Token válido', 'user_id': user.id, 'email': user.email}), 200
+
+# Obtener todos los usuarios (GET /usuario)
+@api.route('/usuario', methods=['GET'])
+def get_all_users():
+    usuarios = Usuario.query.all()
+    return jsonify([usuario.serialize() for usuario in usuarios]), 200
+
+# Obtener un usuario por su ID (GET /usuario/<int:usuario_id>)
+@api.route('/usuario/<int:usuario_id>', methods=['GET'])
+@jwt_required()
+def get_user(usuario_id):
+    usuario = Usuario.query.get(usuario_id)
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    return jsonify(usuario.serialize()), 200
+
+# Actualiza un usuario (PUT /usuario/<int:usuario_id>)
+@api.route('/usuario/<int:usuario_id>', methods=['PUT'])
+@jwt_required()
+def update_user(usuario_id):
+    body = request.get_json()
+    usuario = Usuario.query.get(usuario_id)
+
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+    
+    # Actualiza datos del usuario
+    usuario.email = body.get('email', usuario.email)
+    usuario.nombres = body.get('nombres', usuario.nombres)
+    usuario.apellidos = body.get('apellidos', usuario.apellidos)
+    usuario.telefono = body.get('telefono', usuario.telefono)
+
+    if 'password' in body:
+        usuario.set_password(body['password'])  # Actualizar la contraseña si se proporciona
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Usuario actualizado con éxito'}), 200
+
+# Eliminar un usuario (DELETE /usuario/<int:usuario_id>) 
+@api.route('/usuario/<int:usuario_id>', methods=['DELETE'])
+@jwt_required()
+def delete_user(usuario_id):
+    usuario = Usuario.query.get(usuario_id)
+
+    if not usuario:
+        return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+    db.session.delete(usuario)
+    db.session.commit()
+
+    return jsonify({'msg': 'Usuario eliminado con éxito'}), 200
