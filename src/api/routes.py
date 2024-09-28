@@ -3,7 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, Usuario
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from datetime import datetime, timezone
 import re  # Para validación de email, contraseña y teléfono
@@ -48,7 +48,7 @@ def signup():
     telefono = body.get('telefono')
 
     # Validaciones de campos
-    if not email or not password or not nombres o no apellidos or not telefono:
+    if not email or not password or not nombres or not apellidos or not telefono:
         return jsonify({'msg': 'Faltan datos'}), 400
 
     if not is_valid_email(email):
@@ -97,10 +97,24 @@ def login():
     if not user.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
-    # Generar un JWT o token para la sesión
-    token = create_access_token(identity=user.id)
+    # Generar el Access Token y Refresh Token
+    access_token = create_access_token(identity=user.id)
+    refresh_token = create_refresh_token(identity=user.id)
 
-    return jsonify({'token': token}), 200
+    return jsonify({
+        'access_token': access_token,
+        'refresh_token': refresh_token
+    }), 200
+
+# Ruta para generar un nuevo Access Token usando el Refresh Token
+@api.route('/refresh', methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    current_user_id = get_jwt_identity()
+    new_access_token = create_access_token(identity=current_user_id)
+    return jsonify({
+        'access_token': new_access_token
+    }), 200
 
 # Ruta protegida con JWT, requiere token válido
 @api.route('/protected', methods=['GET'])
@@ -133,8 +147,8 @@ def validate_token():
 
     return jsonify({'msg': 'Token válido', 'user_id': user.id, 'email': user.email}), 200
 
-# Obtener todos los usuarios (GET /usuario)
-@api.route('/usuario', methods=['GET'])
+# Obtener todos los usuarios (GET /usuarios)
+@api.route('/usuarios', methods=['GET'])
 def get_all_users():
     usuarios = Usuario.query.all()
     return jsonify([usuario.serialize() for usuario in usuarios]), 200
