@@ -52,6 +52,7 @@ class Restaurantes(db.Model):
         longitud = db.Column(db.String(20), nullable=False)
         telefono = db.Column(db.String(20), nullable=False)
         cubiertos = db.Column(db.Integer)
+        cantidad_mesas = db.Column(db.Integer, nullable=False) 
         franja_horaria = db.Column(db.Integer)
         reservas_por_dia = db.Column(db.Integer)
         valoracion = db.Column(db.Integer)

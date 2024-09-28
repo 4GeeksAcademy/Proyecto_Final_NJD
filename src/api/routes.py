@@ -3,6 +3,7 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, Blueprint
 from api.models import db, Usuario
+from api.models import db, Restaurantes
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from datetime import datetime, timezone
@@ -199,3 +200,107 @@ def delete_user(usuario_id):
     db.session.commit()
 
     return jsonify({'msg': 'Usuario eliminado con éxito'}), 200
+
+# Crear un restaurante (POST /restaurantes)
+@api.route('/restaurantes', methods=['POST'])
+@jwt_required()  # Requiere que el usuario esté autenticado
+def create_restaurante():
+    body = request.get_json()
+
+    nombre = body.get('nombre')
+    email = body.get('email')
+    direccion = body.get('direccion')
+    latitud = body.get('latitud')
+    longitud = body.get('longitud')
+    telefono = body.get('telefono')
+    cubiertos = body.get('cubiertos')
+    cantidad_mesas = body.get('cantidad_mesas')
+    franja_horaria = body.get('franja_horaria')
+    reservas_por_dia = body.get('reservas_por_dia')
+    valoracion = body.get('valoracion')
+    categorias_id = body.get('categorias_id')
+
+    # Validaciones de campos obligatorios
+    if not nombre or not email or not direccion:
+        return jsonify({'msg': 'Faltan datos obligatorios'}), 400
+
+    # Verificar si el restaurante ya existe por nombre o email
+    if Restaurantes.query.filter_by(nombre=nombre).first() or Restaurantes.query.filter_by(email=email).first():
+        return jsonify({'msg': 'El restaurante ya existe'}), 409
+
+    # Crear el nuevo restaurante
+    new_restaurante = Restaurantes(
+        nombre=nombre,
+        email=email,
+        direccion=direccion,
+        latitud=latitud,
+        longitud=longitud,
+        telefono=telefono,
+        cubiertos=cubiertos,
+        cantidad_mesas=cantidad_mesas,
+        franja_horaria=franja_horaria,
+        reservas_por_dia=reservas_por_dia,
+        valoracion=valoracion,
+        categorias_id=categorias_id
+    )
+    db.session.add(new_restaurante)
+    db.session.commit()
+
+    return jsonify({'msg': 'Restaurante creado con éxito'}), 201
+
+# Obtener todos los restaurantes (GET /restaurantes)
+@api.route('/restaurantes', methods=['GET'])
+def get_all_restaurantes():
+    restaurantes = Restaurantes.query.all()
+    return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
+
+# Obtener un restaurante por su ID (GET /restaurantes/<int:restaurante_id>)
+@api.route('/restaurantes/<int:restaurante_id>', methods=['GET'])
+def get_restaurante(restaurante_id):
+    restaurante = Restaurantes.query.get(restaurante_id)
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    return jsonify(restaurante.serialize()), 200
+
+# Actualizar un restaurante (PUT /restaurantes/<int:restaurante_id>)
+@api.route('/restaurantes/<int:restaurante_id>', methods=['PUT'])
+@jwt_required()  # Sólo los profesionales pueden actualizar los restaurantes
+def update_restaurante(restaurante_id):
+    body = request.get_json()
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    # Actualizar los campos del restaurante
+    restaurante.nombre = body.get('nombre', restaurante.nombre)
+    restaurante.email = body.get('email', restaurante.email)
+    restaurante.direccion = body.get('direccion', restaurante.direccion)
+    restaurante.latitud = body.get('latitud', restaurante.latitud)
+    restaurante.longitud = body.get('longitud', restaurante.longitud)
+    restaurante.telefono = body.get('telefono', restaurante.telefono)
+    restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
+    restaurante.franja_horaria = body.get('franja_horaria', restaurante.franja_horaria)
+    restaurante.reservas_por_dia = body.get('reservas_por_dia', restaurante.reservas_por_dia)
+    restaurante.valoracion = body.get('valoracion', restaurante.valoracion)
+    restaurante.categorias_id = body.get('categorias_id', restaurante.categorias_id)
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Restaurante actualizado con éxito'}), 200
+
+# Eliminar un restaurante (DELETE /restaurantes/<int:restaurante_id>)
+@api.route('/restaurantes/<int:restaurante_id>', methods=['DELETE'])
+@jwt_required()  # Sólo los profesionales pueden eliminar los restaurantes
+def delete_restaurante(restaurante_id):
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    db.session.delete(restaurante)
+    db.session.commit()
+
+    return jsonify({'msg': 'Restaurante eliminado con éxito'}), 200
+
