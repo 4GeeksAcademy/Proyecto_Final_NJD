@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, Reserva, Restaurantes_Favoritos
+from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -134,3 +134,105 @@ def obtener_favoritos(user_id):
     
     return jsonify(all_favoritos), 200
 
+#CREAR VALORACION
+
+@api.route('/usuario/valoraciones', methods=['POST'])
+def agregar_valoracion():
+    body = request.get_json()
+
+    user_id = body.get('user_id')
+    restaurante_id = body.get('restaurante_id')
+    puntuacion = body.get('puntuacion')
+    comentario = body.get('comentario', "")
+
+    if not all([user_id, restaurante_id, puntuacion]):
+        return jsonify({"error": "Faltan datos para la valoración"}), 400
+
+    valoracion_existente = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    if valoracion_existente:
+        return jsonify({"error": "Ya has valorado este restaurante"}), 400
+
+    nueva_valoracion = Valoracion(
+        user_id=user_id,
+        restaurante_id=restaurante_id,
+        puntuacion=puntuacion,
+        comentario=comentario
+    )
+    
+    db.session.add(nueva_valoracion)
+    db.session.commit()
+
+    return jsonify({"message": "Valoración creada con éxito", "valoracion": nueva_valoracion.serialize()}), 201
+
+#ACTUALIZAR VALORACION
+
+@api.route('/usuario/valoraciones', methods=['PUT'])
+def actualizar_valoracion():
+    body = request.get_json()
+
+    user_id = body.get('user_id')
+    restaurante_id = body.get('restaurante_id')
+    puntuacion = body.get('puntuacion')
+    comentario = body.get('comentario', "")
+
+    if not all([user_id, restaurante_id, puntuacion]):
+        return jsonify({"error": "Faltan datos para poder actualizar la valoración"}), 400
+
+    valoracion_existente = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    if not valoracion_existente:
+        return jsonify({"error": "No se encontró ninguna valoración para este restaurante hecha por este usuario"}), 404
+
+    valoracion_existente.puntuacion = puntuacion
+    valoracion_existente.comentario = comentario
+    db.session.commit()
+
+    return jsonify({"message": "Valoración actualizada con éxito", "valoracion": valoracion_existente.serialize()}), 200
+
+#BORRAR VALORACION
+
+@api.route('/usuario/valoraciones', methods=['DELETE'])
+def eliminar_valoracion():
+    body = request.get_json()
+
+    user_id = body.get('user_id')
+    restaurante_id = body.get('restaurante_id')
+
+    if not all([user_id, restaurante_id]):
+        return jsonify({"error": "Faltan datos para  poder eliminar la valoración"}), 400
+
+    valoracion = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+
+    if not valoracion:
+        return jsonify({"error": "No existe una valoración para este restaurante"}), 404
+
+    db.session.delete(valoracion)
+    db.session.commit()
+
+    return jsonify({"message": "Valoración eliminada con éxito"}), 200
+
+#OBTENER VALORACION
+
+@api.route('/restaurante/<int:restaurante_id>/valoracion', methods=['GET'])
+def obtener_valoracion_restaurante(restaurante_id):
+    valoraciones = Valoracion.query.filter_by(restaurante_id=restaurante_id).all()
+    
+    if not valoraciones:
+        return jsonify({"message": "Este restaurante no tiene valoraciones"}), 200
+    
+    all_valoraciones = list(map(lambda x: x.serialize(), valoraciones))
+    
+    return jsonify(all_valoraciones), 200
+
+#PROMEDIAR VALORACIONES
+
+@api.route('/restaurante/<int:restaurante_id>/valoracion_promedio', methods=['GET'])
+def obtener_valoracion_promedio(restaurante_id):
+    valoraciones = Valoracion.query.filter_by(restaurante_id=restaurante_id).all()
+
+    if not valoraciones:
+        return jsonify({"message": "Este restaurante no tiene valoraciones"}), 200
+
+    total_valoraciones = sum([valoracion.puntuacion for valoracion in valoraciones])
+    promedio = total_valoraciones / len(valoraciones)
+
+    return jsonify({"restaurante_id": restaurante_id, "promedio_valoracion": promedio}), 200
