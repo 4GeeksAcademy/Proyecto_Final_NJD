@@ -6,17 +6,16 @@ import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
-import { Restaurantes } from "./component/restaurantes"; // Componente único para todos los restaurantes
 import injectContext from "./store/appContext";
 
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
+import { RestaurantSearch } from "./pages/restaurantSearch"; 
 
-//create your first component
 const Layout = () => {
     const basename = process.env.BASENAME || "";
 
-    if(!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL/ >;
+    if(!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
         <div>
@@ -29,9 +28,12 @@ const Layout = () => {
                         <Route element={<Single />} path="/single/:theid" />
                         
                         {/* Ruta dinámica para diferentes tipos de cocina */}
-                        <Route element={<Restaurantes />} path="/restaurantes/:tipo" />
+                        {/* Cambia el componente Restaurantes por RestaurantSearch */}
+                        <Route element={<RestaurantSearch />} path="/restaurantes/:tipo" />
+
                         
-                        <Route element={<h1>Not found!</h1>} />
+
+                        <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />
                 </ScrollToTop>
