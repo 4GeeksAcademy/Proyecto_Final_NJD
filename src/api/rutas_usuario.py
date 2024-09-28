@@ -6,7 +6,7 @@ from api.models import db, Usuario
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from flask_cors import CORS
 from datetime import datetime, timezone
-import re  # Para validación de email y contraseña
+import re  # Para validación de email, contraseña y teléfono
 
 api = Blueprint('api', __name__)
 
@@ -20,11 +20,20 @@ def is_valid_email(email):
 
 # Validar formato de contraseña (al menos una mayúscula y un número)
 def is_valid_password(password):
-    if len(password) < 4 or len(password) > 8:
+    if len(password) < 8 or len(password) > 16:
         return False
     if not re.search(r'[A-Z]', password):  # Al menos una mayúscula
         return False
     if not re.search(r'[0-9]', password):  # Al menos un número
+        return False
+    return True
+
+# Validar formato de teléfono
+def is_valid_phone(phone):
+    phone_regex = r'^[\d\+\-]+$'  # Permitir solo números, + y -
+    if len(phone) < 9:  # Al menos 9 caracteres
+        return False
+    if not re.match(phone_regex, phone):
         return False
     return True
 
@@ -46,7 +55,10 @@ def signup():
         return jsonify({'msg': 'Formato de email no válido'}), 400
 
     if not is_valid_password(password):
-        return jsonify({'msg': 'La contraseña debe tener entre 4 y 8 caracteres, al menos una mayúscula y un número'}), 400
+        return jsonify({'msg': 'La contraseña debe tener entre 8 y 16 caracteres, al menos una mayúscula y un número'}), 400
+
+    if not is_valid_phone(telefono):
+        return jsonify({'msg': 'Formato de teléfono no válido. Debe contener al menos 9 caracteres y solo números, +, y -'}), 400
 
     # Verificar si el usuario ya existe
     if Usuario.query.filter_by(email=email).first():
