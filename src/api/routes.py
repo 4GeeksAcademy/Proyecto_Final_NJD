@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, Usuario, Reserva
+from api.models import db, Usuario, Reserva, Restaurantes_Favoritos
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 
@@ -80,3 +80,57 @@ def cancelar_reserva(reserva_id):
     db.session.commit()
 
     return jsonify({"message": "Reserva cancelada con éxito", "reserva": reserva.serialize()}), 200
+
+#CREAR FAVORITOS
+
+@api.route('/usuario/favoritos', methods=['POST'])
+def agregar_favorito():
+    body = request.get_json()
+
+    user_id = body.get('user_id')
+    restaurante_id = body.get('restaurante_id')
+
+    if not all([user_id, restaurante_id]):
+        return jsonify({"error": "Faltan datos para agregar a favoritos"}), 400
+
+    favorito_existente = Restaurantes_Favoritos.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    if favorito_existente:
+        return jsonify({"error": "El restaurante ya está en favoritos"}), 400
+
+    nuevo_favorito = Restaurantes_Favoritos(user_id=user_id, restaurante_id=restaurante_id)
+    db.session.add(nuevo_favorito)
+    db.session.commit()
+
+    return jsonify({"message": "Restaurante agregado a favoritos", "favorito": nuevo_favorito.serialize()}), 201
+
+#ELIMINAR FAVORITO
+
+@api.route('/usuario/favoritos', methods=['DELETE'])
+def eliminar_favorito():
+    body = request.get_json()
+
+    user_id = body.get('user_id')
+    restaurante_id = body.get('restaurante_id')
+
+    if not all([user_id, restaurante_id]):
+        return jsonify({"error": "Faltan datos para eliminar de favoritos"}), 400
+
+    favorito = Restaurantes_Favoritos.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+
+    if not favorito:
+        return jsonify({"error": "El restaurante no está en favoritos"}), 404
+
+    db.session.delete(favorito)
+    db.session.commit()
+
+    return jsonify({"message": "Restaurante eliminado de favoritos"}), 200
+
+#OBTENER FAVORITO
+
+@api.route('/usuario/favoritos/<int:user_id>', methods=['GET'])
+def obtener_favoritos(user_id):
+    favoritos = Restaurantes_Favoritos.query.filter_by(user_id=user_id).all()
+    all_favoritos = list(map(lambda x: x.serialize(), favoritos))
+    
+    return jsonify(all_favoritos), 200
+
