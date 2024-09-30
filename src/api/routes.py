@@ -343,19 +343,19 @@ def crear_reserva():
     user_id = body.get('user_id')
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
-    numero_adultos = body.get('numero_adultos')
-    numero_niños = body.get('numero_niños')
+    adultos = body.get('adultos')
+    niños = body.get('niños')
     trona= body.get('trona')
 
-    if not all([user_id, restaurante_id, fecha_reserva, numero_adultos, numero_niños, trona]):
+    if not all([user_id, restaurante_id, fecha_reserva, adultos, niños, trona]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     nueva_reserva = Reserva(
         user_id=user_id,
         restaurante_id=restaurante_id,
         fecha_reserva=fecha_reserva,
-        numero_adultos=numero_adultos,
-        numero_niños=numero_niños,
+        adultos=adultos,
+        niños=niños,
         trona=trona
     )
     db.session.add(nueva_reserva)
