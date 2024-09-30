@@ -87,6 +87,7 @@ class Reserva(db.Model):
         __tablename__ = 'reserva' 
         id = db.Column(db.Integer, primary_key=True)
         user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+        fecha_reserva = db.Column(db.DateTime, nullable=False)
         trona = db.Column(db.Boolean(), nullable=False)
         adultos = db.Column(db.Integer, nullable=False)
         niños = db.Column(db.Integer, nullable=False)
@@ -105,6 +106,7 @@ class Reserva(db.Model):
             return {
             "id": self.id,
             "user_id": self.user_id,
+            "fecha_reserva": self.fecha_reserva,
             "trona": self.trona,
             "adultos": self.adultos,
             "niños": self.niños,
