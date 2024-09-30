@@ -88,7 +88,7 @@ class Reserva(db.Model):
         id = db.Column(db.Integer, primary_key=True)
         user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
         fecha_reserva = db.Column(db.DateTime, nullable=False)
-        trona = db.Column(db.Boolean(), nullable=False)
+        trona = db.Column(db.Integer, nullable=False)
         adultos = db.Column(db.Integer, nullable=False)
         niños = db.Column(db.Integer, nullable=False)
         hora_inicio = db.Column(db.DateTime, nullable=False)
