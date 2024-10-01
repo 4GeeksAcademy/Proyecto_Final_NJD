@@ -8,36 +8,34 @@ export const LoginUsuario = ({ onLogin }) => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const loginModalElement = document.getElementById('loginModal');
-    
-        const onModalOpen = () => {
-            const savedEmail = sessionStorage.getItem('signup_email');
-            const savedPassword = sessionStorage.getItem('signup_password');
-    
-            // Si no existen valores guardados, limpiamos los campos
-            if (!savedEmail && !savedPassword) {
-                setEmail('');   // Limpiar el email si no viene del registro
-                setPassword(''); // Limpiar la contraseña si no viene del registro
-            } else {
-                // Si los valores existen, completamos automáticamente los campos
-                if (savedEmail) setEmail(savedEmail);
-                if (savedPassword) setPassword(savedPassword);
-            }
-    
-            // Limpiar el sessionStorage después de rellenar los campos tras el registro
-            sessionStorage.removeItem('signup_email');
-            sessionStorage.removeItem('signup_password');
-        };
-    
-        // Añadir un listener para cuando se abra el modal
-        loginModalElement.addEventListener('shown.bs.modal', onModalOpen);
-    
-        return () => {
-            // Eliminar el listener cuando el componente se desmonte
-            loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
-        };
-    }, []);
+   useEffect(() => {
+    const loginModalElement = document.getElementById('loginModal');
+
+    const onModalOpen = () => {
+        const savedEmail = sessionStorage.getItem('signup_email');
+        const savedPassword = sessionStorage.getItem('signup_password');
+
+        // Si no hay email o contraseña guardada en sessionStorage, limpia los campos
+        if (!savedEmail) setEmail('');
+        if (!savedPassword) setPassword('');
+
+        if (savedEmail) setEmail(savedEmail);
+        if (savedPassword) setPassword(savedPassword);
+
+        // Limpiar el sessionStorage después de rellenar los campos
+        sessionStorage.removeItem('signup_email');
+        sessionStorage.removeItem('signup_password');
+    };
+
+    // Añadir un listener para cuando se abra el modal
+    loginModalElement.addEventListener('shown.bs.modal', onModalOpen);
+
+    return () => {
+        // Eliminar el listener cuando el componente se desmonte
+        loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
+    };
+}, []);
+
     
 
     const handleSubmit = async (e) => {

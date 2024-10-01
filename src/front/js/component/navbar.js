@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Asegúrate de importar 'useNavigate'
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario"; // Importamos el componente SignupUsuario
@@ -8,9 +8,10 @@ import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
+    const navigate = useNavigate(); // Añadir hook de navegación
 
     useEffect(() => {
-		// Revisamos si hay un token y un nombre de usuario en sessionStorage
+        // Revisamos si hay un token y un nombre de usuario en sessionStorage
         const token = sessionStorage.getItem("token");
         const storedUserName = sessionStorage.getItem("user_name");
         if (token && storedUserName) {
@@ -28,6 +29,7 @@ export const Navbar = () => {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user_name");
         setLoggedIn(false);
+        navigate("/"); // Redirige a la página principal después de cerrar sesión
     };
 
     return (
@@ -42,7 +44,7 @@ export const Navbar = () => {
                     <div className="ml-auto nav-links">
                         {loggedIn ? (
                             <>
-                                <span className="navbar-text">Hola, {userName}</span>
+                                <span className="navbar-text">Hola {userName}</span>
                                 <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                     Cerrar Sesión
                                 </button>
