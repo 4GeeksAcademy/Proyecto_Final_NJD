@@ -3,34 +3,42 @@ import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../styles/index.css';
 
-export const LoginUsuario = () => {
+export const LoginUsuario = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
         const loginModalElement = document.getElementById('loginModal');
-
+    
         const onModalOpen = () => {
             const savedEmail = sessionStorage.getItem('signup_email');
             const savedPassword = sessionStorage.getItem('signup_password');
-
-            if (savedEmail) setEmail(savedEmail);
-            if (savedPassword) setPassword(savedPassword);
-
-            // Limpiar el sessionStorage después de rellenar los campos
+    
+            // Si no existen valores guardados, limpiamos los campos
+            if (!savedEmail && !savedPassword) {
+                setEmail('');   // Limpiar el email si no viene del registro
+                setPassword(''); // Limpiar la contraseña si no viene del registro
+            } else {
+                // Si los valores existen, completamos automáticamente los campos
+                if (savedEmail) setEmail(savedEmail);
+                if (savedPassword) setPassword(savedPassword);
+            }
+    
+            // Limpiar el sessionStorage después de rellenar los campos tras el registro
             sessionStorage.removeItem('signup_email');
             sessionStorage.removeItem('signup_password');
         };
-
+    
         // Añadir un listener para cuando se abra el modal
         loginModalElement.addEventListener('shown.bs.modal', onModalOpen);
-
+    
         return () => {
             // Eliminar el listener cuando el componente se desmonte
             loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
         };
     }, []);
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -47,13 +55,21 @@ export const LoginUsuario = () => {
                 })
             });
 
+            // Verificar si la respuesta es un JSON válido
+            const contentType = response.headers.get("content-type");
+            if (!contentType || !contentType.includes("application/json")) {
+                throw new Error("Respuesta no es JSON");
+            }
             const data = await response.json();  // Leer la respuesta del backend
 
             if (response.ok) {
-                sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('token', data.access_token);  // Usar 'access_token'
                 sessionStorage.setItem('user_name', data.user_name);  // Guarda el nombre de usuario en sessionStorage
                 console.log(data);  // Verifica qué recibe del servidor
-                console.log("navigating");
+
+                // Actualiza el estado en la Navbar
+                onLogin(data.user_name);
+
                 const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
                 if (loginModal) loginModal.hide();  // Cierra el modal de login
                 navigate('/home');  // Redirige al home
@@ -111,6 +127,7 @@ export const LoginUsuario = () => {
             });
         }
     };
+
 
     return (
         <form onSubmit={handleSubmit}>
