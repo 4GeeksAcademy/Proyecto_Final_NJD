@@ -276,8 +276,6 @@ def login_restaurante():
     }), 200
 
 
-
-
 # Obtener todos los restaurantes (GET /restaurantes)
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
@@ -336,27 +334,32 @@ def delete_restaurante(restaurante_id):
 
 #CREAR RESERVA
 
-@api.route('/usuario/reservas', methods=['POST'])
-def crear_reserva():
+@api.route('/usuario/<int:usuario_id>/reservas', methods=['POST'])
+def crear_reserva(usuario_id):
     body = request.get_json()
     
-    user_id = body.get('user_id')
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
     niños = body.get('niños')
     trona= body.get('trona')
+    hora_inicio = body.get('hora_inicio')
+    hora_fin = body.get('hora_fin')
+    estado_de_la_reserva = body.get('estado_de_la_reserva')
 
-    if not all([user_id, restaurante_id, fecha_reserva, adultos, niños, trona]):
+    if not all([usuario_id, restaurante_id, fecha_reserva, adultos, niños, trona]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     nueva_reserva = Reserva(
-        user_id=user_id,
+        user_id=usuario_id,
         restaurante_id=restaurante_id,
         fecha_reserva=fecha_reserva,
         adultos=adultos,
         niños=niños,
-        trona=trona
+        trona=trona,
+        hora_inicio = hora_inicio,
+        hora_fin = hora_fin,
+        estado_de_la_reserva= estado_de_la_reserva
     )
     db.session.add(nueva_reserva)
     db.session.commit()
@@ -406,21 +409,21 @@ def cancelar_reserva(reserva_id):
 
 #CREAR FAVORITOS
 
-@api.route('/usuario/favoritos', methods=['POST'])
-def agregar_favorito():
-    body = request.get_json()
+@api.route('/usuario/<int:usuario_id>/favoritos', methods=['POST'])
+def agregar_favorito(usuario_id):
 
-    user_id = body.get('user_id')
-    restaurante_id = body.get('restaurante_id')
+    body = request.json
 
-    if not all([user_id, restaurante_id]):
+    restaurante_id = body.get('restaurantes_id')
+
+    if not usuario_id or not restaurante_id :
         return jsonify({"error": "Faltan datos para agregar a favoritos"}), 400
 
-    favorito_existente = Restaurantes_Favoritos.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    favorito_existente = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id, restaurantes_id=restaurante_id).first()
     if favorito_existente:
         return jsonify({"error": "El restaurante ya está en favoritos"}), 400
 
-    nuevo_favorito = Restaurantes_Favoritos(user_id=user_id, restaurante_id=restaurante_id)
+    nuevo_favorito = Restaurantes_Favoritos(usuario_id=usuario_id, restaurantes_id=restaurante_id)
     db.session.add(nuevo_favorito)
     db.session.commit()
 
@@ -428,17 +431,17 @@ def agregar_favorito():
 
 #ELIMINAR FAVORITO
 
-@api.route('/usuario/favoritos', methods=['DELETE'])
-def eliminar_favorito():
+@api.route('/usuario/<int:usuario_id>/favoritos', methods=['DELETE'])
+def eliminar_favorito(usuario_id):
+    
     body = request.get_json()
 
-    user_id = body.get('user_id')
-    restaurante_id = body.get('restaurante_id')
+    restaurantes_id = body.get('restaurantes_id')
 
-    if not all([user_id, restaurante_id]):
+    if not all([usuario_id, restaurantes_id]):
         return jsonify({"error": "Faltan datos para eliminar de favoritos"}), 400
 
-    favorito = Restaurantes_Favoritos.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    favorito = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id, restaurantes_id=restaurantes_id).first()
 
     if not favorito:
         return jsonify({"error": "El restaurante no está en favoritos"}), 404
@@ -452,18 +455,17 @@ def eliminar_favorito():
 
 @api.route('/usuario/favoritos/<int:user_id>', methods=['GET'])
 def obtener_favoritos(user_id):
-    favoritos = Restaurantes_Favoritos.query.filter_by(user_id=user_id).all()
+    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=user_id).all()
     all_favoritos = list(map(lambda x: x.serialize(), favoritos))
     
     return jsonify(all_favoritos), 200
 
 #CREAR VALORACION
 
-@api.route('/usuario/valoraciones', methods=['POST'])
-def agregar_valoracion():
+@api.route('/usuario/<int:user_id>/valoraciones', methods=['POST'])
+def agregar_valoracion(user_id):
     body = request.get_json()
 
-    user_id = body.get('user_id')
     restaurante_id = body.get('restaurante_id')
     puntuacion = body.get('puntuacion')
     comentario = body.get('comentario', "")
@@ -471,12 +473,12 @@ def agregar_valoracion():
     if not all([user_id, restaurante_id, puntuacion]):
         return jsonify({"error": "Faltan datos para la valoración"}), 400
 
-    valoracion_existente = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    valoracion_existente = Valoracion.query.filter_by(usuario_id=user_id, restaurante_id=restaurante_id).first()
     if valoracion_existente:
         return jsonify({"error": "Ya has valorado este restaurante"}), 400
 
     nueva_valoracion = Valoracion(
-        user_id=user_id,
+        usuario_id=user_id,
         restaurante_id=restaurante_id,
         puntuacion=puntuacion,
         comentario=comentario
@@ -489,11 +491,10 @@ def agregar_valoracion():
 
 #ACTUALIZAR VALORACION
 
-@api.route('/usuario/valoraciones', methods=['PUT'])
-def actualizar_valoracion():
+@api.route('/usuario/<int:user_id>/valoraciones', methods=['PUT'])
+def actualizar_valoracion(user_id):
     body = request.get_json()
 
-    user_id = body.get('user_id')
     restaurante_id = body.get('restaurante_id')
     puntuacion = body.get('puntuacion')
     comentario = body.get('comentario', "")
@@ -501,7 +502,7 @@ def actualizar_valoracion():
     if not all([user_id, restaurante_id, puntuacion]):
         return jsonify({"error": "Faltan datos para poder actualizar la valoración"}), 400
 
-    valoracion_existente = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    valoracion_existente = Valoracion.query.filter_by(usuario_id=user_id, restaurante_id=restaurante_id).first()
     if not valoracion_existente:
         return jsonify({"error": "No se encontró ninguna valoración para este restaurante hecha por este usuario"}), 404
 
@@ -513,17 +514,16 @@ def actualizar_valoracion():
 
 #BORRAR VALORACION
 
-@api.route('/usuario/valoraciones', methods=['DELETE'])
-def eliminar_valoracion():
+@api.route('/usuario/<int:user_id>/valoraciones', methods=['DELETE'])
+def eliminar_valoracion(user_id):
     body = request.get_json()
 
-    user_id = body.get('user_id')
     restaurante_id = body.get('restaurante_id')
 
     if not all([user_id, restaurante_id]):
         return jsonify({"error": "Faltan datos para  poder eliminar la valoración"}), 400
 
-    valoracion = Valoracion.query.filter_by(user_id=user_id, restaurante_id=restaurante_id).first()
+    valoracion = Valoracion.query.filter_by(usuario_id=user_id, restaurante_id=restaurante_id).first()
 
     if not valoracion:
         return jsonify({"error": "No existe una valoración para este restaurante"}), 404
