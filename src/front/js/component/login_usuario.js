@@ -9,20 +9,27 @@ export const LoginUsuario = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Leer el email y password del sessionStorage si existen
-        const savedEmail = sessionStorage.getItem('signup_email');
-        const savedPassword = sessionStorage.getItem('signup_password');
+        const loginModalElement = document.getElementById('loginModal');
 
-        if (savedEmail) {
-            setEmail(savedEmail);
-        }
-        if (savedPassword) {
-            setPassword(savedPassword);
-        }
+        const onModalOpen = () => {
+            const savedEmail = sessionStorage.getItem('signup_email');
+            const savedPassword = sessionStorage.getItem('signup_password');
 
-        // Limpiar el sessionStorage después de rellenar los campos
-        sessionStorage.removeItem('signup_email');
-        sessionStorage.removeItem('signup_password');
+            if (savedEmail) setEmail(savedEmail);
+            if (savedPassword) setPassword(savedPassword);
+
+            // Limpiar el sessionStorage después de rellenar los campos
+            sessionStorage.removeItem('signup_email');
+            sessionStorage.removeItem('signup_password');
+        };
+
+        // Añadir un listener para cuando se abra el modal
+        loginModalElement.addEventListener('shown.bs.modal', onModalOpen);
+
+        return () => {
+            // Eliminar el listener cuando el componente se desmonte
+            loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
+        };
     }, []);
 
     const handleSubmit = async (e) => {
@@ -44,7 +51,12 @@ export const LoginUsuario = () => {
 
             if (response.ok) {
                 sessionStorage.setItem('token', data.token);
-                navigate('/private');  // Redirige al área privada
+                console.log(data);  // Verifica qué recibe del servidor
+                console.log("navigating");
+                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                if (loginModal) loginModal.hide();  // Cierra el modal de login
+                navigate('/home');  // Redirige al home
+
             } else if (response.status === 404) {
                 // Usuario no registrado
                 Swal.fire({
@@ -56,13 +68,21 @@ export const LoginUsuario = () => {
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        sessionStorage.setItem('signup_email', email);
-                        navigate('/signup');  // Redirige a la página de registro
+                        sessionStorage.setItem('signup_email', email);  // Guarda el email del intento de login
+
+                        // Cerrar el modal de login
+                        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
+                        if (loginModal) loginModal.hide();
+
+                        // Abrir el modal de signup
+                        const signupModal = new bootstrap.Modal(document.getElementById('signupModal'));
+                        signupModal.show();
                     } else {
-                        setEmail('');
-                        setPassword('');
+                        setEmail('');  // Limpiar el email si cancela
+                        setPassword('');  // Limpiar la contraseña si cancela
                     }
                 });
+
             } else if (response.status === 401) {
                 // Contraseña incorrecta
                 Swal.fire({
@@ -92,26 +112,34 @@ export const LoginUsuario = () => {
     };
 
     return (
-        <div className='login-container'>
-            <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+                <label htmlFor="loginEmail" className="form-label">Correo electrónico</label>
                 <input
                     type='email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Introduzca su email"
+                    className="form-control"
+                    id="logineEmail"
+                    placeholder="example@correo.com"
                     required
                     autoComplete="off"
                 />
+            </div>
+            <div className="mb-3">
+                <label htmlFor="loginPassword" className="form-label">Contraseña</label>
                 <input
                     type='password'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Introduzca su contraseña"
+                    className="form-control"
+                    id="loginPassword"
+                    placeholder="Contraseña"
                     required
                     autoComplete="off"
                 />
-                <button type='submit' className='login-button'>Iniciar Sesión</button>
-            </form>
-        </div>
+            </div>
+            <button type='submit' className='btn btn-primary'>Iniciar Sesión</button>
+        </form>
     );
 };

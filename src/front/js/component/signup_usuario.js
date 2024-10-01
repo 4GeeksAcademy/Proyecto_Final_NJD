@@ -18,7 +18,6 @@ export const SignupUsuario = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Leer el email del sessionStorage si existe
         const savedEmail = sessionStorage.getItem("signup_email");
         if (savedEmail) {
             setFormData((prevData) => ({
@@ -27,7 +26,6 @@ export const SignupUsuario = () => {
             }));
         }
 
-        // Limpiar el sessionStorage después de rellenar el campo de email
         sessionStorage.removeItem("signup_email");
     }, []);
 
@@ -44,8 +42,6 @@ export const SignupUsuario = () => {
         }
 
         try {
-            console.log(formData)
-
             const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -57,7 +53,6 @@ export const SignupUsuario = () => {
                     telefono: formData.phone,
                 }),
             });
-            console.log(response)
 
             if (response.ok) {
                 sessionStorage.setItem("signup_email", formData.email);
@@ -66,12 +61,23 @@ export const SignupUsuario = () => {
                 setSuccessMessage("Usuario registrado con éxito");
                 setErrorMessage("");
                 Swal.fire({
-                    title: "Registro exitoso",
+                    title: "Usuario registrado con éxito",
                     text: "Serás redirigido al login.",
                     icon: "success",
                     confirmButtonText: "Aceptar",
                 }).then(() => {
-                    //   navigate("/login");
+                    // Guardar email y password en sessionStorage
+                    sessionStorage.setItem("signup_email", formData.email);
+                    sessionStorage.setItem("signup_password", formData.password);
+                   
+                    // Cerrar el modal de registro usando Bootstrap
+                    const signupModal = document.getElementById("signupModal");
+                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
+                    signupModalInstance.hide();
+
+                    // Abrir el modal de login usando Bootstrap
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
                 });
 
                 setFormData({
@@ -89,7 +95,7 @@ export const SignupUsuario = () => {
                     icon: "warning",
                     confirmButtonText: "Aceptar",
                 }).then(() => {
-                    navigate("/login");
+                    navigate("/login_usuario");
                 });
             } else {
                 const errorData = await response.json();
@@ -106,120 +112,91 @@ export const SignupUsuario = () => {
     };
 
     return (
-        <div className="modal fade" id="signupModal" tabIndex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
-            <div className="modal-dialog">
-                <div className="modal-content">
-                    <div className="modal-header">
-                        <h5 className="modal-title" id="signupModalLabel">
-                            Registro
-                        </h5>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                        {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                        {successMessage && <div className="alert alert-success">{successMessage}</div>}
+        <div>
+            {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
+            {successMessage && <div className="alert alert-success">{successMessage}</div>}
 
-
-
-                        <form onSubmit={handleSubmit}>
-                            <div className="mb-3">
-                                <label htmlFor="signupFirstName" className="form-label">
-                                    Nombre
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="signupFirstName"  
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="signupLastName" className="form-label">
-                                    Apellidos
-                                </label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="signupLastName" 
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="signupEmail" className="form-label">  
-                                    Correo electrónico
-                                </label>
-                                <input
-                                    type="email"
-                                    className="form-control"
-                                    id="signupEmail"  
-                                    name="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="signupPassword" className="form-label">  
-                                    Contraseña
-                                </label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    id="signupPassword"  
-                                    name="password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="signupRepeatPassword" className="form-label">
-                                    Repetir contraseña
-                                </label>
-                                <input
-                                    type="password"
-                                    className="form-control"
-                                    id="signupRepeatPassword"
-                                    name="repeatPassword"
-                                    value={formData.repeatPassword}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <div className="mb-3">
-                                <label htmlFor="signupPhone" className="form-label">
-                                    Teléfono
-                                </label>
-                                <input
-                                    type="tel"
-                                    className="form-control"
-                                    id="signupPhone"
-                                    name="phone"
-                                    value={formData.phone}
-                                    onChange={handleChange}
-                                    required
-                                />
-                            </div>
-
-                            <button type="submit" className="btn btn-primary">
-                                Registrarse
-                            </button>
-                        </form>
-
-                    </div>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="signupFirstName" className="form-label">Nombre</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="signupFirstName"
+                        name="firstName"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        required
+                    />
                 </div>
-            </div>
+
+                <div className="mb-3">
+                    <label htmlFor="signupLastName" className="form-label">Apellidos</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        id="signupLastName"
+                        name="lastName"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="signupEmail" className="form-label">Correo electrónico</label>
+                    <input
+                        type="email"
+                        className="form-control"
+                        id="signupEmail"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="signupPassword" className="form-label">Contraseña</label>
+                    <input
+                        type="password"
+                        className="form-control"
+                        id="signupPassword"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="signupRepeatPassword" className="form-label">Repetir contraseña</label>
+                    <input
+                        type="password"
+                        className="form-control"
+                        id="signupRepeatPassword"
+                        name="repeatPassword"
+                        value={formData.repeatPassword}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="signupPhone" className="form-label">Teléfono</label>
+                    <input
+                        type="tel"
+                        className="form-control"
+                        id="signupPhone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <button type="submit" className="btn btn-primary">Registrarse</button>
+            </form>
         </div>
     );
 };

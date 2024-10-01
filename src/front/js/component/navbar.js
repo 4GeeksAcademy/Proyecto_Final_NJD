@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"
+import { LoginUsuario } from "./login_usuario"; 
+import { SignupUsuario } from "./signup_usuario"; // Importamos el componente SignupUsuario
+import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 
 export const Navbar = () => {
 	return (
@@ -33,17 +35,7 @@ export const Navbar = () => {
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<form>
-								<div className="mb-3">
-									<label htmlFor="email" className="form-label">Correo electrónico</label>
-									<input type="email" className="form-control" id="email" placeholder="example@correo.com" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="password" className="form-label">Contraseña</label>
-									<input type="password" className="form-control" id="password" placeholder="Contraseña" />
-								</div>
-								<button type="submit" className="btn btn-primary">Iniciar Sesión</button>
-							</form>
+							<LoginUsuario /> {/* Usamos el componente LoginUsuario */}
 						</div>
 					</div>
 				</div>
@@ -58,33 +50,7 @@ export const Navbar = () => {
 							<button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div className="modal-body">
-							<form>
-								<div className="mb-3">
-									<label htmlFor="firstName" className="form-label">Nombre</label>
-									<input type="text" className="form-control" id="firstName" placeholder="Tu nombre" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="lastName" className="form-label">Apellidos</label>
-									<input type="text" className="form-control" id="lastName" placeholder="Tus apellidos" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="email" className="form-label">Correo electrónico</label>
-									<input type="email" className="form-control" id="email" placeholder="example@correo.com" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="password" className="form-label">Contraseña</label>
-									<input type="password" className="form-control" id="password" placeholder="Contraseña" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="repeat-password" className="form-label">Repetir contraseña</label>
-									<input type="password" className="form-control" id="repeat-password" placeholder="Repite la contraseña" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="phone" className="form-label">Teléfono</label>
-									<input type="tel" className="form-control" id="phone" placeholder="+34 645 28 79 37" />
-								</div>
-								<button type="submit" className="btn btn-primary">Registrarse</button>
-							</form>
+							<SignupUsuario /> {/* Usamos el componente SignupUsuario */}
 						</div>
 					</div>
 				</div>

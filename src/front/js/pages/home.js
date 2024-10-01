@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import "../../styles/home.css";
 import { Link } from "react-router-dom"; // Importamos Link para manejar la navegación
-import { SignupUsuario } from "../component/signup_usuario"; // Importamos SignupUsuario desde la ruta correcta
 export const Home = () => {
 	const scrollContainerRef = useRef(null);
 
@@ -192,34 +191,6 @@ export const Home = () => {
 					>
 						Únete a nosotros. Regístrate
 					</button>
-				</div>
-			</div>
-
-			{/* Modal de Registro */}
-			<div
-				className="modal fade"
-				id="signupModal"
-				tabIndex="-1"
-				aria-labelledby="signupModalLabel"
-				aria-hidden="true"
-			>
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h5 className="modal-title" id="signupModalLabel">
-								Registro
-							</h5>
-							<button
-								type="button"
-								className="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
-						</div>
-						<div className="modal-body">
-							<SignupUsuario />
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>
