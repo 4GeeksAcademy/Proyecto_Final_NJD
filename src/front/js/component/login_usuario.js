@@ -51,6 +51,7 @@ export const LoginUsuario = () => {
 
             if (response.ok) {
                 sessionStorage.setItem('token', data.token);
+                sessionStorage.setItem('user_name', data.user_name);  // Guarda el nombre de usuario en sessionStorage
                 console.log(data);  // Verifica qué recibe del servidor
                 console.log("navigating");
                 const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
