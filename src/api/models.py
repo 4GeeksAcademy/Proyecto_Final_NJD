@@ -91,9 +91,8 @@ class Reserva(db.Model):
         trona = db.Column(db.Integer, nullable=False)
         adultos = db.Column(db.Integer, nullable=False)
         niños = db.Column(db.Integer, nullable=False)
-        hora_inicio = db.Column(db.DateTime, nullable=False)
         hora_fin = db.Column(db.DateTime, nullable=False)
-        estado_de_la_reserva = db.Column(db.Boolean(), nullable=False)
+        estado_de_la_reserva = db.Column(db.Boolean(), nullable=True)
         restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
         creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
         modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -110,7 +109,6 @@ class Reserva(db.Model):
             "trona": self.trona,
             "adultos": self.adultos,
             "niños": self.niños,
-            "hora_inicio": self.hora_inicio,
             "hora_fin": self.hora_fin,
             "estado_de_la_reserva": self.estado_de_la_reserva,
             "restaurante_id": self.restaurante_id,

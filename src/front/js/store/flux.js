@@ -12,8 +12,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 
 			// CREAR RESERVA
-			crearReserva: async function (data, usuario_id, token) {
+			crearReserva: async function (usuario_id, data) {
 				const url = `https://shiny-pancake-7v7jx5444vg42467-3001.app.github.dev/api/usuario/${usuario_id}/reservas`;
+				const token = localStorage.getItem("token")
 				try {
 					const response = await fetch(url, {
 						method: 'POST',
