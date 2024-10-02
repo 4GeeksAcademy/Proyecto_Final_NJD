@@ -5,7 +5,7 @@ import '/workspaces/Proyecto_Final_NJD/src/front/styles/privateView.css';
 const PrivateView = () => {
     const [user, setUser] = useState(null); 
     const navigate = useNavigate();
-
+      
     useEffect(() => {
         const fakeUser = { name: "Daria" }; 
         setUser(fakeUser);
