@@ -343,7 +343,6 @@ def crear_reserva(usuario_id):
     adultos = body.get('adultos')
     niños = body.get('niños')
     trona= body.get('trona')
-    hora_fin = body.get('hora_fin')# por defecto 2 horas
     estado_de_la_reserva = body.get('estado_de_la_reserva')
 
     if not all([usuario_id, restaurante_id, fecha_reserva, adultos, niños, trona]):
@@ -356,7 +355,6 @@ def crear_reserva(usuario_id):
         adultos=adultos,
         niños=niños,
         trona=trona,
-        hora_fin = hora_fin,
         estado_de_la_reserva= estado_de_la_reserva
     )
     db.session.add(nueva_reserva)
