@@ -8,6 +8,8 @@ from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
 import re  # Para validación de email, contraseña y teléfono
+#Cloudinary
+import cloudinary.uploader
 
 api = Blueprint('api', __name__)
 
@@ -560,3 +562,18 @@ def obtener_valoracion_promedio(restaurante_id):
     promedio = total_valoraciones / len(valoraciones)
 
     return jsonify({"restaurante_id": restaurante_id, "promedio_valoracion": promedio}), 200
+
+#Cloudinary
+@api.route('/upload_image', methods=['POST'])
+def upload_image():
+    try:
+        # Obtener la imagen del formulario (request.files)
+        image = request.files['file']  #Frontend debe enviar el archivo correctamente
+         # Subir la imagen a Cloudinary
+        upload_result = cloudinary.uploader.upload(image)
+        # Devolver la URL de la imagen subida
+        return jsonify({
+            "msg": "Imagen subida con éxito",
+            "url": upload_result['secure_url']}), 200
+    except Exception as e:
+        return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
