@@ -48,114 +48,9 @@
   color: #00000064;
  
 }
-/* Modal */
-
-.modal-content {
-  background-color: #f5f5f5;
-  border: none;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-}
-
-.modal-header {
-  justify-content: center;
-  border-bottom: none;
-  padding: 2rem;
-  background: linear-gradient(90deg, #4b4b4b, #222);
-  color: #ffffff;
-  text-align: center;
-}
-
-.modal-title {
-  font-size: 1.8rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-}
-
-.btn-close {
-  position: absolute;
-  right: 1rem;
-  top: 1rem;
-  background: transparent;
-  border: none;
-  font-size: 1.5rem;
-}
-
-.btn-close:hover {
-  opacity: 0.7;
-}
-
-.modal-body {
-  padding: 2.5rem;
-}
-
-.modal-body .form-label {
-  font-weight: 500;
-  color: #333;
-}
-
-.modal-body input {
-  border: none;
-  border-bottom: 2px solid #ccc;
-  border-radius: 0;
-  padding: 0.75rem;
-  width: 100%;
-  background-color: transparent;
-  box-shadow: none;
-  transition: border-color 0.3s ease;
-  font-size: 1rem;
-}
-
-.modal-body input:focus {
-  border-bottom: 2px solid #333;
-  outline: none;
-}
-
-.modal-footer {
-
-  border-top: none;
-  padding: 1.5rem;
-  background-color: #f5f5f5;
-  text-align: center;
-}
-
-.btn-primary {
-  background: #222;
-  border: none;
-  padding: 0.75rem 2rem;
-  font-size: 1rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: background-color 0.3s ease;
-}
-
-.btn-primary:hover {
-  background-color: #4b4b4b;
-}
-
-.form-control {
-  margin-bottom: 1.5rem;
-  font-size: 1.1rem;
-  color: #333;
-}
-
-.form-control::placeholder {
-  color: #999;
-}
 
 
 
-.modal-header, .modal-footer {
-  text-align: center;
-  align-items: center;
-  justify-content: center;
-}
-
-
-  .modal-header, .modal-footer {
-    padding: 1rem;
-  }
 
 /*Restaurant Search*/
 
@@ -278,4 +173,327 @@
 .favorite-button.favorited:hover {
   background-color: #e74c3c;
   border-color: #e74c3c; 
+}
+
+
+/*Vista privada*/
+
+
+
+.minimal-background {
+  background-image: url('https://estaticos-cdn.prensaiberica.es/clip/700f62b7-be91-4bdb-8a48-e83b1f34a448_16-9-discover-aspect-ratio_default_0.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh; 
+  width: 100vw; 
+  margin: 0; 
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.minimal-box {
+  background-color: rgba(255, 255, 255, 0.9); /* Fondo blanco semitransparente */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  max-width: 500px;
+  width: 100%;
+  animation: fadeIn 1s ease-in-out;
+}
+
+
+.minimal-title {
+  font-size: 2.2rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+
+.minimal-text {
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+
+.minimal-button {
+  background-color: #333;
+  color: #ffffff;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.minimal-button:hover {
+  background-color: #111;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+
+
+/* Estilos para el modal deslizante de usuario */
+.user-modal-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1050;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.user-modal {
+  width: 100%;
+  max-width: 400px;
+  height: 100%;
+  background-color: #fff;
+  border-radius: 0;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.2);
+  animation: slide-in 0.3s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Animación deslizante */
+@keyframes slide-in {
+  from {
+      transform: translateX(100%);
+  }
+  to {
+      transform: translateX(0);
+  }
+}
+
+
+/*Modal favoritos*/
+/* Estilos para el modal de favoritos */
+.modal-content-fav {
+  background-color: rgba(255, 255, 255, 0.95); /* Fondo ligeramente translúcido */
+  border-radius: 10px;
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  max-width: 400px; /* Limitar el ancho */
+  margin: 50px auto; /* Centrar el modal */
+  position: relative;
+  z-index: 1050;
+}
+
+.modal-header-fav {
+  background-color: #333;
+  color: #fff;
+  border-bottom: 1px solid #444;
+  padding: 15px;
+  position: relative;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.modal-title-fav {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin: 0;
+  text-align: left;
+}
+
+.modal-header-fav .close {
+  background-color: transparent;
+  border: none;
+  font-size: 1.8rem;
+  color: #fff;
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.3s ease;
+}
+
+.modal-header-fav .close:hover {
+  color: #f1c40f;
+}
+
+/* Cuerpo del modal de favoritos */
+.modal-body-fav {
+  padding: 20px;
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+}
+
+.modal-body-fav p {
+  font-size: 1.2rem;
+  color: #777;
+}
+
+/* Botones */
+.modal-footer-fav .btn {
+  background-color: #6c757d;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 15px;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.modal-footer-fav .btn:hover {
+  background-color: #5a6268;
+}
+
+
+
+
+/* Modal general */
+/* Modal general */
+.user-modal .modal-content {
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0px 10px 25px rgba(0, 0, 0, 0.15);
+  padding: 0;
+  max-width: 450px;
+  margin: auto;
+  border: none;
+  overflow: hidden;
+}
+
+/* Cabecera del modal */
+.user-modal .modal-header {
+  background-color: #343a40;
+  color: #ffffff;
+  padding: 20px;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.user-modal .modal-header .modal-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.user-modal .modal-header .close {
+  font-size: 1.4rem;
+  color: #f0f0f0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.user-modal .modal-header .close:hover {
+  color: #ffc107; /* Color dorado al hacer hover */
+}
+
+/* Cuerpo del modal */
+.user-modal .modal-body {
+  padding: 20px;
+  background-color: #f8f9fa;
+}
+
+.user-info-section p {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+.user-info-section .form-group {
+  margin-bottom: 20px;
+}
+
+.user-info-section .form-group input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  width: 100%;
+  font-size: 1rem;
+  background-color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.user-info-section .form-group input:focus {
+  border-color: #007bff;
+  background-color: #ffffff;
+}
+
+/* Sección de reservas */
+.reservas-section {
+  margin-top: 30px;
+}
+
+.reservas-section label {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.user-modal .list-group-item {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user-modal .list-group-item button {
+  background-color: transparent;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.user-modal .list-group-item button:hover {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+/* Botón de guardar */
+.user-modal .btn-dark {
+  background-color: #343a40;
+  border-color: #4e565d;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.user-modal .btn-dark:hover {
+  background-color: #000000;
+  border-color: #333;
 }

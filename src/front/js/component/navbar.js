@@ -26,11 +26,19 @@ export const Navbar = () => {
     };
 
     const handleLogout = () => {
+        // Eliminar el token, el nombre de usuario y los datos del registro del sessionStorage
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user_name");
+        sessionStorage.removeItem("signup_email");
+        sessionStorage.removeItem("signup_password");
+        
+        // Cambiar el estado de inicio de sesión
         setLoggedIn(false);
-        navigate("/"); // Redirige a la página principal después de cerrar sesión
+        
+        // Redirigir a la página principal
+        navigate("/");
     };
+    
 
     return (
         <>

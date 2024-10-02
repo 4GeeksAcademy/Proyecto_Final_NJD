@@ -18,16 +18,30 @@ export const SignupUsuario = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        const savedEmail = sessionStorage.getItem("signup_email");
-        if (savedEmail) {
-            setFormData((prevData) => ({
-                ...prevData,
-                email: savedEmail,
-            }));
-        }
-
-        sessionStorage.removeItem("signup_email");
+        const resetFormData = () => {
+            setFormData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                repeatPassword: "",
+                phone: "",
+            });
+            setErrorMessage("");
+            setSuccessMessage("");  // Limpiamos el mensaje de éxito al cerrar el modal
+        };
+    
+        const signupModalElement = document.getElementById("signupModal");
+    
+        // Limpiar el formulario cuando se cierra el modal
+        signupModalElement.addEventListener('hidden.bs.modal', resetFormData);
+    
+        return () => {
+            // Eliminar el listener cuando el componente se desmonte
+            signupModalElement.removeEventListener('hidden.bs.modal', resetFormData);
+        };
     }, []);
+    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -74,6 +88,7 @@ export const SignupUsuario = () => {
                     const signupModal = document.getElementById("signupModal");
                     const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
                     signupModalInstance.hide();
+                    setSuccessMessage("");  // Aquí también limpiamos el mensaje
 
                     // Abrir el modal de login usando Bootstrap
                     const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
@@ -95,7 +110,18 @@ export const SignupUsuario = () => {
                     icon: "warning",
                     confirmButtonText: "Aceptar",
                 }).then(() => {
-                    navigate("/login_usuario");
+
+                     // Guardar email y password en sessionStorage
+                    sessionStorage.setItem("signup_email", formData.email);
+                    sessionStorage.setItem("signup_password", formData.password);
+
+                    const signupModal = document.getElementById("signupModal");
+                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
+                    signupModalInstance.hide();
+
+                    // Abrir el modal de login usando Bootstrap
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
                 });
             } else {
                 const errorData = await response.json();
@@ -126,6 +152,7 @@ export const SignupUsuario = () => {
                         name="firstName"
                         value={formData.firstName}
                         onChange={handleChange}
+                        placeholder="Nombre"
                         required
                     />
                 </div>
@@ -139,6 +166,7 @@ export const SignupUsuario = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
+                         placeholder="Apellidos"
                         required
                     />
                 </div>
@@ -152,6 +180,7 @@ export const SignupUsuario = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
+                         placeholder="example@correo.com"
                         required
                     />
                 </div>
@@ -165,6 +194,7 @@ export const SignupUsuario = () => {
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
+                        placeholder="Escribe tu contraseña"
                         required
                     />
                 </div>
@@ -178,6 +208,7 @@ export const SignupUsuario = () => {
                         name="repeatPassword"
                         value={formData.repeatPassword}
                         onChange={handleChange}
+                        placeholder="Repite tu contraseña"
                         required
                     />
                 </div>
@@ -191,6 +222,7 @@ export const SignupUsuario = () => {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
+                        placeholder="Número de teléfono"
                         required
                     />
                 </div>
