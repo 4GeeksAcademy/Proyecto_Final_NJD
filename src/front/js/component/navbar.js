@@ -1,22 +1,44 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom"; // Asegúrate de importar 'useNavigate'
 import logoImage from "../../img/logoblanco.png";
+import { LoginUsuario } from "./login_usuario";
+import { SignupUsuario } from "./signup_usuario"; // Importamos el componente SignupUsuario
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 
-export const Navbar = ({ user, favoritosCount = 0, favoritos = [], eliminarFavorito }) => {
-    const location = useLocation();
-    const [showFavoritesModal, setShowFavoritesModal] = useState(false);
-    const [showUserModal, setShowUserModal] = useState(false);
+export const Navbar = () => {
+    const [loggedIn, setLoggedIn] = useState(false);
+    const [userName, setUserName] = useState("");
+    const navigate = useNavigate(); // Añadir hook de navegación
 
-    const handleShowFavoritesModal = () => setShowFavoritesModal(true);
-    const handleCloseFavoritesModal = () => setShowFavoritesModal(false);
+    useEffect(() => {
+        // Revisamos si hay un token y un nombre de usuario en sessionStorage
+        const token = sessionStorage.getItem("token");
+        const storedUserName = sessionStorage.getItem("user_name");
+        if (token && storedUserName) {
+            setLoggedIn(true);
+            setUserName(storedUserName);
+        }
+    }, []);
 
-    const handleShowUserModal = () => setShowUserModal(true);
-    const handleCloseUserModal = () => setShowUserModal(false);
-
-    const eliminarReserva = (reservaId) => {
-        console.log(`Reserva ${reservaId} eliminada`);
+    const handleLogin = (userName) => {
+        setUserName(userName);
+        setLoggedIn(true);
     };
+
+    const handleLogout = () => {
+        // Eliminar el token, el nombre de usuario y los datos del registro del sessionStorage
+        sessionStorage.removeItem("token");
+        sessionStorage.removeItem("user_name");
+        sessionStorage.removeItem("signup_email");
+        sessionStorage.removeItem("signup_password");
+        
+        // Cambiar el estado de inicio de sesión
+        setLoggedIn(false);
+        
+        // Redirigir a la página principal
+        navigate("/");
+    };
+    
 
     return (
         <>
@@ -27,20 +49,13 @@ export const Navbar = ({ user, favoritosCount = 0, favoritos = [], eliminarFavor
                             <img src={logoImage} alt="Logo" />
                         </span>
                     </Link>
-
                     <div className="ml-auto nav-links">
-                        {location.pathname === "/private" ? (
+                        {loggedIn ? (
                             <>
-                                <button className="btn btn-elegant" onClick={handleShowFavoritesModal}>
-                                    Favoritos ({favoritosCount})
+                                <span className="navbar-text">Hola {userName}</span>
+                                <button className="btn btn-secondary ml-2" onClick={handleLogout}>
+                                    Cerrar Sesión
                                 </button>
-                                <span
-                                    className="navbar-text ms-3"
-                                    style={{ cursor: "pointer", color: "#f1c40f", fontWeight: "bold" }}
-                                    onClick={handleShowUserModal}
-                                >
-                                    {user?.name}
-                                </span>
                             </>
                         ) : (
                             <>
@@ -56,84 +71,35 @@ export const Navbar = ({ user, favoritosCount = 0, favoritos = [], eliminarFavor
                 </div>
             </nav>
 
-
-            {/* Modal de Favoritos */}
-            {showFavoritesModal && (
-                <div className="modal fade show d-block " id="favoritesModal" tabIndex="-1" role="dialog" aria-labelledby="favoritesModalLabel" aria-hidden="true">
-                    <div className="modal-dialog" role="document">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title" id="favoritesModalLabel">Tus Favoritos</h5>
-
-                            </div>
-                            <div className="modal-body-fav">
-                                {favoritos.length === 0 ? (
-                                    <p>No tienes favoritos aún.</p>
-                                ) : (
-                                    <ul className="list-group">
-                                        {favoritos.map(fav => (
-                                            <li key={fav.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                                <span>{fav.name}</span>
-                                                <button className="btn btn-danger btn-sm" onClick={() => eliminarFavorito(fav.id)}>Eliminar</button>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-secondary" onClick={handleCloseFavoritesModal}>Cerrar</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Modal de Usuario */}
-            {showUserModal && (
-                <div className="user-modal-container">
-                    <div className="modal-content user-modal"> {/* Asegúrate que las clases sean correctas */}
+            {/* Modal LOGIN */}
+            <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
                         <div className="modal-header">
-                            <h5 className="modal-title" id="userModalLabel">Información de Usuario</h5>
-                            <button type="button" className="close" aria-label="Close" onClick={handleCloseUserModal}>
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <h5 className="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <div className="user-info-section">
-                                <p><strong>Nombre:</strong> {user?.name}</p>
-                                <div className="form-group">
-                                    <label htmlFor="email"><strong>Correo electrónico</strong></label>
-                                    <input type="email" className="form-control" id="email" defaultValue="daria@example.com" />
-                                </div>
-                                <div className="form-group">
-                                    <label htmlFor="phone"><strong>Teléfono</strong></label>
-                                    <input type="tel" className="form-control" id="phone" defaultValue="+34 645 28 79 37" />
-                                </div>
-                            </div>
-                            <div className="reservas-section">
-                                <label htmlFor="reservas"><strong>Tus reservas</strong></label>
-                                <ul className="list-group">
-                                    <li className="list-group-item d-flex justify-content-between align-items-center">
-                                        Reserva 1
-                                        <button className="btn btn-outline-danger btn-sm" onClick={() => eliminarReserva(1)}>Eliminar</button>
-                                    </li>
-                                    <li className="list-group-item d-flex justify-content-between align-items-center">
-                                        Reserva 2
-                                        <button className="btn btn-outline-danger btn-sm" onClick={() => eliminarReserva(2)}>Eliminar</button>
-                                    </li>
-                                    <li className="list-group-item d-flex justify-content-between align-items-center">
-                                        Reserva 3
-                                        <button className="btn btn-outline-danger btn-sm" onClick={() => eliminarReserva(3)}>Eliminar</button>
-                                    </li>
-                                </ul>
-                            </div>
-                            <button className="btn btn-dark mt-3"><strong>Guardar cambios</strong></button>
+                            <LoginUsuario onLogin={handleLogin} /> {/* Pasamos la función handleLogin */}
                         </div>
                     </div>
                 </div>
-            )}
+            </div>
 
-
+            {/* Modal SIGNUP */}
+            <div className="modal fade" id="signupModal" tabIndex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+                <div className="modal-dialog">
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <h5 className="modal-title" id="signupModalLabel">Registro</h5>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div className="modal-body">
+                            <SignupUsuario /> {/* Usamos el componente SignupUsuario */}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </>
     );
 };
