@@ -11,6 +11,7 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch"; 
+import { RestaurantDetail } from "./pages/restaurantDetail"; 
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -31,7 +32,8 @@ const Layout = () => {
                         {/* Cambia el componente Restaurantes por RestaurantSearch */}
                         <Route element={<RestaurantSearch />} path="/restaurantes/:tipo" />
 
-                        
+                        <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
+
 
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
