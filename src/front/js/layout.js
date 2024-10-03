@@ -12,6 +12,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch";
 import PrivateView from "./pages/privateView"; 
+import { RegistroRestaurante } from "./pages/registro_restaurante"; // Nueva importación
 
 const Layout = () => {
     const [user, setUser] = useState({ name: "Daria" }); // Simulación de un usuario logueado
@@ -25,7 +26,6 @@ const Layout = () => {
         <div style={{background:'linear-gradient(to left, #2c2c2c, #6a6a6a)'}}>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
-                    
                     <Navbar user={user} favoritosCount={favoritos.length} />
                     <Routes>
                         <Route element={<Home />} path="/" />
@@ -33,6 +33,9 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<RestaurantSearch />} path="/restaurantes/:tipo" />
+                        
+                        {/* Nueva ruta para el registro de restaurantes */}
+                        <Route element={<RegistroRestaurante />} path="/registro_restaurante" />
 
                         {/* Vista privada */}
                         <Route element={<PrivateView user={user} setFavoritos={setFavoritos} favoritos={favoritos} />} path="/private" />
