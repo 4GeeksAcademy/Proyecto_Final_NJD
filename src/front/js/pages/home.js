@@ -1,7 +1,6 @@
 import React, { useRef } from "react";
 import "../../styles/home.css";
 import { Link } from "react-router-dom"; // Importamos Link para manejar la navegación
-
 export const Home = () => {
 	const scrollContainerRef = useRef(null);
 
@@ -60,6 +59,7 @@ export const Home = () => {
 
 	return (
 		<div>
+			<div className="container-background"></div>
 			<div className="image-header">
 				<div className="overlay">
 					<h1 className="text-white">¡Bienvenido a Hoy No Cocino!</h1>
@@ -191,110 +191,6 @@ export const Home = () => {
 					>
 						Únete a nosotros. Regístrate
 					</button>
-				</div>
-			</div>
-
-			{/* Modal de Registro */}
-			<div
-				className="modal fade"
-				id="signupModal"
-				tabIndex="-1"
-				aria-labelledby="signupModalLabel"
-				aria-hidden="true"
-			>
-				<div className="modal-dialog">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h5 className="modal-title" id="signupModalLabel">
-								Registro
-							</h5>
-							<button
-								type="button"
-								className="btn-close"
-								data-bs-dismiss="modal"
-								aria-label="Close"
-							></button>
-						</div>
-						<div className="modal-body">
-							<form onSubmit={handleSubmit}>
-								<div className="mb-3">
-									<label htmlFor="firstName" className="form-label">
-										Nombre
-									</label>
-									<input
-										type="text"
-										className="form-control"
-										id="firstName"
-										placeholder="Tu nombre"
-										required
-									/>
-								</div>
-								<div className="mb-3">
-									<label htmlFor="lastName" className="form-label">
-										Apellidos
-									</label>
-									<input
-										type="text"
-										className="form-control"
-										id="lastName"
-										placeholder="Tus apellidos"
-										required
-									/>
-								</div>
-								<div className="mb-3">
-									<label htmlFor="email" className="form-label">
-										Correo electrónico
-									</label>
-									<input
-										type="email"
-										className="form-control"
-										id="email"
-										placeholder="example@correo.com"
-										required
-									/>
-								</div>
-								<div className="mb-3">
-									<label htmlFor="password" className="form-label">
-										Contraseña
-									</label>
-									<input
-										type="password"
-										className="form-control"
-										id="password"
-										placeholder="Contraseña"
-										required
-									/>
-								</div>
-								<div className="mb-3">
-									<label htmlFor="repeat-password" className="form-label">
-										Repetir contraseña
-									</label>
-									<input
-										type="password"
-										className="form-control"
-										id="repeat-password"
-										placeholder="Repite la contraseña"
-										required
-									/>
-								</div>
-								<div className="mb-3">
-									<label htmlFor="phone" className="form-label">
-										Teléfono
-									</label>
-									<input
-										type="tel"
-										className="form-control"
-										id="phone"
-										placeholder="+34 645 28 79 37"
-										required
-									/>
-								</div>
-								<button type="submit" className="btn btn-primary">
-									Registrarse
-								</button>
-							</form>
-						</div>
-					</div>
 				</div>
 			</div>
 		</div>

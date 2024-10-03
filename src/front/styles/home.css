@@ -65,10 +65,24 @@ footer {
     on that page only (the ones not reused in other pages).
 */
 /* Contenedor de la imagen de fondo */
+
+
+.container-background {
+  height: 150px;
+  background: linear-gradient(to left, #2c2c2c, #6a6a6a);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  padding: 20px;
+  box-shadow: none;
+}
+
+
+
 .image-header {
     width: 100vw;
-    height: 400px; /* Tamaño de la imagen reducido */
-    background-image: url('https://media.istockphoto.com/id/1361899698/es/foto/juego-de-cubiertos-dorados-con-plato-oscuro.jpg?s=612x612&w=0&k=20&c=uNXbTbbHaxsZZG4URIU08GEe9szaJUlvP0lJx6AAtL8=');
+    height: 600px; /* Tamaño de la imagen reducido */
+    background-image: url("https://i.ibb.co/vB5GRtW/vajilla.png");
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -92,12 +106,29 @@ footer {
   
   /* Sección de scroll con cards de cocina */
   .cuisine-scroll {
-    padding: 50px 20px;
-    background-color: #fff;
+    padding: 25px 20px;
+    background: linear-gradient(to left, #2c2c2c, #6a6a6a);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     text-align: center;
   }
   
-  
+
+    box-shadow: none;
+    padding-bottom: 75px;
+}
+
+  h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+  }
+
+  .cuisine-scroll h2 {
+    color: white !important;
+}
+
+
   
   /* Scroll lateral de las cards */
   .scroll-wrapper {

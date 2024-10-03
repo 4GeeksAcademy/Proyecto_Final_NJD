@@ -10,6 +10,15 @@ from api.models import db
 from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
+from flask_jwt_extended import JWTManager
+from datetime import timedelta
+
+from flask_cors import CORS  # <-- Importar CORS
+
+#Cloudinary:
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 
 # from models import Person
 
@@ -18,6 +27,8 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+CORS(app)  # <-- Aquí habilitas CORS para todas las rutas
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -28,8 +39,23 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['JWT_SECRET_KEY'] = 'nelvb'  # Clave secreta para JWT
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  # El token expira en 24 horas
+
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+
+# Inicializar JWTManager
+
+jwt = JWTManager(app)
+
+
+# Configuración de Cloudinary
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+)
 
 # add the admin
 setup_admin(app)
