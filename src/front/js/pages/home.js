@@ -62,8 +62,8 @@ export const Home = () => {
 			<div className="container-background"></div>
 			<div className="image-header">
 				<div className="overlay">
-					<h1>¡Bienvenido a Hoy No Cocino!</h1>
-					<p>Encuentra los mejores restaurantes y realiza tus reservas de forma rápida y sencilla.</p>
+					<h1 className="text-white">¡Bienvenido a Hoy No Cocino!</h1>
+					<p className="text-white">Encuentra los mejores restaurantes y realiza tus reservas de forma rápida y sencilla.</p>
 				</div>
 			</div>
 

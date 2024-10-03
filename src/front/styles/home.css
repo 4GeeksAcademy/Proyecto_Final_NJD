@@ -102,15 +102,7 @@ footer {
     background: rgba(0, 0, 0, 0.4);
   }
   
-  h1 {
-    font-size: 3rem;
-    color: white;
-  }
   
-  p {
-    font-size: 1.5rem;
-    color: white;
-  }
   
   /* Sección de scroll con cards de cocina */
   .cuisine-scroll {
@@ -120,6 +112,9 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     text-align: center;
+  }
+  
+
     box-shadow: none;
     padding-bottom: 75px;
 }
@@ -132,6 +127,7 @@ footer {
   .cuisine-scroll h2 {
     color: white !important;
 }
+
 
   
   /* Scroll lateral de las cards */
@@ -224,7 +220,7 @@ footer {
     background-color: rgba(0, 0, 0, 0.6);
   }
 
-
+/* //JUMBOTRON// */
   .jumbotron-section {
     position: relative;
     width: 90%;
@@ -325,97 +321,6 @@ footer {
     }
   }
 
-  .modal-content {
-    background-color: #f5f5f5;
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  }
-  
-  .modal-header {
-    justify-content: center;
-    border-bottom: none;
-    padding: 2rem;
-    background: linear-gradient(90deg, #4b4b4b, #222);
-    color: #ffffff;
-    text-align: center;
-  }
-  
-  .modal-title {
-    font-size: 1.8rem;
-    font-weight: bold;
-    letter-spacing: 1px;
-  }
-  
-  .btn-close {
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
-    background: transparent;
-    border: none;
-    font-size: 1.5rem;
-  }
-  
-  .btn-close:hover {
-    opacity: 0.7;
-  }
-  
-  .modal-body {
-    padding: 2.5rem;
-  }
-  
-  .modal-body .form-label {
-    font-weight: 500;
-    color: #333;
-  }
-  
-  .modal-body input {
-    border: none;
-    border-bottom: 2px solid #ccc;
-    border-radius: 0;
-    padding: 0.75rem;
-    width: 100%;
-    background-color: transparent;
-    box-shadow: none;
-    transition: border-color 0.3s ease;
-    font-size: 1rem;
-  }
-  
-  .modal-body input:focus {
-    border-bottom: 2px solid #333;
-    outline: none;
-  }
-  
-  .modal-footer {
-    border-top: none;
-    padding: 1.5rem;
-    background-color: #f5f5f5;
-    text-align: center;
-  }
-  
-  .btn-primary {
-    background: #222;
-    border: none;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-    transition: background-color 0.3s ease;
-  }
-  
-  .btn-primary:hover {
-    background-color: #4b4b4b;
-  }
-  
-  .form-control {
-    margin-bottom: 1.5rem;
-    font-size: 1.1rem;
-    color: #333;
-  }
-  
-  .form-control::placeholder {
-    color: #999;
-  }
-  
+
+
   
