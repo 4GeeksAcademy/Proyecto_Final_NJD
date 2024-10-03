@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
+import { Context } from "../store/appContext";
 
-const ReservationModal = ({ isOpen, onClose, crearReserva }) => {
+const ReservationModal = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
+  const {actions, store} = useContext(Context)
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
@@ -25,21 +27,9 @@ const handleChange = (e) => {
 
 const handleSubmit = (e) => {
   e.preventDefault(); 
-  crearReserva(data); 
+  actions.crearReserva(formData); 
   onClose();
 };
-
-const data = {
-  nombre: data.nombre,
-  apellido: data.apellido,
-  telefono: data.telefono,
-  adultos: data.adultos,
-  niños: data.niños,
-  tronas: data.trona,
-  fecha: data.fecha_reserva,
-  hora: data.hora,
-};
-
 
 
 // Maneja el clic en el fondo del modal
@@ -69,37 +59,37 @@ return (
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="firstName" className="form-label">Nombre</label>
-                <input type="text" className="form-control" id="nombre" value={data.nombre} onChange={handleChange} required />
+                <input type="text" className="form-control" name="nombre" id="nombre" value={formData.nombre} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="lastName" className="form-label">Apellidos</label>
-                <input type="text" className="form-control" id="apellido" value={data.apellido} onChange={handleChange} required />
+                <input type="text" className="form-control" name="apellido" id="apellido" value={formData.apellido} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="phone" className="form-label">Número de teléfono</label>
-                <input type="tel" className="form-control" id="telefono" value={data.telefono} onChange={handleChange} required />
+                <input type="tel" className="form-control" name="telefono" id="telefono" value={formData.telefono} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="numGuests" className="form-label">Número de comensales</label>
-                <input type="number" className="form-control" id="adultos" value={data.adultos} onChange={handleChange} required />
+                <input type="number" className="form-control" name="adultos" id="adultos" value={formData.adultos} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="numKids" className="form-label">Número de niños</label>
-                <input type="number" className="form-control" id="niños" value={data.niños} onChange={handleChange} />
+                <input type="number" className="form-control" name="niños" id="niños" value={formData.niños} onChange={handleChange} />
               </div>
               <div className="mb-3">
                 <label htmlFor="numHighchairs" className="form-label">Número de tronas</label>
-                <input type="number" className="form-control" id="tronas" value={data.tronas} onChange={handleChange}/>
+                <input type="number" className="form-control" name="tronas" id="tronas" value={formData.tronas} onChange={handleChange}/>
               </div>
               <div className="mb-3">
                 <label htmlFor="date" className="form-label">Fecha</label>
-                <input type="date" className="form-control" id="fecha" value={data.fecha} onChange={handleChange}required />
+                <input type="date" className="form-control" name="fecha" id="fecha" value={formData.fecha} onChange={handleChange}required />
               </div>
               <div className="mb-3">
                 <label htmlFor="time" className="form-label">Hora Llegada</label>
-                <input type="time" className="form-control" id="hora" value={data.hora} onChange={handleChange} required />
+                <input type="time" className="form-control" name="hora" id="hora" value={formData.hora} onChange={handleChange} required />
               </div>
-              <button onClick={handleSubmit} type="submit" className="btn btn-primary" >Enviar</button>
+              <button type="submit" className="btn btn-primary">Enviar</button>
             </form>
           </div>
         </div>
