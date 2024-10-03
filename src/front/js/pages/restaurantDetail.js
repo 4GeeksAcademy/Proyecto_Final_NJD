@@ -1,8 +1,46 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
-const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
+const ReservationModal = ({ isOpen, onClose, crearReserva }) => {
   if (!isOpen) return null;
+
+  const [formData, setFormData] = useState({
+    nombre: '',
+    apellido: '',
+    telefono: '',
+    adultos: 2,
+    niños: 2,
+    tronas: 1,
+    fecha: '',
+    hora: ''
+})
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData({
+    ...formData,       
+    [name]: value      
+  });
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault(); 
+  crearReserva(data); 
+  onClose();
+};
+
+const data = {
+  nombre: data.nombre,
+  apellido: data.apellido,
+  telefono: data.telefono,
+  adultos: data.adultos,
+  niños: data.niños,
+  tronas: data.trona,
+  fecha: data.fecha_reserva,
+  hora: data.hora,
+};
+
+
 
 // Maneja el clic en el fondo del modal
 const handleBackdropClick = (e) => {
@@ -28,47 +66,47 @@ return (
             <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
           </div>
           <div className="modal-body">
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit}>
               <div className="mb-3">
                 <label htmlFor="firstName" className="form-label">Nombre</label>
-                <input type="text" className="form-control" id="firstName" required />
+                <input type="text" className="form-control" id="nombre" value={data.nombre} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="lastName" className="form-label">Apellidos</label>
-                <input type="text" className="form-control" id="lastName" required />
+                <input type="text" className="form-control" id="apellido" value={data.apellido} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="phone" className="form-label">Número de teléfono</label>
-                <input type="tel" className="form-control" id="phone" required />
+                <input type="tel" className="form-control" id="telefono" value={data.telefono} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="numGuests" className="form-label">Número de comensales</label>
-                <input type="number" className="form-control" id="numGuests" required />
+                <input type="number" className="form-control" id="adultos" value={data.adultos} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="numKids" className="form-label">Número de niños</label>
-                <input type="number" className="form-control" id="numKids" />
+                <input type="number" className="form-control" id="niños" value={data.niños} onChange={handleChange} />
               </div>
               <div className="mb-3">
                 <label htmlFor="numHighchairs" className="form-label">Número de tronas</label>
-                <input type="number" className="form-control" id="numHighchairs" />
+                <input type="number" className="form-control" id="tronas" value={data.tronas} onChange={handleChange}/>
               </div>
               <div className="mb-3">
                 <label htmlFor="date" className="form-label">Fecha</label>
-                <input type="date" className="form-control" id="date" required />
+                <input type="date" className="form-control" id="fecha" value={data.fecha} onChange={handleChange}required />
               </div>
               <div className="mb-3">
                 <label htmlFor="time" className="form-label">Hora Llegada</label>
-                <input type="time" className="form-control" id="timeArrive" required />
+                <input type="time" className="form-control" id="hora" value={data.hora} onChange={handleChange} required />
               </div>
-              <button type="submit" className="btn btn-primary">Enviar</button>
+              <button onClick={handleSubmit} type="submit" className="btn btn-primary" >Enviar</button>
             </form>
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
 
         
@@ -269,7 +307,6 @@ export const RestaurantDetail = () => {
     </div>
   );
 };
-
 
 
 
