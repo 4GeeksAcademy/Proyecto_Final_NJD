@@ -11,6 +11,7 @@ from datetime import timedelta
 from flask_cors import CORS  # <-- Importar CORS
 #API Email:
 from flask_mail import Mail, Message
+
 #Cloudinary:
 import cloudinary
 import cloudinary.uploader
@@ -118,44 +119,6 @@ def serve_any_other_file(path):
     response.cache_control.max_age = 0  # avoid cache memory
     return response
 
-#API email/Enpoint para que maneje el envío del correo de confirmación de reserva
-# Imports (ya presentes en tu app.py)
-import os
-from flask import Flask, request, jsonify, send_from_directory
-from flask_mail import Mail, Message
-from api.models import db
-from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager
-from datetime import timedelta
-from flask_cors import CORS
-
-# Configuración de la app
-app = Flask(__name__)
-CORS(app)  # Habilitar CORS
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'nelvb'  # Clave secreta para JWT
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
-
-# Configuración del correo electrónico
-app.config.update(dict(
-    DEBUG=False,
-    MAIL_SERVER='smtp.gmail.com',
-    MAIL_PORT=587,
-    MAIL_USE_TLS=True,
-    MAIL_USE_SSL=False,
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),  # Asegúrate de tener esto en tu .env
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD")   # Asegúrate de tener esto en tu .env
-))
-
-mail = Mail(app)  # Inicializar extensión de Flask para manejar emails
-
-# Inicialización de la base de datos y migraciones
-db.init_app(app)
-MIGRATE = Migrate(app, db)
-
-# Inicialización de JWT
-jwt = JWTManager(app)
-
 # Endpoint de prueba para enviar correo
 @app.route('/send-mail', methods=['POST'])
 def send_mail():
@@ -199,3 +162,4 @@ def send_mail():
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
+
