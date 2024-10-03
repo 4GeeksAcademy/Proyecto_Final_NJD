@@ -82,7 +82,7 @@ export const SignupRestaurante = () => {
                     const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
                     if (registerModalInstance) registerModalInstance.hide();  // Aseguramos que se cierra el modal de registro
 
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginRestaurantModal"));
                     loginModal.show();
                 });
 

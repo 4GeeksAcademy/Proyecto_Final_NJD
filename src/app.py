@@ -28,8 +28,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-CORS(app)  # <-- Aquí habilitas CORS para todas las rutas
-
+CORS(app, resources={r"/api/*": {"origins": "https://humble-space-fortnight-v6pxgv7xj79xfp77p-3000.app.github.dev"}})
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
 if db_url is not None:

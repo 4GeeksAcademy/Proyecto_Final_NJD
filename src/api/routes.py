@@ -7,7 +7,9 @@ from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion,
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
-from werkzeug.security import check_password_hash  
+from werkzeug.security import check_password_hash 
+# Crear un restaurante (POST /restaurantes)
+from werkzeug.security import generate_password_hash 
 
 import re  # Para validación de email, contraseña y teléfono
 #Cloudinary
@@ -46,6 +48,7 @@ def is_valid_phone(phone):
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
+    
     email = body.get('email')
     password = body.get('password')
     nombres = body.get('nombres')
@@ -206,8 +209,7 @@ def delete_user(usuario_id):
 
     return jsonify({'msg': 'Usuario eliminado con éxito'}), 200
 
-# Crear un restaurante (POST /restaurantes)
-from werkzeug.security import generate_password_hash
+
 
 @api.route('/signup/restaurante', methods=['POST'])
 def signup_restaurante():
@@ -226,8 +228,8 @@ def signup_restaurante():
     reservas_por_dia = body.get('reservas_por_dia')
     categorias_id = body.get('categorias_id')
 
-    # Validaciones de campos obligatorios
-    if not not email or not password:
+   # Validaciones de campos obligatorios para el registro
+    if not (nombre and email and password):
         return jsonify({'msg': 'Faltan datos obligatorios'}), 400
 
     # Verificar si el restaurante ya existe
@@ -261,15 +263,16 @@ def signup_restaurante():
 
 
 # Implementar la ruta /login/restaurante para iniciar sesión de restaurantes
-from flask_jwt_extended import create_access_token, create_refresh_token
 
 @api.route('/login/restaurante', methods=['POST'])
 def login_restaurante():
     body = request.get_json()
+    print('RESPONSE', body)
     email = body.get('email')
     password = body.get('password')
 
     if not email or not password:
+        print('CREDENCIALES INVALIDAS')
         return jsonify({'msg': 'Credenciales inválidas'}), 401
 
     # Verificar si el restaurante existe en la base de datos
@@ -284,6 +287,8 @@ def login_restaurante():
     # Generar el Access Token y Refresh Token
     access_token = create_access_token(identity=restaurante.id)
     refresh_token = create_refresh_token(identity=restaurante.id)
+
+    print('INICIO', email)
 
     return jsonify({
         'access_token': access_token,
