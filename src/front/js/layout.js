@@ -2,17 +2,15 @@ import React, { useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
-
 import { Home } from "./pages/home";
 import { Demo } from "./pages/demo";
 import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
-
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
-import { RestaurantSearch } from "./pages/restaurantSearch";
+import { RestaurantSearch } from "./pages/restaurantSearch"; 
+import { RestaurantDetail } from "./pages/restaurantDetail"; 
 import PrivateView from "./pages/privateView"; 
-import { RegistroRestaurante } from "./pages/registro_restaurante"; // Nueva importación
 
 const Layout = () => {
     const [user, setUser] = useState({ name: "Daria" }); // Simulación de un usuario logueado
@@ -36,10 +34,9 @@ const Layout = () => {
                         
                         {/* Nueva ruta para el registro de restaurantes */}
                         <Route element={<RegistroRestaurante />} path="/registro_restaurante" />
-
+                        <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
                         {/* Vista privada */}
                         <Route element={<PrivateView user={user} setFavoritos={setFavoritos} favoritos={favoritos} />} path="/private" />
-
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />
