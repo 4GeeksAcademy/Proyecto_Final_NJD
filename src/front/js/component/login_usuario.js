@@ -36,8 +36,6 @@ export const LoginUsuario = ({ onLogin }) => {
     };
 }, []);
 
-    
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
