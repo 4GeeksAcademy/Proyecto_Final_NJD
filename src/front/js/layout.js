@@ -11,6 +11,7 @@ import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch"; 
 import { RestaurantDetail } from "./pages/restaurantDetail"; 
 import PrivateView from "./pages/privateView"; 
+import { RegistroRestaurante } from "./pages/registro_restaurante"; // Asegúrate de que la ruta sea correcta
 
 const Layout = () => {
     const [user, setUser] = useState({ name: "Daria" }); // Simulación de un usuario logueado
