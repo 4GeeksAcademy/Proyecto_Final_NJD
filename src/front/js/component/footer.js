@@ -24,7 +24,7 @@ export const Footer = () => (
 
 				<div className="footer-section">
 					<h4>Contáctanos</h4>
-					<p>Email: contacto@hoynococino.es</p>
+					<p>Email: hoynococino.ceo@gmail.com</p>
 					<p>Teléfono: +123 456 789</p>
 				</div>
 

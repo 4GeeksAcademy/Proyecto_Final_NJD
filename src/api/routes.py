@@ -573,3 +573,5 @@ def upload_image():
             "url": upload_result['secure_url']}), 200
     except Exception as e:
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
+    
+
