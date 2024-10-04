@@ -64,10 +64,6 @@
 //                 <label htmlFor="time" className="form-label-booking">Hora Llegada</label>
 //                 <input type="time" className="form-control-booking" id="time" required />
 //               </div>
-//               <div className="mb-3">
-//                 <label htmlFor="time" className="form-label-booking">Hora Salida</label>
-//                 <input type="time" className="form-control-booking" id="time" required />
-//               </div>
 //               <button type="submit" className="btn btn-primary">Enviar</button>
 //             </form>
 //           </div>
@@ -249,7 +245,11 @@
 //         <button onClick={openModal} className="open-booking-button">RESERVA AHORA</button>
 //       </div>
       
+//       <div className="menu-image-container">
+//         <img src="https://restauracionnews.com/wp-content/uploads/2022/09/carta-5.jpg" alt="Carta Menú"/>
+//       </div> 
 
+      
 //       <ReservationModal
 //       isOpen={isBookingModalOpen}
 //       onClose={closeModal}
@@ -276,7 +276,6 @@
 //     </div>
 //   );
 // };
-
 
 
 
@@ -345,10 +344,6 @@ return (
               </div>
               <div className="mb-3">
                 <label htmlFor="time" className="form-label-booking">Hora Llegada</label>
-                <input type="time" className="form-control-booking" id="time" required />
-              </div>
-              <div className="mb-3">
-                <label htmlFor="time" className="form-label-booking">Hora Salida</label>
                 <input type="time" className="form-control-booking" id="time" required />
               </div>
               <button type="submit" className="btn btn-primary">Enviar</button>

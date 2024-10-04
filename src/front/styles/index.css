@@ -398,8 +398,8 @@
 }
 
 .button-opinions-container {
-  display: flex; /* Permite alinear los botones en una fila */
-  gap: 10px; /* Espacio entre los botones */
+  display: flex; 
+  gap: 10px; 
 }
 
 .button-opinions1,
