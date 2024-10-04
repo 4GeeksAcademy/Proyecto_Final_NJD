@@ -12,9 +12,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 		actions: {
 
 			// CREAR RESERVA
-			crearReserva: async function (usuario_id, data) {
-				const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
-				const token = localStorage.getItem("token")
+			crearReserva: async function (data) {
+				const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
+				const token = sessionStorage.getItem("token")
+				console.log(token)
 				try {
 					const response = await fetch(url, {
 						method: 'POST',
@@ -26,6 +27,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					});
 			
 					if (response.ok) {
+						console.log("hola mundo")
 						const result = await response.json();
 						console.log("Reserva realizada con éxito:", result);
 						alert("Reserva realizada con éxito");

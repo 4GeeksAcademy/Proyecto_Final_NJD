@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-const ReservationModal = ({ isOpen, onClose }) => {
+const ReservationModal = ({ isOpen, onClose, restaurantes_id }) => {
   if (!isOpen) return null;
 
   const {actions, store} = useContext(Context)
@@ -12,9 +12,10 @@ const ReservationModal = ({ isOpen, onClose }) => {
     telefono: '',
     adultos: 2,
     niños: 2,
-    tronas: 1,
-    fecha: '',
-    hora: ''
+    trona: 1,
+    fecha_reserva: '',
+    hora: '',
+    restaurante_id: restaurantes_id
 })
 
 const handleChange = (e) => {
@@ -79,11 +80,11 @@ return (
               </div>
               <div className="mb-3">
                 <label htmlFor="numHighchairs" className="form-label">Número de tronas</label>
-                <input type="number" className="form-control" name="tronas" id="tronas" value={formData.tronas} onChange={handleChange}/>
+                <input type="number" className="form-control" name="trona" id="trona" value={formData.trona} onChange={handleChange}/>
               </div>
               <div className="mb-3">
                 <label htmlFor="date" className="form-label">Fecha</label>
-                <input type="date" className="form-control" name="fecha" id="fecha" value={formData.fecha} onChange={handleChange}required />
+                <input type="date" className="form-control" name="fecha_reserva" id="fecha" value={formData.fecha_reserva} onChange={handleChange} required />
               </div>
               <div className="mb-3">
                 <label htmlFor="time" className="form-label">Hora Llegada</label>
@@ -272,6 +273,7 @@ export const RestaurantDetail = () => {
       
 
       <ReservationModal
+      restaurantes_id={restaurant.id}
       isOpen={isBookingModalOpen}
       onClose={closeModal}
       onSubmit={handleSubmit}

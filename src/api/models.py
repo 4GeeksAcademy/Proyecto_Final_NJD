@@ -45,11 +45,11 @@ class Usuario(db.Model):
 class Restaurantes(db.Model):
         __tablename__ = 'restaurantes' 
         id = db.Column(db.Integer, primary_key=True)
-        email = db.Column(db.String(30), unique=True, nullable=False)
+        email = db.Column(db.String(30), unique=False, nullable=False)
         nombre = db.Column(db.String(30), unique=True, nullable=False)
         direccion = db.Column(db.String(40), nullable=False)
-        latitud = db.Column(db.String(20), nullable=False)
-        longitud = db.Column(db.String(20), nullable=False)
+        latitud = db.Column(db.String(20), nullable=True)
+        longitud = db.Column(db.String(20), nullable=True)
         telefono = db.Column(db.String(20), nullable=False)
         cubiertos = db.Column(db.Integer)
         cantidad_mesas = db.Column(db.Integer, nullable=False) 
