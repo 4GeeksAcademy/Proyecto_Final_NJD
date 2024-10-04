@@ -68,7 +68,7 @@ export const LoginUsuario = ({ onLogin }) => {
 
                 const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
                 if (loginModal) loginModal.hide();  // Cierra el modal de login
-                navigate('/home');  // Redirige al home
+                navigate('/private');  // Redirige a private
 
             } else if (response.status === 404) {
                 // Usuario no registrado
