@@ -279,13 +279,13 @@
 /* Contenedor principal que contiene los tres divs */
 .restaurant-detail-main-container {
   display: flex;
-  flex-wrap: wrap; /* Permite que los contenedores se muevan a la siguiente línea si es necesario */
+  flex-wrap: wrap; 
   margin: 100px 200px 0 20px;
-  gap: 10px; /* Espacio entre los divs */
+  gap: 10px; 
 }
 
 .restaurant-detail-container {
-  flex: 1; /* Ocupa el mismo ancho cada uno */
+  flex: 1; 
   max-width: 600px;
   max-height: 800px;
   margin: 50px;
@@ -300,12 +300,12 @@
   align-items: center;
   padding: 20px;
   position: relative;
-  overflow: hidden; /* Evita que el contenido, como la imagen, se salga del contenedor */
+  overflow: hidden; 
 
   /* Propiedades de la animación */
-  opacity: 0; /* El contenedor es invisible al inicio */
-  transform: translateY(-50px); /* Posición inicial fuera de la vista, por encima */
-  animation: slideDown 2s ease-out forwards; /* Duración de 1s, con suavizado al final */
+  opacity: 0; 
+  transform: translateY(-50px); 
+  animation: slideDown 2s ease-out forwards; 
 }
 
 
@@ -353,13 +353,36 @@
 }
 
 .opinions-slider {
+  position: fixed; 
+  top: 150px; /* Distancia desde la parte superior de la pantalla */
+  right: 150px; /* Distancia desde el borde derecho de la pantalla */
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px 0;
+  margin: 0; /* Elimina el margen superior e inferior */
+  z-index: 1000;
+  animation: slide-rigth 2s ease-out forwards;
+  border-left: 2px solid #f1c40f;
+}
+
+/* Animación de deslizamiento hacia arriba */
+@keyframes slide-rigth {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.opinions-text {
+  color: white;
 }
 
 .opinion-card {
+  background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 20px;
@@ -398,34 +421,98 @@
 /* BOTÓN DE RESERVA */
 
 .restaurant-detail-container2 {
-  display: flex; /* Activa el modo flexbox */
-  flex-direction: column; /* Coloca los elementos en columna */
-  align-items: center; /* Centra horizontalmente los elementos dentro del div */
-  justify-content: center; /* Centra verticalmente los elementos dentro del div */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
   width: 800px; 
   height: 400px;
-  padding: 20px; /* Espaciado interno */
-  background-color: white; /* Fondo blanco para el contenedor */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  padding: 20px; 
+  background-color: white; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   margin-top: 50px;
 }
 
 .open-booking-button {
-  background-color: #f1c40f; /* Color de fondo vibrante */
-  color: white; /* Color del texto */
-  font-size: 18px; /* Tamaño de fuente */
-  padding: 15px 30px; /* Espaciado interno */
-  border: none; /* Sin borde */
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
-  margin-top: 20px; /* Espacio entre el párrafo y el botón */
+  background-color: #f1c40f; 
+  color: white; 
+  font-size: 18px; 
+  padding: 15px 30px; 
+  border: none; 
+  border-radius: 5px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+  margin-top: 20px; 
 }
 
 .open-booking-button:hover {
-  background-color: #333; /* Color de fondo más oscuro al pasar el mouse */
+  background-color: #333; 
 }
+
+
+/* Modal Reservas. Botón de cierre */
+.btn-close-modal-booking {
+  color: #f1c40f;
+  background: none;
+  border: none;
+  font-size: 24px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.btn-close-modal-booking:hover {
+  color: red;
+}
+
+.menu-image-container {
+  position: absolute; 
+  top: 610px; 
+  left: 50%; 
+  transform: translateX(-50%); 
+  width: 850px; 
+  height: auto; 
+  transform: translateX(-50%);
+  opacity: 0;
+  animation: slide-down 1s ease-out forwards;
+}
+
+.menu-image-container img {
+  width: 100%; 
+  height: auto; 
+  display: block; 
+  border-radius: 10px;
+  box-shadow: -10px 0px 20px rgba(0, 0, 0, 0.5); 
+  transition: transform 1s cubic-bezier(0.25, 1, 0.5, 1); 
+}
+
+.menu-image-container:hover img {
+  transform: scale(1.5); 
+}
+
+
+/* Definir la animación */
+@keyframes slide-down {
+  0% {
+    transform: translate(-50%, 50px); /* Inicia fuera del área visible (debajo) */
+    opacity: 0; /* Invisible al inicio */
+  }
+  100% {
+    transform: translate(-50%, 0); /* Posición final */
+    opacity: 1; /* Se hace visible */
+  }
+}
+
+
+
+
+
+
+
+
+
 
 
 

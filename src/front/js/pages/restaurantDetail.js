@@ -1,5 +1,6 @@
 // import React, { useState, useEffect } from "react";
 // import { useParams } from "react-router-dom";
+// // import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 // const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
 //   if (!isOpen) return null;
@@ -25,45 +26,47 @@
 //         <div className="modal-content">
 //           <div className="modal-header">
 //             <h5 className="modal-title" id="reservationModalLabel">RESERVA</h5>
-//             <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+//             <button type="button" className="btn-close-modal-booking" onClick={onClose} aria-label="Close">
+//               &times;
+//             </button>
 //           </div>
 //           <div className="modal-body">
 //             <form onSubmit={onSubmit}>
 //               <div className="mb-3">
-//                 <label htmlFor="firstName" className="form-label">Nombre</label>
-//                 <input type="text" className="form-control" id="firstName" required />
+//                 <label htmlFor="firstName" className="form-label-booking">Nombre</label>
+//                 <input type="text" className="form-control-booking" id="firstName" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="lastName" className="form-label">Apellidos</label>
-//                 <input type="text" className="form-control" id="lastName" required />
+//                 <label htmlFor="lastName" className="form-label-booking">Apellidos</label>
+//                 <input type="text" className="form-control-booking" id="lastName" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="phone" className="form-label">Número de teléfono</label>
-//                 <input type="tel" className="form-control" id="phone" required />
+//                 <label htmlFor="phone" className="form-label-booking">Número de teléfono</label>
+//                 <input type="tel" className="form-control-booking" id="phone" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="numGuests" className="form-label">Número de comensales</label>
-//                 <input type="number" className="form-control" id="numGuests" required />
+//                 <label htmlFor="numGuests" className="form-label-booking">Número de comensales</label>
+//                 <input type="number" className="form-control-bookin" id="numGuests" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="numKids" className="form-label">Número de niños</label>
-//                 <input type="number" className="form-control" id="numKids" />
+//                 <label htmlFor="numKids" className="form-label-booking">Número de niños</label>
+//                 <input type="number" className="form-control-booking" id="numKids" />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="numHighchairs" className="form-label">Número de tronas</label>
-//                 <input type="number" className="form-control" id="numHighchairs" />
+//                 <label htmlFor="numHighchairs" className="form-label-booking">Número de tronas</label>
+//                 <input type="number" className="form-control-booking" id="numHighchairs" />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="date" className="form-label">Fecha</label>
-//                 <input type="date" className="form-control" id="date" required />
+//                 <label htmlFor="date" className="form-label-booking">Fecha</label>
+//                 <input type="date" className="form-control-booking" id="date" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="time" className="form-label">Hora Llegada</label>
-//                 <input type="time" className="form-control" id="time" required />
+//                 <label htmlFor="time" className="form-label-booking">Hora Llegada</label>
+//                 <input type="time" className="form-control-booking" id="time" required />
 //               </div>
 //               <div className="mb-3">
-//                 <label htmlFor="time" className="form-label">Hora Salida</label>
-//                 <input type="time" className="form-control" id="time" required />
+//                 <label htmlFor="time" className="form-label-booking">Hora Salida</label>
+//                 <input type="time" className="form-control-booking" id="time" required />
 //               </div>
 //               <button type="submit" className="btn btn-primary">Enviar</button>
 //             </form>
@@ -237,7 +240,7 @@
 //       </div>
 
 //       <div className="restaurant-detail-container2">
-//         <h1>Descripción</h1>
+//         <h2>¿Todavía no nos conoces?</h2>
 //         <p><strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad, especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo. 
 //         El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez, que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto para disfrutar de una comida íntima o una reunión con amigos.
 //         El menú ofrece una variedad de platos elaborados con ingredientes frescos y de temporada, destacando sus tapas, pescados frescos y carnes a la brasa, acompañados de una selecta carta de vinos. 
@@ -257,7 +260,7 @@
     
 //       {/* Slider de opiniones */}
 //       <div className="opinions-slider">
-//         <h5>Opiniones de nuestros comensales</h5>
+//         <h5 className="opinions-text">Opiniones de nuestros comensales</h5>
 //         <div className="opinion-card">
 //           <img src={opinions[currentIndex].photo} alt={opinions[currentIndex].name} />
 //           <h3>{opinions[currentIndex].name}</h3>
@@ -278,9 +281,9 @@
 
 
 
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+// import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
   if (!isOpen) return null;
@@ -306,41 +309,47 @@ return (
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="reservationModalLabel">RESERVA</h5>
-            <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+            <button type="button" className="btn-close-modal-booking" onClick={onClose} aria-label="Close">
+              &times;
+            </button>
           </div>
           <div className="modal-body">
             <form onSubmit={onSubmit}>
               <div className="mb-3">
-                <label htmlFor="firstName" className="form-label">Nombre</label>
-                <input type="text" className="form-control" id="firstName" required />
+                <label htmlFor="firstName" className="form-label-booking">Nombre</label>
+                <input type="text" className="form-control-booking" id="firstName" required />
               </div>
               <div className="mb-3">
-                <label htmlFor="lastName" className="form-label">Apellidos</label>
-                <input type="text" className="form-control" id="lastName" required />
+                <label htmlFor="lastName" className="form-label-booking">Apellidos</label>
+                <input type="text" className="form-control-booking" id="lastName" required />
               </div>
               <div className="mb-3">
-                <label htmlFor="phone" className="form-label">Número de teléfono</label>
-                <input type="tel" className="form-control" id="phone" required />
+                <label htmlFor="phone" className="form-label-booking">Número de teléfono</label>
+                <input type="tel" className="form-control-booking" id="phone" required />
               </div>
               <div className="mb-3">
-                <label htmlFor="numGuests" className="form-label">Número de comensales</label>
-                <input type="number" className="form-control" id="numGuests" required />
+                <label htmlFor="numGuests" className="form-label-booking">Número de comensales</label>
+                <input type="number" className="form-control-bookin" id="numGuests" required />
               </div>
               <div className="mb-3">
-                <label htmlFor="numKids" className="form-label">Número de niños</label>
-                <input type="number" className="form-control" id="numKids" />
+                <label htmlFor="numKids" className="form-label-booking">Número de niños</label>
+                <input type="number" className="form-control-booking" id="numKids" />
               </div>
               <div className="mb-3">
-                <label htmlFor="numHighchairs" className="form-label">Número de tronas</label>
-                <input type="number" className="form-control" id="numHighchairs" />
+                <label htmlFor="numHighchairs" className="form-label-booking">Número de tronas</label>
+                <input type="number" className="form-control-booking" id="numHighchairs" />
               </div>
               <div className="mb-3">
-                <label htmlFor="date" className="form-label">Fecha</label>
-                <input type="date" className="form-control" id="date" required />
+                <label htmlFor="date" className="form-label-booking">Fecha</label>
+                <input type="date" className="form-control-booking" id="date" required />
               </div>
               <div className="mb-3">
-                <label htmlFor="time" className="form-label">Hora Llegada</label>
-                <input type="time" className="form-control" id="timeArrive" required />
+                <label htmlFor="time" className="form-label-booking">Hora Llegada</label>
+                <input type="time" className="form-control-booking" id="time" required />
+              </div>
+              <div className="mb-3">
+                <label htmlFor="time" className="form-label-booking">Hora Salida</label>
+                <input type="time" className="form-control-booking" id="time" required />
               </div>
               <button type="submit" className="btn btn-primary">Enviar</button>
             </form>
@@ -514,7 +523,7 @@ export const RestaurantDetail = () => {
       </div>
 
       <div className="restaurant-detail-container2">
-        <h1>Descripción</h1>
+        <h2>¿Todavía no nos conoces?</h2>
         <p><strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad, especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo. 
         El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez, que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto para disfrutar de una comida íntima o una reunión con amigos.
         El menú ofrece una variedad de platos elaborados con ingredientes frescos y de temporada, destacando sus tapas, pescados frescos y carnes a la brasa, acompañados de una selecta carta de vinos. 
@@ -523,7 +532,11 @@ export const RestaurantDetail = () => {
         <button onClick={openModal} className="open-booking-button">RESERVA AHORA</button>
       </div>
       
+      <div className="menu-image-container">
+        <img src="https://restauracionnews.com/wp-content/uploads/2022/09/carta-5.jpg" alt="Carta Menú"/>
+      </div> 
 
+      
       <ReservationModal
       isOpen={isBookingModalOpen}
       onClose={closeModal}
@@ -534,7 +547,7 @@ export const RestaurantDetail = () => {
     
       {/* Slider de opiniones */}
       <div className="opinions-slider">
-        <h5>Opiniones de nuestros comensales</h5>
+        <h5 className="opinions-text">Opiniones de nuestros comensales</h5>
         <div className="opinion-card">
           <img src={opinions[currentIndex].photo} alt={opinions[currentIndex].name} />
           <h3>{opinions[currentIndex].name}</h3>
@@ -550,6 +563,12 @@ export const RestaurantDetail = () => {
     </div>
   );
 };
+
+
+
+
+
+
 
 
 
