@@ -42,6 +42,7 @@ class Usuario(db.Model):
             "creado": self.creado,
         }
     
+
 class Restaurantes(db.Model):
         __tablename__ = 'restaurantes' 
         id = db.Column(db.Integer, primary_key=True)
@@ -65,6 +66,15 @@ class Restaurantes(db.Model):
 
         def __repr__(self):
             return f'<Restaurantes {self.nombre}>'
+        
+        def set_password(self, password):
+            """Genera el hash de la contraseña para almacenarlo"""
+            self.password_hash = generate_password_hash(password)
+       
+       # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
+        def check_password(self, password):
+            """Verifica si la contraseña proporcionada es válida"""
+            return check_password_hash(self.password_hash, password)
 
         def serialize(self):
             return {
@@ -82,6 +92,7 @@ class Restaurantes(db.Model):
             "categorias_id": self.categorias_id,
             "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa))
         }
+
 
 class Reserva(db.Model):
         __tablename__ = 'reserva' 

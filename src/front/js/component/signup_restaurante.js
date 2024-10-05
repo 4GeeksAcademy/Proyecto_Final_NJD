@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../../styles/index.css";
 
-export const SignupUsuario = () => {
+export const SignupRestaurante = () => {
     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
+        restaurantName: "",
         email: "",
         password: "",
         repeatPassword: "",
@@ -20,28 +19,30 @@ export const SignupUsuario = () => {
     useEffect(() => {
         const resetFormData = () => {
             setFormData({
-                firstName: "",
-                lastName: "",
+                restaurantName: "",
                 email: "",
                 password: "",
                 repeatPassword: "",
                 phone: "",
             });
             setErrorMessage("");
-            setSuccessMessage("");  // Limpiamos el mensaje de éxito al cerrar el modal
+            setSuccessMessage(""); // Limpiamos el mensaje de éxito al cerrar el modal
         };
-    
-        const signupModalElement = document.getElementById("signupModal");
-    
+
+        const registerModalElement = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
+
         // Limpiar el formulario cuando se cierra el modal
-        signupModalElement.addEventListener('hidden.bs.modal', resetFormData);
-    
+        if (registerModalElement) {
+            registerModalElement.addEventListener('hidden.bs.modal', resetFormData);
+        }
+
         return () => {
             // Eliminar el listener cuando el componente se desmonte
-            signupModalElement.removeEventListener('hidden.bs.modal', resetFormData);
+            if (registerModalElement) {
+                registerModalElement.removeEventListener('hidden.bs.modal', resetFormData);
+            }
         };
     }, []);
-    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -56,48 +57,37 @@ export const SignupUsuario = () => {
         }
 
         try {
-            const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+            const response = await fetch(process.env.BACKEND_URL + "/api/signup/restaurante", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    nombres: formData.firstName,
-                    apellidos: formData.lastName,
+                    nombre: formData.restaurantName,
                     email: formData.email,
-                    password: formData.password,
+                    password: formData.password, // Asegúrate de tener el campo "password" en el backend
                     telefono: formData.phone,
                 }),
             });
 
             if (response.ok) {
-                sessionStorage.setItem("signup_email", formData.email);
-                sessionStorage.setItem("signup_password", formData.password);
-
-                setSuccessMessage("Usuario registrado con éxito");
+                setSuccessMessage("Restaurante registrado con éxito");
                 setErrorMessage("");
+
                 Swal.fire({
-                    title: "Usuario registrado con éxito",
+                    title: "Restaurante registrado con éxito",
                     text: "Serás redirigido al login.",
                     icon: "success",
                     confirmButtonText: "Aceptar",
                 }).then(() => {
-                    // Guardar email y password en sessionStorage
-                    sessionStorage.setItem("signup_email", formData.email);
-                    sessionStorage.setItem("signup_password", formData.password);
-                   
-                    // Cerrar el modal de registro usando Bootstrap
-                    const signupModal = document.getElementById("signupModal");
-                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                    signupModalInstance.hide();
-                    setSuccessMessage("");  // Aquí también limpiamos el mensaje
+                    const registerModal = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
+                    const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
+                    if (registerModalInstance) registerModalInstance.hide();  // Aseguramos que se cierra el modal de registro
 
-                    // Abrir el modal de login usando Bootstrap
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginRestaurantModal"));
                     loginModal.show();
                 });
 
                 setFormData({
-                    firstName: "",
-                    lastName: "",
+                    restaurantName: "",
                     email: "",
                     password: "",
                     repeatPassword: "",
@@ -105,27 +95,21 @@ export const SignupUsuario = () => {
                 });
             } else if (response.status === 409) {
                 Swal.fire({
-                    title: "Usuario ya registrado",
+                    title: "Restaurante ya registrado",
                     text: "Serás redirigido a la página de inicio de sesión.",
                     icon: "warning",
                     confirmButtonText: "Aceptar",
                 }).then(() => {
+                    const registerModal = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
+                    const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
+                    if (registerModalInstance) registerModalInstance.hide();
 
-                     // Guardar email y password en sessionStorage
-                    sessionStorage.setItem("signup_email", formData.email);
-                    sessionStorage.setItem("signup_password", formData.password);
-
-                    const signupModal = document.getElementById("signupModal");
-                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                    signupModalInstance.hide();
-
-                    // Abrir el modal de login usando Bootstrap
                     const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
                     loginModal.show();
                 });
             } else {
                 const errorData = await response.json();
-                setErrorMessage(errorData.msg || "Error al registrar el usuario");
+                setErrorMessage(errorData.msg || "Error al registrar el restaurante");
             }
         } catch (error) {
             Swal.fire({
@@ -144,53 +128,39 @@ export const SignupUsuario = () => {
 
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="signupFirstName" className="form-label">Nombre</label>
+                    <label htmlFor="signupRestaurantName" className="form-label">Nombre del Restaurante</label>
                     <input
                         type="text"
                         className="form-control"
-                        id="signupFirstName"
-                        name="firstName"
-                        value={formData.firstName}
+                        id="signupRestaurantName"
+                        name="restaurantName"
+                        value={formData.restaurantName}
                         onChange={handleChange}
-                        placeholder="Nombre"
+                        placeholder="Nombre del Restaurante"
                         required
                     />
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="signupLastName" className="form-label">Apellidos</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        id="signupLastName"
-                        name="lastName"
-                        value={formData.lastName}
-                        onChange={handleChange}
-                         placeholder="Apellidos"
-                        required
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label htmlFor="signupEmail" className="form-label">Correo electrónico</label>
+                    <label htmlFor="signupRestaurantEmail" className="form-label">Correo electrónico</label>
                     <input
                         type="email"
                         className="form-control"
-                        id="signupEmail"
+                        id="signupRestaurantEmail"
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                         placeholder="example@correo.com"
+                        placeholder="example@correo.com"
                         required
                     />
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="signupPassword" className="form-label">Contraseña</label>
+                    <label htmlFor="signupRestaurantPassword" className="form-label">Contraseña</label>
                     <input
                         type="password"
                         className="form-control"
-                        id="signupPassword"
+                        id="signupRestaurantPassword"
                         name="password"
                         value={formData.password}
                         onChange={handleChange}
@@ -200,11 +170,11 @@ export const SignupUsuario = () => {
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="signupRepeatPassword" className="form-label">Repetir contraseña</label>
+                    <label htmlFor="signupRestaurantRepeatPassword" className="form-label">Repetir contraseña</label>
                     <input
                         type="password"
                         className="form-control"
-                        id="signupRepeatPassword"
+                        id="signupRestaurantRepeatPassword"
                         name="repeatPassword"
                         value={formData.repeatPassword}
                         onChange={handleChange}
@@ -214,11 +184,11 @@ export const SignupUsuario = () => {
                 </div>
 
                 <div className="mb-3">
-                    <label htmlFor="signupPhone" className="form-label">Teléfono</label>
+                    <label htmlFor="signupRestaurantPhone" className="form-label">Teléfono</label>
                     <input
                         type="tel"
                         className="form-control"
-                        id="signupPhone"
+                        id="signupRestaurantPhone"
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}

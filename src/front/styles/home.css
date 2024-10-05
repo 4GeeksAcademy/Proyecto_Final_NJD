@@ -1,29 +1,29 @@
 footer {
-  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado azul elegante */
+  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado elegante */
   color: white;
   padding: 40px 0;
   text-align: center;
   width: 100%; /* Asegura que el footer ocupe todo el ancho */
   margin-top: auto; /* Empuja el footer al final */
-  height: 300px;
+  height: auto; /* Para ajustarse mejor al contenido */
   margin-top: 50px;
 }
 
 .footer-container {
   display: flex;
-  justify-content: space-around;
-  flex-wrap: wrap;
+  justify-content: space-between; /* Asegura espacio entre las secciones */
+  flex-wrap: nowrap; /* No permitir que se envuelvan las secciones */
   max-width: 1200px;
   margin: 0 auto;
 }
 
 .footer-section {
   flex: 1;
-  min-width: 250px;
+  min-width: 180px; /* Ajustamos el tamaño mínimo para evitar que colapse en pantallas pequeñas */
   padding: 10px;
 }
 
-.footer-section h4, .footer-section h3 {
+.footer-section h4 {
   font-size: 18px;
   margin-bottom: 15px;
   text-transform: uppercase;
@@ -32,6 +32,10 @@ footer {
 .footer-section ul {
   list-style-type: none;
   padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
 }
 
 .footer-section ul li a {
@@ -54,8 +58,16 @@ footer {
 }
 
 .footer-section a:hover {
-  color: #f0a500;
+  color: #00000064; /* Cambia a gris fuerte */
 }
+
+
+.footer-small-text {
+  font-size: 12px; /* Ajusta este valor según el tamaño que prefieras */
+  color: #cccccc; /* Puedes ajustar el color si lo deseas */
+}
+
+
 
 /*
     home.css: This website contains selectors only used in home.css
@@ -112,9 +124,16 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     text-align: center;
+<<<<<<< HEAD
     box-shadow: none;
     padding-bottom: 75px;
 }
+=======
+  }
+  
+
+
+>>>>>>> 13d626d7b3000b19ef4fb5fa0eb2be3f08ef89d3
 
   h2 {
     margin-bottom: 20px;
