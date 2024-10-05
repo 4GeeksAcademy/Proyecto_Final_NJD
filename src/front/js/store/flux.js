@@ -8,13 +8,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 			categorias: [],
 			restaurantes_favoritos: [],
 		},
-		
+
 		actions: {
 
 			// CREAR RESERVA
-			crearReserva: async function (usuario_id, data) {
-				const url = `https://shiny-pancake-7v7jx5444vg42467-3001.app.github.dev/api/usuario/${usuario_id}/reservas`;
-				const token = localStorage.getItem("token")
+			crearReserva: async function (data) {
+				const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
+				const token = sessionStorage.getItem("token")
+				console.log(token)
 				try {
 					const response = await fetch(url, {
 						method: 'POST',
@@ -24,8 +25,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify(data)
 					});
-			
+
 					if (response.ok) {
+						console.log("hola mundo")
 						const result = await response.json();
 						console.log("Reserva realizada con éxito:", result);
 						alert("Reserva realizada con éxito");
@@ -39,11 +41,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert("Hubo un error al procesar la solicitud");
 				}
 			},
-			
+
 			// OBTENER RESERVAS
 			obtenerReservas: async function (token, usuario_id) {
 				const url = `https://shiny-pancake-7v7jx5444vg42467-3001.app.github.dev/api/usuario/${usuario_id}/reservas`;
-			
+
 				try {
 					const response = await fetch(url, {
 						method: 'GET',
@@ -52,7 +54,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': `Bearer ${token}` // JWT
 						}
 					});
-			
+
 					if (response.ok) {
 						const result = await response.json();
 						console.log("Reservas cargadas con éxito:", result);
@@ -71,7 +73,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			//ACTUALIZAR RESERVAS
 			actualizarReserva: async function (reserva_id, data, token) {
 				const url = `https://shiny-pancake-7v7jx5444vg42467-3001.app.github.dev/api/reservas/${reserva_id}`;
-			
+
 				try {
 					const response = await fetch(url, {
 						method: 'PUT',
@@ -81,17 +83,17 @@ const getState = ({ getStore, getActions, setStore }) => {
 						},
 						body: JSON.stringify(data)
 					});
-			
+
 					if (response.ok) {
 						const result = await response.json();
 						console.log("Reserva actualizada con éxito:", result);
-			
+
 						const store = getStore();
 						const reservasActualizadas = store.reservas.map(reserva =>
 							reserva.id === reserva_id ? result : reserva
 						);
 						setStore({ reservas: reservasActualizadas });
-			
+
 						alert("Reserva actualizada con éxito");
 					} else {
 						const error = await response.json();
@@ -106,7 +108,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			//BORRAR RESERVAS
 			eliminarReserva: async function (reserva_id, token) {
 				const url = `https://shiny-pancake-7v7jx5444vg42467-3001.app.github.dev/api/reservas/${reserva_id}`;
-			
+
 				try {
 					const response = await fetch(url, {
 						method: 'DELETE',
@@ -114,12 +116,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 							'Authorization': `Bearer ${token}` // JWT 
 						}
 					});
-			
+
 					if (response.ok) {
 						const store = getStore();
 						const reservasActualizadas = store.reservas.filter(reserva => reserva.id !== reserva_id);
 						setStore({ reservas: reservasActualizadas });
-			
+
 						console.log("Reserva eliminada con éxito");
 						alert("Reserva eliminada con éxito");
 					} else {
@@ -132,6 +134,18 @@ const getState = ({ getStore, getActions, setStore }) => {
 					alert("Hubo un error al procesar la solicitud");
 				}
 			},
+			// obtener restorantes
+			obtenerRestorantes: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes`)
+					const data = await response.json()
+					setStore({ restaurantes: data })
+
+				} catch (error) {
+					console.log(error)
+				}
+			}
+
 		}
 	}
 }

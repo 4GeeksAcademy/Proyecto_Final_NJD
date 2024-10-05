@@ -124,10 +124,16 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     text-align: center;
+<<<<<<< HEAD
+    box-shadow: none;
+    padding-bottom: 75px;
+}
+=======
   }
   
 
 
+>>>>>>> 13d626d7b3000b19ef4fb5fa0eb2be3f08ef89d3
 
   h2 {
     margin-bottom: 20px;
@@ -138,8 +144,6 @@ footer {
     color: white !important;
 }
 
-
-  
   /* Scroll lateral de las cards */
   .scroll-wrapper {
     display: flex;
