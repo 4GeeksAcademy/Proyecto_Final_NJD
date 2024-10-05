@@ -13,6 +13,8 @@ import { RestaurantDetail } from "./pages/restaurantDetail";
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante"; // Asegúrate de que la ruta sea correcta
 import { PrivateView } from "./pages/privateView";
 
+import { RegistroRestaurante } from "./pages/registro_restaurante";
+import PrivateView from "./pages/privateView"; 
 
 const Layout = () => {
 

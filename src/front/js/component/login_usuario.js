@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
@@ -35,6 +36,8 @@ export const LoginUsuario = ({ onLogin }) => {
         loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
     };
 }, []);
+
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

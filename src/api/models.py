@@ -42,48 +42,42 @@ class Usuario(db.Model):
             "creado": self.creado,
         }
     
-from werkzeug.security import generate_password_hash, check_password_hash
 
 class Restaurantes(db.Model):
-    __tablename__ = 'restaurantes' 
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30), unique=True, nullable=False)
-    nombre = db.Column(db.String(30), unique=True, nullable=False)
-    direccion = db.Column(db.String(40), nullable=True)
-    latitud = db.Column(db.String(20), nullable=True)
-    longitud = db.Column(db.String(20), nullable=True)
-    telefono = db.Column(db.String(20), nullable=True)
-    cubiertos = db.Column(db.Integer, nullable=True)
-    cantidad_mesas = db.Column(db.Integer, nullable=True) 
-    franja_horaria = db.Column(db.Integer, nullable=True)
-    reservas_por_dia = db.Column(db.Integer, nullable=True)
-    valoracion = db.Column(db.Integer, nullable=True)
-    categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'))
-    
-    # Añadido el campo para el hash de la contraseña
-    password_hash = db.Column(db.String(300), nullable=False)
+        __tablename__ = 'restaurantes' 
+        id = db.Column(db.Integer, primary_key=True)
+        email = db.Column(db.String(30), unique=False, nullable=False)
+        nombre = db.Column(db.String(30), unique=True, nullable=False)
+        direccion = db.Column(db.String(40), nullable=False)
+        latitud = db.Column(db.String(20), nullable=True)
+        longitud = db.Column(db.String(20), nullable=True)
+        telefono = db.Column(db.String(20), nullable=False)
+        cubiertos = db.Column(db.Integer)
+        cantidad_mesas = db.Column(db.Integer, nullable=False) 
+        franja_horaria = db.Column(db.Integer)
+        reservas_por_dia = db.Column(db.Integer)
+        valoracion = db.Column(db.Integer)
+        categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'))
 
-    # Relaciones con otras tablas
-    restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
-    restaurantes_res = db.relationship('Reserva', backref='restaurantes')
-    restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
-    restaurantes_valoracion = db.relationship('Valoracion', backref='restaurantes')
+        restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
+        restaurantes_res = db.relationship('Reserva', backref='restaurantes')
+        restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
+        restaurantes_valoracion = db.relationship('Valoracion', backref='restaurantes')
 
-    def __repr__(self):
-        return f'<Restaurantes {self.nombre}>'
+        def __repr__(self):
+            return f'<Restaurantes {self.nombre}>'
+        
+        def set_password(self, password):
+            """Genera el hash de la contraseña para almacenarlo"""
+            self.password_hash = generate_password_hash(password)
+       
+       # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
+        def check_password(self, password):
+            """Verifica si la contraseña proporcionada es válida"""
+            return check_password_hash(self.password_hash, password)
 
-    # Método para generar el hash de la contraseña
-    def set_password(self, password):
-        """Genera el hash de la contraseña para almacenarlo"""
-        self.password_hash = generate_password_hash(password)
-
-    # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
-    def check_password(self, password):
-        """Verifica si la contraseña proporcionada es válida"""
-        return check_password_hash(self.password_hash, password)
-
-    def serialize(self):
-        return {
+        def serialize(self):
+            return {
             "id": self.id,
             "email": self.email,
             "nombre": self.nombre,
