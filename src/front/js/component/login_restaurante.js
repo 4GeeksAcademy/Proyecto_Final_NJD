@@ -71,7 +71,7 @@ export const LoginRestaurante = () => {
                 } else {
                     Swal.fire({
                         title: 'Error al iniciar sesión',
-                        text: 'Respuesta no exitosa del servidor.',
+                        text: 'Respuesta no valida del servidor.',
                         icon: 'error',
                         confirmButtonText: 'Aceptar'
                     });
@@ -81,9 +81,11 @@ export const LoginRestaurante = () => {
             // Si la respuesta es exitosa (status 200), intenta obtener los datos JSON
             const data = await response.json();
             console.log('datos:', data);
+
             // Manejo del éxito
             sessionStorage.setItem('token', data.access_token);  // Guardar token de acceso
             sessionStorage.setItem('restaurant_name', data.restaurant_name);  // Guardar nombre del restaurante en sessionStorage
+
             // Intenta cerrar el modal
             const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); // Usa el ID correcto
             if (loginModal) {
@@ -93,6 +95,9 @@ export const LoginRestaurante = () => {
                 console.error('Modal no encontrado');
             }
             navigate('/registro_restaurante');  // Redirige al dashboard del restaurante
+
+
+            
         } catch (error) {
             console.error('Error de conexión o problema grave:', error);
             Swal.fire({
