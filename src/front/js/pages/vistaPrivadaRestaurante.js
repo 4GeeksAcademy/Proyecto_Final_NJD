@@ -5,4 +5,4 @@ cuantos favoritos
 sus reseñas
 cerrar sesion
 ingresar fotos
-
+*/

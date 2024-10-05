@@ -20,7 +20,7 @@ export const PrivateView = () => {
         <div className="private-view minimal-background">
             <div className="welcome-box minimal-box">
                 <h1 className="private-view-title minimal-title">
-                    Hola {sessionStorage.getItem('user_name')}¡ ¡Te damos la bienvenida a tu área privada!
+                    ¡Hola {sessionStorage.getItem('user_name')}, te damos la bienvenida a tu área privada!
                 </h1>
                 <p className="private-view-text minimal-text">
                     Ahora ya puedes disfrutar de la experiencia <strong>¡Hoy no cocino!</strong> al máximo. Encuentra tu restaurante ideal y haz tu reserva ya mismo.
