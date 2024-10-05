@@ -10,7 +10,7 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch"; 
 import { RestaurantDetail } from "./pages/restaurantDetail"; 
-import { RegistroRestaurante } from "./pages/registro_restaurante"; // Asegúrate de que la ruta sea correcta
+import { RegistroCompletoRestaurante } from "./pages/registro_restaurante"; // Asegúrate de que la ruta sea correcta
 import { PrivateView } from "./pages/privateView";
 
 
@@ -33,7 +33,7 @@ const Layout = () => {
                         <Route element={<RestaurantSearch />} path="/restaurantes/:tipo" />
                         
                         {/* Nueva ruta para el registro de restaurantes */}
-                        <Route element={<RegistroRestaurante />} path="/registro_restaurante" />
+                        <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
                         <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
                         {/* Vista privada */}
                         <Route element={<PrivateView />} path="/private" />
