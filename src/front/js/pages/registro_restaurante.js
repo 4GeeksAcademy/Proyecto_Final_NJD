@@ -38,12 +38,34 @@ export const RegistroCompletoRestaurante = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Aquí puedes manejar el envío de datos al backend
-        console.log(formData);
-        // Puedes agregar lógica adicional para procesar el registro
+        const token = sessionStorage.getItem('token'); // Asegúrate de tener el token de autenticación
+    
+        try {
+            const response = await fetch(`${process.env.BACKEND_URL}/api/signup/restaurante`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // JWT token para autorización
+                },
+                body: JSON.stringify(formData), // Enviamos el formulario con los datos del restaurante
+            });
+    
+            if (response.ok) {
+                const result = await response.json();
+                console.log("Registro exitoso:", result);
+                navigate('/vistaPrivadaRestaurante'); // Redirigir a la vista privada si el registro es exitoso
+            } else {
+                const error = await response.json();
+                alert("Hubo un error en el registro: " + error.msg);
+            }
+        } catch (err) {
+            console.error("Error en la petición:", err);
+            alert("Hubo un error en el registro. Inténtalo nuevamente.");
+        }
     };
+    
 
     return (
         <div className="private-view minimal-background">
