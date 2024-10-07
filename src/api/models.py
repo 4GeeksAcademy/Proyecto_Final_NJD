@@ -49,13 +49,13 @@ class Restaurantes(db.Model):
         email = db.Column(db.String(30), unique=False, nullable=False)
         nombre = db.Column(db.String(30), unique=True, nullable=False)
         direccion = db.Column(db.String(40), nullable=False)
-        latitud = db.Column(db.String(20), nullable=True)
-        longitud = db.Column(db.String(20), nullable=True)
+        #latitud = db.Column(db.String(20), nullable=True)
+        #longitud = db.Column(db.String(20), nullable=True)
         telefono = db.Column(db.String(20), nullable=False)
         cubiertos = db.Column(db.Integer)
-        cantidad_mesas = db.Column(db.Integer, nullable=False) 
-        franja_horaria = db.Column(db.Integer)
-        reservas_por_dia = db.Column(db.Integer)
+        #cantidad_mesas = db.Column(db.Integer, nullable=False) 
+        #franja_horaria = db.Column(db.Integer)
+        #reservas_por_dia = db.Column(db.Integer)
         valoracion = db.Column(db.Integer)
         categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'))
 
@@ -104,7 +104,7 @@ class Reserva(db.Model):
         niños = db.Column(db.Integer, nullable=False)
         restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
         creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-        modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+        #modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
 
         def __repr__(self):
@@ -123,7 +123,7 @@ class Reserva(db.Model):
             "modificada": self.modificada,
           }
 
-class Mesas(db.Model):
+#class Mesas(db.Model):
         __tablename__ = 'mesas' 
         id = db.Column(db.Integer, primary_key=True)
         restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
