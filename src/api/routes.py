@@ -599,9 +599,9 @@ def upload_image():
 def poblar_restaurante():
     try:
         mockRestaurants = [
-        { "id": 1, "nombre": "Trattoria Bella", "telefono": "123 123 123", "email": "tratoriabella@gmail.com", "cantidad_mesas": 30, "categoria_id": 1, "direccion": "Calle Mayor 45, Madrid", "valoracion": },
+        { "id": 1, "nombre": "Trattoria Bella", "telefono": "123 123 123", "email": "tratoriabella@gmail.com", "cantidad_mesas": 30, "categoria_id": 1, "direccion": "Calle Mayor 45, Madrid" },
         { "id": 2, "nombre": "Pasta Fresca", "telefono": "234 234 234", "email": "pastafresca@gmail.com", "cantidad_mesas": 30, "categoria_id": 1, "direccion": "Calle de la Paz 10, Valencia", "valoracion": },
-        { "id": 3, "nombre": "Osteria del Mare", "telefono": "345 345 345", "email": "osteriadel,are@gmail.com", "cantidad_mesas": 20, "categoria_id": 1, "direccion": "Paseo Marítimo 8, Barcelona", "valoracion":},
+        { "id": 3, "nombre": "Osteria del Mare", "telefono": "345 345 345", "email": "osteriadelmare@gmail.com", "cantidad_mesas": 20, "categoria_id": 1, "direccion": "Paseo Marítimo 8, Barcelona", "valoracion":},
         { "id": 4, "nombre": "El Mariachi Loco", "telefono": "456 456 456 ", "email": "elmariachiloco@gmail.com", "cantidad_mesas": 30, "categoria_id": 2, "direccion": "Avenida de América 23, Madrid", "valoracion":},
         { "id": 5, "nombre": "Cantina del Cactus", "telefono": "567 567 567", "email": "cantinadelcactus@gmail.com", "cantidad_mesas": 25, "categoria_id": 2, "direccion": "Boulevard de los Aztecas 15, Barcelona", "valoracion":},
         { "id": 6, "nombre": "Tacos y Más", "telefono": "678 678 678", "email": "tacosymas@gmail.com", "cantidad_mesas": 25, "categoria_id": 2, "direccion": "Calle del Carmen 99, Valencia", "valoracion":},
