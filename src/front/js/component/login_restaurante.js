@@ -60,6 +60,7 @@ export const LoginRestaurante = ({ onLogin }) => {
             if (response.ok) {
                 sessionStorage.setItem('token', data.access_token);  // Guardar token de acceso
                 sessionStorage.setItem('restaurant_name', data.restaurant_name);  // Guardar nombre del restaurante en sessionStorage
+                sessionStorage.setItem('restaurant_id', data.restaurant_id)
                 console.log(data);  // Verifica qué recibe del servidor
 
                 // Actualiza el estado en la Navbar

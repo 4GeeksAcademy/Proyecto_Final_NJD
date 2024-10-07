@@ -58,7 +58,7 @@ export const RegistroCompletoRestaurante = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const restauranteId = sessionStorage.getItem("restaurante_id");
+        const restauranteId = sessionStorage.getItem("restaurant_id");
 
         console.log("Restaurante ID obtenido de sessionStorage:", restauranteId);
 

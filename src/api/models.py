@@ -83,8 +83,6 @@ class Restaurantes(db.Model):
     email = db.Column(db.String(30), unique=False, nullable=False)
     nombre = db.Column(db.String(30), unique=True, nullable=False)
     direccion = db.Column(db.String(40), nullable=True)
-    latitud = db.Column(db.String(20), nullable=True)
-    longitud = db.Column(db.String(20), nullable=True)
     telefono = db.Column(db.String(20), nullable=False)
     cubiertos = db.Column(db.Integer)
     cantidad_mesas = db.Column(db.Integer, nullable=True) 
@@ -119,8 +117,6 @@ class Restaurantes(db.Model):
             "email": self.email,
             "nombre": self.nombre,
             "direccion": self.direccion,
-            "latitud": self.latitud,
-            "longitud": self.longitud,
             "telefono": self.telefono,
             "cubiertos": self.cubiertos,
             "franja_horaria": self.franja_horaria,
@@ -185,11 +181,11 @@ class Restaurantes_Favoritos(db.Model):
 class Valoracion(db.Model):
     __tablename__ = 'valoracion'
     id = db.Column(db.Integer, primary_key=True)
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))  # Usuario que deja la reseña
-    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))  # Restaurante que está siendo valorado
-    puntuacion = db.Column(db.Integer, nullable=False)  # Puntuación de 1 a 5, por ejemplo
-    comentario = db.Column(db.Text, nullable=True)  # Comentario opcional del usuario
-    fecha = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))  # Fecha en que se dejó la valoración
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
+    puntuacion = db.Column(db.Integer, nullable=False)
+    comentario = db.Column(db.Text, nullable=True)
+    fecha = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
     def __repr__(self):
         return f'<Valoracion {self.puntuacion} del usuario {self.usuario_id} para restaurante {self.restaurante_id}>'

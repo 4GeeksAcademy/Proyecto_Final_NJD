@@ -316,7 +316,8 @@ def login_restaurante():
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'restaurant_name': restaurante.nombre  # Puedes devolver el nombre del restaurante
+        'restaurant_name': restaurante.nombre,  # Puedes devolver el nombre del restaurante
+        'restaurant_id': restaurante.id
     }), 200
 
 

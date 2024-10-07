@@ -258,7 +258,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             completarRegistroRestaurante: async (restauranteId, formData) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
