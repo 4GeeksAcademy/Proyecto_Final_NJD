@@ -3,16 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
-from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes
+from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
-from werkzeug.security import check_password_hash 
-# Crear un restaurante (POST /restaurantes)
-from werkzeug.security import generate_password_hash 
+from werkzeug.security import check_password_hash, generate_password_hash
 
 import re  # Para validación de email, contraseña y teléfono
-#Cloudinary
 import cloudinary.uploader
 
 api = Blueprint('api', __name__)
@@ -35,16 +32,21 @@ def is_valid_password(password):
         return False
     return True
 
+import re  # Asegúrate de importar el módulo re
+
 # Validar formato de teléfono
 def is_valid_phone(phone):
-    phone_regex = r'^[\d\+\-]+$'  # Permitir solo números, + y -
+    # Permitir solo números, +, -, y espacios
+    phone_regex = r'^[\d\+\-\s]+$'
     if len(phone) < 9:  # Al menos 9 caracteres
         return False
     if not re.match(phone_regex, phone):
         return False
     return True
 
-# Implementar la ruta /signup para el registro de usuarios:
+
+# REGISTRO USUARIO
+
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
@@ -85,8 +87,12 @@ def signup():
     db.session.commit()
 
     return jsonify({'msg': 'Usuario registrado con éxito'}), 201
+ 
 
-# Implementar la ruta /login para iniciar sesión:
+
+
+# INICIO SESION USUARIO
+
 @api.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
@@ -115,7 +121,10 @@ def login():
         'user_name': user.nombres  # Aquí envías el nombre del usuario
     }), 200
 
-# Ruta para generar un nuevo Access Token usando el Refresh Token
+
+
+# USAMOS REFRESH TOKEN PARA GENERAR UNO NUEVO AUTOMATICAMENTE
+
 @api.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
@@ -125,7 +134,10 @@ def refresh():
         'access_token': new_access_token
     }), 200
 
-# Ruta protegida con JWT, requiere token válido
+
+
+# RUTA PROTEGIDA CON TOKEN
+
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
@@ -144,7 +156,9 @@ def protected():
         'creado': user.creado.isoformat()
     }), 200
 
-# Ruta para validar un token JWT
+
+# VALIDAR EL TOKEN
+
 @api.route('/validate-token', methods=['GET'])
 @jwt_required()
 def validate_token():
@@ -156,13 +170,15 @@ def validate_token():
 
     return jsonify({'msg': 'Token válido', 'user_id': user.id, 'email': user.email}), 200
 
-# Obtener todos los usuarios (GET /usuarios)
+# OBTENER TODOS LOS USUARIOS
+
 @api.route('/usuarios', methods=['GET'])
 def get_all_users():
     usuarios = Usuario.query.all()
     return jsonify([usuario.serialize() for usuario in usuarios]), 200
 
-# Obtener un usuario por su ID (GET /usuario/<int:usuario_id>)
+# OBTENER UN USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['GET'])
 @jwt_required()
 def get_user(usuario_id):
@@ -172,7 +188,8 @@ def get_user(usuario_id):
     
     return jsonify(usuario.serialize()), 200
 
-# Actualiza un usuario (PUT /usuario/<int:usuario_id>)
+# ACTUALIZAR USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['PUT'])
 @jwt_required()
 def update_user(usuario_id):
@@ -195,7 +212,8 @@ def update_user(usuario_id):
 
     return jsonify({'msg': 'Usuario actualizado con éxito'}), 200
 
-# Eliminar un usuario (DELETE /usuario/<int:usuario_id>) 
+# ELIMINAR UN USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(usuario_id):
@@ -211,58 +229,63 @@ def delete_user(usuario_id):
 
 
 
+# REGISTRO BASICO RESTAURANTE
+
 @api.route('/signup/restaurante', methods=['POST'])
 def signup_restaurante():
     body = request.get_json()
 
     nombre = body.get('nombre')
     email = body.get('email')
-    password = body.get('password')  # Obtener la contraseña del cuerpo de la solicitud
-    direccion = body.get('direccion')
-    latitud = body.get('latitud')
-    longitud = body.get('longitud')
+    password = body.get('password')
     telefono = body.get('telefono')
-    cubiertos = body.get('cubiertos')
-    cantidad_mesas = body.get('cantidad_mesas')
-    franja_horaria = body.get('franja_horaria')
-    reservas_por_dia = body.get('reservas_por_dia')
-    categorias_id = body.get('categorias_id')
 
-   # Validaciones de campos obligatorios para el registro
-    if not (nombre and email and password):
+    if not (nombre and email and password and telefono):
         return jsonify({'msg': 'Faltan datos obligatorios'}), 400
 
     # Verificar si el restaurante ya existe
     if Restaurantes.query.filter_by(email=email).first():
         return jsonify({'msg': 'El restaurante ya existe'}), 409
 
-    # Hashear la contraseña antes de guardarla
+    # Hashear la contraseña
     hashed_password = generate_password_hash(password)
 
-    # Crear el nuevo restaurante
     nuevo_restaurante = Restaurantes(
         nombre=nombre,
         email=email,
-        password_hash=hashed_password,  # Guardar la contraseña hasheada
-        direccion=direccion,
-        latitud=latitud,
-        longitud=longitud,
         telefono=telefono,
-        cubiertos=cubiertos,
-        cantidad_mesas=cantidad_mesas,
-        franja_horaria=franja_horaria,
-        reservas_por_dia=reservas_por_dia,
-        categorias_id=categorias_id
+        password_hash=hashed_password  # Guardar la contraseña hasheada
     )
-    
+
     db.session.add(nuevo_restaurante)
     db.session.commit()
 
-    return jsonify({'msg': 'Restaurante registrado con éxito'}), 201
+    return jsonify({'msg': 'Restaurante registrado con éxito', 'restaurante_id': nuevo_restaurante.id}), 201
 
 
 
-# Implementar la ruta /login/restaurante para iniciar sesión de restaurantes
+# REGISTRO DE RESTAURANTE COMPLETO
+
+@api.route('/restaurante/<int:restaurante_id>', methods=['PUT'])
+def completar_registro_restaurante(restaurante_id):
+    body = request.get_json()
+
+    restaurante = Restaurantes.query.get_or_404(restaurante_id)
+
+    restaurante.direccion = body.get('direccion')
+    restaurante.cubiertos = body.get('cubiertos')
+    restaurante.cantidad_mesas = body.get('cantidad_mesas')
+    restaurante.franja_horaria = body.get('franja_horaria')
+    restaurante.reservas_por_dia = body.get('reservas_por_dia')
+    restaurante.categorias_id = body.get('categorias_id')
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Registro completo'}), 200
+
+
+
+# LOGIN RESTAURANTE
 
 @api.route('/login/restaurante', methods=['POST'])
 def login_restaurante():
@@ -281,7 +304,7 @@ def login_restaurante():
         return jsonify({'msg': 'El restaurante no está registrado'}), 404
 
     # Verificar si la contraseña es correcta
-    if not restaurante.check_password(password):  # Usamos el método `check_password`
+    if not restaurante.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
     # Generar el Access Token y Refresh Token
@@ -293,18 +316,22 @@ def login_restaurante():
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'restaurant_name': restaurante.nombre  # Puedes devolver el nombre del restaurante
+        'restaurant_name': restaurante.nombre,  # Puedes devolver el nombre del restaurante
+        'restaurant_id': restaurante.id
     }), 200
 
 
 
-# Obtener todos los restaurantes (GET /restaurantes)
+# OBTENER TODOS LOS RESTAURANTES
+
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
     restaurantes = Restaurantes.query.all()
     return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
 
-# Obtener un restaurante por su ID (GET /restaurantes/<int:restaurante_id>)
+
+# OBTENER UN RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['GET'])
 def get_restaurante(restaurante_id):
     restaurante = Restaurantes.query.get(restaurante_id)
@@ -313,7 +340,10 @@ def get_restaurante(restaurante_id):
 
     return jsonify(restaurante.serialize()), 200
 
-# Actualizar un restaurante (PUT /restaurantes/<int:restaurante_id>)
+
+
+# ACTUALIZAR RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['PUT'])
 @jwt_required()  # Sólo los profesionales pueden actualizar los restaurantes
 def update_restaurante(restaurante_id):
@@ -327,8 +357,6 @@ def update_restaurante(restaurante_id):
     restaurante.nombre = body.get('nombre', restaurante.nombre)
     restaurante.email = body.get('email', restaurante.email)
     restaurante.direccion = body.get('direccion', restaurante.direccion)
-    restaurante.latitud = body.get('latitud', restaurante.latitud)
-    restaurante.longitud = body.get('longitud', restaurante.longitud)
     restaurante.telefono = body.get('telefono', restaurante.telefono)
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
     restaurante.franja_horaria = body.get('franja_horaria', restaurante.franja_horaria)
@@ -340,7 +368,10 @@ def update_restaurante(restaurante_id):
 
     return jsonify({'msg': 'Restaurante actualizado con éxito'}), 200
 
-# Eliminar un restaurante (DELETE /restaurantes/<int:restaurante_id>)
+
+
+# ELIMINAR RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['DELETE'])
 @jwt_required()  # Sólo los profesionales pueden eliminar los restaurantes
 def delete_restaurante(restaurante_id):
@@ -353,6 +384,44 @@ def delete_restaurante(restaurante_id):
     db.session.commit()
 
     return jsonify({'msg': 'Restaurante eliminado con éxito'}), 200
+
+
+
+# CREAR CATEGORIA
+
+@api.route('/categorias', methods=['POST'])
+def create_categoria():
+    data = request.json
+    if isinstance(data, list):
+        for categoria_data in data:
+            nueva_categoria = Categorias(nombre_de_categoria=categoria_data['nombre_de_categoria'])
+            db.session.add(nueva_categoria)
+    else:
+        nueva_categoria = Categorias(nombre_de_categoria=data['nombre_de_categoria'])
+        db.session.add(nueva_categoria)
+    
+    db.session.commit()
+    
+    return jsonify({"message": "Categorías creadas correctamente"}), 201
+
+
+
+# OBTENER TODAS LAS CATEGORIAS
+
+@api.route('/categorias', methods=['GET'])
+def get_categorias():
+    categorias = Categorias.query.all()
+    return jsonify([categoria.serialize() for categoria in categorias]), 200
+
+
+# OBTENER UNA CATEGORIA
+
+@api.route('/categorias/<int:categoria_id>', methods=['GET'])
+def get_categoria(categoria_id):
+    categoria = Categorias.query.get_or_404(categoria_id)  # Obtener la categoría por ID o lanzar 404 si no se encuentra
+    return jsonify(categoria.serialize()), 200  # Retornar la categoría encontrada
+
+
 
 #CREAR RESERVA
 
