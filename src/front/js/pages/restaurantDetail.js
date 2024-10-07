@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
-// import UploadImageCloudinary from "./components/UploadImageCloudinary";
+import UploadImageCloudinary from "../component/uploadImageCloudinary";
+//API Email
+import ReservaForm from "../component/reservaForm";
+
 
 export const RestaurantDetail = () => {
   const { id } = useParams();
@@ -220,4 +223,8 @@ export const RestaurantDetail = () => {
 
     </div>
   );
+
 };
+
+
+
