@@ -27,7 +27,7 @@ from api.commands import setup_commands
 
 # HARDCODE PARA METER LAS CATEGORIAS EN CADA RESET / SOLO PARA PRUEBAS
 from api.setup_categorias import cargar_categorias_iniciales
-
+from api.setup_restorantes import cargar_restorantes_iniciales
 
 # from models import Person
 
@@ -79,7 +79,8 @@ db.init_app(app)
 
 # CARGAR CATEGORIAS INICIALES SI NO ESTAN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
 with app.app_context():
-    cargar_categorias_iniciales()  # <-- Llamar a la función aquí
+    cargar_categorias_iniciales()
+    cargar_restorantes_iniciales()  # <-- Llamar a la función aquí
 
 # Inicializar JWTManager
 jwt = JWTManager(app)
