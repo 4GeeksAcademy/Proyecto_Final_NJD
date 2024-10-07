@@ -1,0 +1,178 @@
+* [33m6b3c09f[m[33m ([m[1;36mHEAD -> [m[1;32mCrear-registro-restaurante-completo[m[33m, [m[1;31morigin/Crear-registro-restaurante-completo[m[33m)[m funcionando de nuevo arreglo hash
+* [33m6fe2ed6[m sin details
+*   [33m7cba1f6[m Merge branch 'Develop' of https://github.com/4GeeksAcademy/Proyecto_Final_NJD into Crear-registro-restaurante-completo
+[32m|[m[33m\[m  
+[32m|[m *   [33m9ec24f6[m[33m ([m[1;31morigin/Develop[m[33m)[m Merge pull request #28 from 4GeeksAcademy/Endpoint-EMAIL-Juan
+[32m|[m [34m|[m[35m\[m  
+[32m|[m [34m|[m *   [33m957c727[m cambios con javi
+[32m|[m [34m|[m [36m|[m[34m\[m  
+[32m|[m [34m|[m [36m|[m[34m/[m  
+[32m|[m [34m|[m[34m/[m[36m|[m   
+[32m|[m * [36m|[m   [33m13d626d[m Merge pull request #26 from 4GeeksAcademy/link-modals-to-endpoinds-Nelvb
+[32m|[m [1;32m|[m[1;33m\[m [36m\[m  
+[32m|[m [1;32m|[m * [36m\[m   [33m29b099e[m cambio layout
+[32m|[m [1;32m|[m [1;34m|[m[1;32m\[m [36m\[m  
+[32m|[m [1;32m|[m [1;34m|[m[1;32m/[m [36m/[m  
+[32m|[m [1;32m|[m[1;32m/[m[1;34m|[m [36m|[m   
+[32m|[m [1;32m|[m * [36m|[m [33mf6e6709[m modificado autocompletado inputs usuario
+[32m|[m [1;32m|[m [1;35m|[m * [33m0f51f25[m cambios con javi
+[32m|[m [1;32m|[m [1;35m|[m * [33md4e4a94[m restos
+[32m|[m [1;32m|[m [1;35m|[m * [33m111c110[m[33m ([m[1;31morigin/Endpoint-EMAIL-Juan[m[33m)[m corregir campos
+[32m|[m [1;32m|[m [1;35m|[m * [33m2fa4b5a[m corregir codigo de boton reservar
+[32m|[m [1;32m|[m [1;35m|[m * [33m2af7095[m comenzar con boton reserva sin errores
+* [1;32m|[m [1;35m|[m [1;35m|[m [33mb954695[m trabajando registro restaurante
+* [1;32m|[m [1;35m|[m [1;35m|[m [33m43d6e8f[m  navegar de login a pagina privada
+* [1;32m|[m [1;35m|[m [1;35m|[m [33m51effe4[m import registro layout
+[1;32m|[m[1;32m/[m [1;35m/[m [1;35m/[m  
+* [1;35m|[m [1;35m|[m [33m27c130d[m Merge pull request #25 from 4GeeksAcademy/link-modals-to-endpoinds-Nelvb
+[1;36m|[m[1;35m\[m[1;35m|[m [1;35m|[m 
+[1;36m|[m * [1;35m|[m   [33mb2f39ac[m[33m ([m[1;31morigin/link-modals-to-endpoinds-Nelvb[m[33m)[m Merge remote-tracking branch 'origin/Develop' into link-modals-to-endpoinds-Nelvb
+[1;36m|[m [32m|[m[1;36m\[m [1;35m\[m  
+[1;36m|[m [32m|[m[1;36m/[m [1;35m/[m  
+[1;36m|[m[1;36m/[m[32m|[m [1;35m|[m   
+* [32m|[m [1;35m|[m   [33m1148abd[m Merge pull request #24 from 4GeeksAcademy/API-Emails
+[1;35m|[m[35m\[m [32m\[m [1;35m\[m  
+[1;35m|[m [35m|[m[1;35m_[m[32m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[35m|[m [32m|[m   
+[1;35m|[m * [32m|[m [33mc2a1bab[m[33m ([m[1;31morigin/API-Emails[m[33m)[m YA FUNCIONA LA API DE EMAILSgit add .git add .git add .
+[1;35m|[m * [32m|[m [33m3cd2142[m CAMBIOS PARA API EMAIL
+[1;35m|[m[1;35m/[m [32m/[m  
+* [32m|[m   [33m4957928[m Merge pull request #23 from 4GeeksAcademy/Vista-Detallada-Restaurante
+[36m|[m[1;31m\[m [32m\[m  
+[36m|[m * [32m\[m   [33m422a56a[m[33m ([m[1;31morigin/Vista-Detallada-Restaurante[m[33m)[m Merge branch 'Develop' into Vista-Detallada-Restaurante
+[36m|[m [1;32m|[m[36m\[m [32m\[m  
+[36m|[m [1;32m|[m[36m/[m [32m/[m  
+[36m|[m[36m/[m[1;32m|[m [32m|[m   
+* [1;32m|[m [32m|[m   [33m053b1e9[m[33m ([m[1;31morigin/division_componentes_Nelvb[m[33m)[m Merge pull request #22 from 4GeeksAcademy/Endpoint-EMAIL-Juan
+[1;34m|[m[1;35m\[m [1;32m\[m [32m\[m  
+[1;34m|[m * [1;32m|[m [32m|[m [33ma6490f9[m cambios
+[1;34m|[m * [1;32m|[m [32m|[m [33m338fb11[m cambios
+[1;34m|[m * [1;32m|[m [32m|[m [33m59ab768[m[33m ([m[1;31morigin/Fetchs-Juan[m[33m)[m fetch reserva
+[1;34m|[m [1;35m|[m * [32m|[m [33m411bb13[m Restaurant Detail
+[1;34m|[m [1;35m|[m [1;35m|[m * [33m5645ead[m identificacion funcionando
+[1;34m|[m [1;35m|[m [1;35m|[m * [33m7f68133[m registro restaurante con exito
+[1;34m|[m [1;35m|[m[1;34m_[m[1;35m|[m[1;34m/[m  
+[1;34m|[m[1;34m/[m[1;35m|[m [1;35m|[m   
+* [1;35m|[m [1;35m|[m   [33m77315ce[m Merge pull request #20 from 4GeeksAcademy/link-modals-to-endpoinds-Nelvb
+[1;36m|[m[31m\[m [1;35m\[m [1;35m\[m  
+[1;36m|[m * [1;35m\[m [1;35m\[m   [33m271ee81[m Merge branch 'Develop' into link-modals-to-endpoinds-Nelvb
+[1;36m|[m [32m|[m[1;36m\[m [1;35m\[m [1;35m\[m  
+[1;36m|[m [32m|[m[1;36m/[m [1;35m/[m [1;35m/[m  
+[1;36m|[m[1;36m/[m[32m|[m [1;35m|[m [1;35m|[m   
+* [32m|[m [1;35m|[m [1;35m|[m   [33m1fcb14c[m Merge pull request #21 from 4GeeksAcademy/API-Cloudinary
+[1;35m|[m[35m\[m [32m\[m [1;35m\[m [1;35m\[m  
+[1;35m|[m [35m|[m[1;35m_[m[32m|[m[1;35m/[m [1;35m/[m  
+[1;35m|[m[1;35m/[m[35m|[m [32m|[m [1;35m|[m   
+[1;35m|[m * [32m|[m [1;35m|[m [33m998f3c6[m[33m ([m[1;31morigin/API-Cloudinary[m[33m)[m CLOUDINARY
+[1;35m|[m[1;35m/[m [32m/[m [1;35m/[m  
+[1;35m|[m * [1;35m|[m   [33m117f11e[m autentificacion usuario completa
+[1;35m|[m [36m|[m[1;35m\[m [1;35m\[m  
+[1;35m|[m [36m|[m[1;35m/[m [1;35m/[m  
+[1;35m|[m[1;35m/[m[36m|[m [1;35m|[m   
+* [36m|[m [1;35m|[m   [33m80dedfd[m Merge pull request #19 from 4GeeksAcademy/Vista-privada
+[1;32m|[m[1;33m\[m [36m\[m [1;35m\[m  
+[1;32m|[m * [36m|[m [1;35m|[m [33m72feda8[m[33m ([m[1;31morigin/Vista-privada[m[33m)[m VISTA PRIVADA
+[1;32m|[m [1;35m|[m [36m|[m[1;35m/[m  
+[1;32m|[m [1;35m|[m[1;35m/[m[36m|[m   
+[1;32m|[m [1;35m|[m * [33mf36c713[m cierre de sesion redirige a pagina principal
+[1;32m|[m [1;35m|[m * [33m4e4a79b[m aparentemente todo funcionando
+[1;32m|[m [1;35m|[m * [33m86176ef[m procederemos a cambiar el destino del login, cambio de navbar
+[1;32m|[m [1;35m|[m * [33m4c819b7[m a falta de cambios en los inputs y links
+[1;32m|[m [1;35m|[m * [33m7f724a1[m componente signup y login
+[1;32m|[m [1;35m|[m[1;32m/[m  
+[1;32m|[m[1;32m/[m[1;35m|[m   
+* [1;35m|[m   [33me330b14[m Merge pull request #18 from 4GeeksAcademy/endpoint-Juan
+[1;34m|[m[1;35m\[m [1;35m\[m  
+[1;34m|[m * [1;35m|[m [33m5cb4f08[m endpoints
+[1;34m|[m * [1;35m|[m [33mbb71a1a[m pruebas de endpoints
+* [1;35m|[m [1;35m|[m   [33m9bf208b[m Merge pull request #17 from 4GeeksAcademy/link-modals-to-endpoinds-Nelvb
+[1;35m|[m[31m\[m [1;35m\[m [1;35m\[m  
+[1;35m|[m [31m|[m[1;35m/[m [1;35m/[m  
+[1;35m|[m[1;35m/[m[31m|[m [1;35m|[m   
+[1;35m|[m * [1;35m|[m [33m3172aa1[m cambios basicos home
+[1;35m|[m[1;35m/[m [1;35m/[m  
+* [1;35m|[m   [33m5e6346c[m Merge pull request #16 from 4GeeksAcademy/endpoinds-nelvb
+[1;35m|[m[33m\[m [1;35m\[m  
+[1;35m|[m [33m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[33m|[m   
+[1;35m|[m * [33m24ea0e1[m[33m ([m[1;31morigin/endpoinds-nelvb[m[33m)[m combinando rutas
+[1;35m|[m *   [33mcd69b71[m Merge remote-tracking branch 'origin/Develop' into endpoinds-nelvb
+[1;35m|[m [34m|[m[1;35m\[m  
+[1;35m|[m [34m|[m[1;35m/[m  
+[1;35m|[m[1;35m/[m[34m|[m   
+* [34m|[m   [33mc6ef631[m Merge pull request #15 from 4GeeksAcademy/Jumbotron
+[36m|[m[1;31m\[m [34m\[m  
+[36m|[m * [34m|[m [33m8e07df5[m[33m ([m[1;31morigin/Jumbotron[m[33m)[m Jumbotron
+[36m|[m[36m/[m [34m/[m  
+* [34m|[m   [33ma1e4402[m Merge pull request #14 from 4GeeksAcademy/Endpoint-Juan
+[1;32m|[m[1;33m\[m [34m\[m  
+[1;32m|[m * [34m|[m [33mde6bdf9[m VALORACION
+[1;32m|[m * [34m|[m [33m2f20392[m fav
+[1;32m|[m * [34m|[m [33m4712b83[m reservas
+* [1;33m|[m [34m|[m   [33mf980c30[m Merge pull request #13 from 4GeeksAcademy/Vista-de-reservas
+[1;33m|[m[1;35m\[m [1;33m\[m [34m\[m  
+[1;33m|[m [1;35m|[m[1;33m/[m [34m/[m  
+[1;33m|[m[1;33m/[m[1;35m|[m [34m|[m   
+[1;33m|[m * [34m|[m [33m9680d77[m[33m ([m[1;31morigin/Vista-de-reservas[m[33m)[m VISTA COMPLETADA RESTAURANTES POR CATEGORIA
+[1;33m|[m[1;33m/[m [34m/[m  
+[1;33m|[m * [33m067bdc5[m endpoints restaurantes funcionando
+[1;33m|[m * [33m0582fe8[m creados endpoinds de restaurantes
+[1;33m|[m * [33mc691404[m usuario pruebas exitoso
+[1;33m|[m * [33m8e958f4[m endpoints usuarios hasta el delete
+[1;33m|[m * [33m0c2bc98[m rutas usuario funcionando
+[1;33m|[m * [33mbc1cc54[m creadas rutas usuario
+[1;33m|[m[1;33m/[m  
+*   [33m0ba39e1[m Merge pull request #11 from 4GeeksAcademy/Modals
+[1;36m|[m[31m\[m  
+* [31m\[m   [33m3252003[m Merge pull request #6 from 4GeeksAcademy/Body-del-Home
+[32m|[m[33m\[m [31m\[m  
+[32m|[m * [31m|[m [33m933b36d[m[33m ([m[1;31morigin/Body-del-Home[m[33m)[m por examinar por los compañeros
+* [33m|[m [31m|[m   [33me60ca6d[m Merge pull request #5 from 4GeeksAcademy/Tablas
+[33m|[m[35m\[m [33m\[m [31m\[m  
+[33m|[m [35m|[m[33m/[m [31m/[m  
+[33m|[m[33m/[m[35m|[m [31m|[m   
+[33m|[m * [31m|[m [33m4a4e0d5[m tablas listas
+[33m|[m * [31m|[m [33m23cd282[m corregido
+[33m|[m * [31m|[m [33ma75ac6a[m tablas creadas
+[33m|[m * [31m|[m [33mf79f2b5[m relaciones
+[33m|[m[33m/[m [31m/[m  
+[33m|[m [31m|[m *   [33m605a73d[m[33m ([m[1;31morigin/main[m[33m)[m Merge pull request #9 from 4GeeksAcademy/Modals
+[33m|[m [31m|[m [36m|[m[31m\[m  
+[33m|[m [31m|[m [36m|[m[31m/[m  
+[33m|[m [31m|[m[31m/[m[36m|[m   
+[33m|[m * [36m|[m [33m0aab5d6[m[33m ([m[1;31morigin/Modals[m[33m)[m Merge pull request #8 from 4GeeksAcademy/main
+[33m|[m [1;32m|[m[36m\[m[36m|[m 
+[33m|[m [1;32m|[m *   [33ma829935[m Merge pull request #4 from 4GeeksAcademy/Modals
+[33m|[m [1;32m|[m [1;34m|[m[1;32m\[m  
+[33m|[m [1;32m|[m [1;34m|[m[1;32m/[m  
+[33m|[m [1;32m|[m[1;32m/[m[1;34m|[m   
+[33m|[m * [1;34m|[m [33me587c00[m He añadido los 3 modales de registro/inicio
+[33m|[m[33m/[m [1;34m/[m  
+* [1;34m|[m [33me89ced6[m Migration
+* [1;34m|[m   [33m1d289d4[m Merge pull request #3 from 4GeeksAcademy/Footer
+[1;36m|[m[31m\[m [1;34m\[m  
+[1;36m|[m * [1;34m\[m   [33m60cf96e[m Merge branch 'Develop' into Footer
+[1;36m|[m [32m|[m[1;36m\[m [1;34m\[m  
+[1;36m|[m [32m|[m[1;36m/[m [1;34m/[m  
+[1;36m|[m[1;36m/[m[32m|[m [1;34m|[m   
+* [32m|[m [1;34m|[m   [33mdb2e724[m Merge pull request #2 from 4GeeksAcademy/Body-del-Home
+[34m|[m[35m\[m [32m\[m [1;34m\[m  
+[34m|[m * [32m|[m [1;34m|[m [33m7479a30[m arreglados problemas
+[34m|[m * [32m|[m [1;34m|[m [33md9bcfac[m con errores
+[34m|[m * [32m|[m [1;34m|[m [33m40bdc4f[m boton img
+[34m|[m * [32m|[m [1;34m|[m [33m9fc73cf[m archivo ejemplo restaurante js
+[34m|[m * [32m|[m [1;34m|[m [33m04f7d24[m ruta dinamica layout
+[34m|[m * [32m|[m [1;34m|[m [33m53898da[m cards sin link
+[34m|[m * [32m|[m [1;34m|[m [33mb2fab1d[m base
+[34m|[m [1;34m|[m [32m|[m[1;34m/[m  
+[34m|[m [1;34m|[m[1;34m/[m[32m|[m   
+* [1;34m|[m [32m|[m   [33m191e8f4[m Merge pull request #1 from 4GeeksAcademy/Navbar
+[1;34m|[m[1;31m\[m [1;34m\[m [32m\[m  
+[1;34m|[m [1;31m|[m[1;34m/[m [32m/[m  
+[1;34m|[m[1;34m/[m[1;31m|[m [32m|[m   
+[1;34m|[m * [32m|[m [33mf056cd3[m Navbar
+[1;34m|[m[1;34m/[m [32m/[m  
+[1;34m|[m * [33md317207[m footer corregido
+[1;34m|[m * [33me465ae2[m footer
+[1;34m|[m[1;34m/[m  
+* [33m5a7ed8f[m Initial commit

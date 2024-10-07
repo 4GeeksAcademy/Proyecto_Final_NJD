@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import "../../styles/index.css";
+import { Context } from "../store/appContext";
 
 export const SignupUsuario = () => {
+    const { actions } = useContext(Context);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
@@ -41,7 +43,6 @@ export const SignupUsuario = () => {
             signupModalElement.removeEventListener('hidden.bs.modal', resetFormData);
         };
     }, []);
-    
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -55,85 +56,63 @@ export const SignupUsuario = () => {
             return;
         }
 
-        try {
-            const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    nombres: formData.firstName,
-                    apellidos: formData.lastName,
-                    email: formData.email,
-                    password: formData.password,
-                    telefono: formData.phone,
-                }),
+        // Llama a la acción del flux
+        const result = await actions.signupUsuario(formData);
+
+        if (result.success) {
+            setSuccessMessage("Usuario registrado con éxito");
+            setErrorMessage("");
+            Swal.fire({
+                title: "Usuario registrado con éxito",
+                text: "Serás redirigido al login.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+            }).then(() => {
+                // Guardar email y password en sessionStorage
+                sessionStorage.setItem("signup_email", formData.email);
+                sessionStorage.setItem("signup_password", formData.password);
+               
+                // Cerrar el modal de registro
+                const signupModal = document.getElementById("signupModal");
+                const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
+                signupModalInstance.hide();
+                setSuccessMessage("");  // Limpiar el mensaje
+
+                // Abrir el modal de login usando Bootstrap
+                const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                loginModal.show();
             });
 
-            if (response.ok) {
+            setFormData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                password: "",
+                repeatPassword: "",
+                phone: "",
+            });
+        } else if (result.message === "El email ya existe") {
+            Swal.fire({
+                title: "El email ya existe",
+                text: "Serás redirigido a la página de inicio de sesión.",
+                icon: "warning",
+                confirmButtonText: "Aceptar",
+            }).then(() => {
+
+                // Guardar email y password en sessionStorage
                 sessionStorage.setItem("signup_email", formData.email);
                 sessionStorage.setItem("signup_password", formData.password);
 
-                setSuccessMessage("Usuario registrado con éxito");
-                setErrorMessage("");
-                Swal.fire({
-                    title: "Usuario registrado con éxito",
-                    text: "Serás redirigido al login.",
-                    icon: "success",
-                    confirmButtonText: "Aceptar",
-                }).then(() => {
-                    // Guardar email y password en sessionStorage
-                    sessionStorage.setItem("signup_email", formData.email);
-                    sessionStorage.setItem("signup_password", formData.password);
-                   
-                    // Cerrar el modal de registro usando Bootstrap
-                    const signupModal = document.getElementById("signupModal");
-                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                    signupModalInstance.hide();
-                    setSuccessMessage("");  // Aquí también limpiamos el mensaje
+                const signupModal = document.getElementById("signupModal");
+                const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
+                signupModalInstance.hide();
 
-                    // Abrir el modal de login usando Bootstrap
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                    loginModal.show();
-                });
-
-                setFormData({
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    password: "",
-                    repeatPassword: "",
-                    phone: "",
-                });
-            } else if (response.status === 409) {
-                Swal.fire({
-                    title: "Usuario ya registrado",
-                    text: "Serás redirigido a la página de inicio de sesión.",
-                    icon: "warning",
-                    confirmButtonText: "Aceptar",
-                }).then(() => {
-
-                     // Guardar email y password en sessionStorage
-                    sessionStorage.setItem("signup_email", formData.email);
-                    sessionStorage.setItem("signup_password", formData.password);
-
-                    const signupModal = document.getElementById("signupModal");
-                    const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                    signupModalInstance.hide();
-
-                    // Abrir el modal de login usando Bootstrap
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                    loginModal.show();
-                });
-            } else {
-                const errorData = await response.json();
-                setErrorMessage(errorData.msg || "Error al registrar el usuario");
-            }
-        } catch (error) {
-            Swal.fire({
-                title: "Error de conexión",
-                text: "Intenta de nuevo más tarde.",
-                icon: "error",
-                confirmButtonText: "Aceptar",
+                // Abrir el modal de login
+                const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                loginModal.show();
             });
+        } else {
+            setErrorMessage(result.message || "Error al registrar el usuario");
         }
     };
 
@@ -166,7 +145,7 @@ export const SignupUsuario = () => {
                         name="lastName"
                         value={formData.lastName}
                         onChange={handleChange}
-                         placeholder="Apellidos"
+                        placeholder="Apellidos"
                         required
                     />
                 </div>
@@ -180,7 +159,7 @@ export const SignupUsuario = () => {
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                         placeholder="example@correo.com"
+                        placeholder="example@correo.com"
                         required
                     />
                 </div>
