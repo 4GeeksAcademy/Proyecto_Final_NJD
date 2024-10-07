@@ -89,7 +89,7 @@ class Restaurantes(db.Model):
     franja_horaria = db.Column(db.Integer)
     reservas_por_dia = db.Column(db.Integer)
     valoracion = db.Column(db.Integer)
-
+    image = db.Column(db.String(500), nullable=True)        
     password_hash = db.Column(db.String(300), nullable=False)
 
     # Relaciónes
@@ -123,7 +123,8 @@ class Restaurantes(db.Model):
             "reservas_por_dia": self.reservas_por_dia,
             "valoracion": self.valoracion,
             "categorias_id": self.categorias_id,
-            "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa))
+            "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa)),
+            "image": self.image
         }
 
 
