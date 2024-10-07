@@ -1,98 +1,33 @@
-import React, { useState, useEffect, useContext } from 'react';
-import { useParams } from 'react-router-dom';
-import { Context } from '../store/appContext';
+import React, { useEffect, useContext } from "react";
+import { Context } from "../store/appContext";
+import { useParams } from "react-router-dom";  // Si estás obteniendo el ID del restaurante por params
+import { restaurantDetails } from "../pages/restaurantDetails";
 
 const VistaPrivadaRestaurante = () => {
-  const { id } = useParams();
   const { store, actions } = useContext(Context);
-  const [formData, setFormData] = useState({
-    nombre: '',
-    direccion: '',
-    telefono: ''
-  });
-  const [imageFile, setImageFile] = useState(null); // Imagen local para Cloudinary
+  const { restauranteId } = useParams();  // Obteniendo el ID del restaurante de los parámetros de la URL
 
-  // Cargar los datos del restaurante al montar el componente
   useEffect(() => {
-    actions.loadRestaurantDetails(id);
-    actions.loadRestaurantReservations(id);
-    actions.loadRestaurantReviews(id);
-    actions.loadRestaurantFavorites(id);
-  }, [id]);
-
-  // Actualizar el formulario local cuando los datos del restaurante estén disponibles
-  useEffect(() => {
-    if (store.restaurantDetails) {
-      setFormData({
-        nombre: store.restaurantDetails.nombre,
-        direccion: store.restaurantDetails.direccion,
-        telefono: store.restaurantDetails.telefono
-      });
+    // Si restauranteId está disponible, se llama a la acción para obtener los detalles
+    if (restauranteId) {
+      actions.getRestaurante(restauranteId);  // Llama a la acción en el Flux
     }
-  }, [store.restaurantDetails]);
+  }, [restauranteId]);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const restaurante = store.restaurantDetails; //  detalles del restaurante desde el store
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    actions.updateRestaurantData(id, formData);
-  };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      actions.uploadRestaurantImage(file);
-    }
-  };
-
-  if (!store.restaurantDetails) return <div>Cargando...</div>;
+  // Si no hay restaurante,  un mensaje de carga
+  if (!restaurante) {
+    return <div>Cargando los datos del restaurante...</div>;
+  }
 
   return (
-    <div>
-      <h2>Vista Privada del Restaurante</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Nombre:</label>
-          <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Dirección:</label>
-          <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} />
-        </div>
-        <div>
-          <label>Teléfono:</label>
-          <input type="text" name="telefono" value={formData.telefono} onChange={handleChange} />
-        </div>
-        <button type="submit">Actualizar Datos</button>
-      </form>
-
-      <h3>Subir Imagen</h3>
-      <input type="file" onChange={handleImageUpload} />
-      {store.restaurantImage && <img src={store.restaurantImage} alt="Imagen del restaurante" />}
-
-      <h3>Reservas</h3>
-      <ul>
-        {store.restaurantReservations.map((reserva) => (
-          <li key={reserva.id}>
-            Fecha: {reserva.fecha_reserva}, Adultos: {reserva.adultos}, Niños: {reserva.niños}
-          </li>
-        ))}
-      </ul>
-
-      <h3>Valoraciones y Reseñas</h3>
-      <ul>
-        {store.restaurantReviews.map((review) => (
-          <li key={review.id}>
-            Puntuación: {review.puntuacion} - {review.comentario}
-          </li>
-        ))}
-      </ul>
-
-      <h3>Favoritos</h3>
-      <p>{store.favoritesCount} personas han marcado este restaurante como favorito.</p>
+    <div className="container">
+      <h1>{restaurante.nombre}</h1>
+      <p>Dirección: {restaurante.direccion}</p>
+      <p>Teléfono: {restaurante.telefono}</p>
+      <p>Valoración: {restaurante.valoracion}</p>
+      <img src={restaurante.image} alt={`Imagen de ${restaurante.nombre}`} />
     </div>
   );
 };

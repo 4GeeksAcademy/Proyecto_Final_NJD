@@ -253,6 +253,19 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+            // OBTENER UN RESTAURANTE POR ID
+            getRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`);
+                    if (!response.ok) {
+                        throw new Error("Error al cargar el restaurante");
+                    }
+                    const data = await response.json();
+                    setStore({ restaurantDetails: data }); // Guarda los detalles del restaurante en el store
+                } catch (error) {
+                    console.error("Error al cargar el restaurante", error);
+                }
+            },
 
             //COMPLETAR REGISTRO RESTAURANTE
             completarRegistroRestaurante: async (restauranteId, formData) => {

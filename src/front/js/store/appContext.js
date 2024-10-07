@@ -33,6 +33,7 @@ const injectContext = PassedComponent => {
 
 
 			state.actions.obtenerRestaurantes()
+			
 
 		}, []);
 
