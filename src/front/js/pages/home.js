@@ -144,10 +144,10 @@ export const Home = () => {
 								label: "Internacional",
 							},
 							{
-								to: "/restaurantes/latinoamerica",
+								to: "/restaurantes/latinoamericana",
 								src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJrK5FhZSciwBzr33zCT6IlttQe8D6XpoVB7sge1tfNIxRNLTPiX7ZP3jPlZfQjR1VN4&usqp=CAU",
 								alt: "Comida Latinoamérica",
-								label: "Latinoamérica",
+								label: "Latinoamericana",
 							},
 							{
 								to: "/restaurantes/saludable",
@@ -201,4 +201,4 @@ export const Home = () => {
 
 
 
-		
+

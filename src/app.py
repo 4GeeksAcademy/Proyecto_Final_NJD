@@ -23,6 +23,12 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
+
+
+# HARDCODE PARA METER LAS CATEGORIAS EN CADA RESET / SOLO PARA PRUEBAS
+from api.setup_categorias import cargar_categorias_iniciales
+
+
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -64,17 +70,19 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'nelvb'  # Clave secreta para JWT
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  # El token expira en 24 horas
 
-
-
-
+# Inicializar la base de datos y realizar migraciones
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
+
+
+
+# CARGAR CATEGORIAS INICIALES SI NO ESTAN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
+with app.app_context():
+    cargar_categorias_iniciales()  # <-- Llamar a la función aquí
+
 # Inicializar JWTManager
-
 jwt = JWTManager(app)
-
-
 
 # Configuración de Cloudinary
 cloudinary.config(
@@ -93,15 +101,11 @@ setup_commands(app)
 app.register_blueprint(api, url_prefix='/api')
 
 # Handle/serialize errors like a JSON object
-
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
-
 @app.route('/')
 def sitemap():
     if ENV == "development":
@@ -109,8 +113,6 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
-
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -154,12 +156,7 @@ def send_mail():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-  
-
-
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-

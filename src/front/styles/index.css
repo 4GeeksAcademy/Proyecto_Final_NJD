@@ -279,13 +279,13 @@
 /* Contenedor principal que contiene los tres divs */
 .restaurant-detail-main-container {
   display: flex;
-  flex-wrap: wrap; /* Permite que los contenedores se muevan a la siguiente línea si es necesario */
+  flex-wrap: wrap; 
   margin: 100px 200px 0 20px;
-  gap: 10px; /* Espacio entre los divs */
+  gap: 10px; 
 }
 
 .restaurant-detail-container {
-  flex: 1; /* Ocupa el mismo ancho cada uno */
+  flex: 1; 
   max-width: 600px;
   max-height: 800px;
   margin: 50px;
@@ -300,12 +300,12 @@
   align-items: center;
   padding: 20px;
   position: relative;
-  overflow: hidden; /* Evita que el contenido, como la imagen, se salga del contenedor */
+  /* overflow: hidden;  */
 
   /* Propiedades de la animación */
-  opacity: 0; /* El contenedor es invisible al inicio */
-  transform: translateY(-50px); /* Posición inicial fuera de la vista, por encima */
-  animation: slideDown 2s ease-out forwards; /* Duración de 1s, con suavizado al final */
+  opacity: 0; 
+  transform: translateY(-50px); 
+  animation: slideDown 2s ease-out forwards; 
 }
 
 
@@ -331,14 +331,60 @@
   border-radius: 12px;
   object-fit: cover; 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 1s ease, box-shadow 1s ease;
 }
 
 /* Efecto hover en la imagen */
 .restaurant-detail-container img:hover {
   transform: scale(1.05);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  transform: scale(1.3);
 }
+
+.restaurant-detail-container2 {
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; 
+  border: 2px solid #f1c40f;
+  width: 800px; 
+  height: 450px;
+  padding: 50px; 
+  background-color: white; 
+  border-radius: 8px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  margin-left: 40px;
+  margin-top: 200px;
+  position: relative; 
+  overflow: hidden; 
+  z-index: 1;
+}
+
+.restaurant-detail-container2 p {
+  z-index: 1;
+}
+
+.restaurant-image-fondo {
+  position: absolute;  
+  top: 75%;           
+  left: 50%;          
+  width: 100%;        
+  transform: translate(-50%, -50%); 
+  z-index: -1;   
+}
+
+/* Pseudo-elemento para el degradado */
+.restaurant-detail-container2::before {
+  content: ''; 
+  position: absolute; 
+  top: 0;             
+  left: 0;            
+  width: 100%;        
+  height: 100%;       
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.8) 70%); 
+  z-index: 0;         
+}
+
 
 /* Definición de la animación */
 @keyframes slideDown {
@@ -353,13 +399,36 @@
 }
 
 .opinions-slider {
+  position: fixed; 
+  top: 150px; /* Distancia desde la parte superior de la pantalla */
+  right: 150px; /* Distancia desde el borde derecho de la pantalla */
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px 0;
+  margin: 0; /* Elimina el margen superior e inferior */
+  z-index: 1000;
+  animation: slide-rigth 2s ease-out forwards;
+  border-left: 2px solid #f1c40f;
+}
+
+/* Animación de deslizamiento de derecha a izquierda */
+@keyframes slide-rigth {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.opinions-text {
+  color: white;
 }
 
 .opinion-card {
+  background-color: white;
   border: 1px solid #ccc;
   border-radius: 8px;
   padding: 20px;
@@ -375,8 +444,8 @@
 }
 
 .button-opinions-container {
-  display: flex; /* Permite alinear los botones en una fila */
-  gap: 10px; /* Espacio entre los botones */
+  display: flex; 
+  gap: 10px; 
 }
 
 .button-opinions1,
@@ -397,35 +466,159 @@
 
 /* BOTÓN DE RESERVA */
 
-.restaurant-detail-container2 {
-  display: flex; /* Activa el modo flexbox */
-  flex-direction: column; /* Coloca los elementos en columna */
-  align-items: center; /* Centra horizontalmente los elementos dentro del div */
-  justify-content: center; /* Centra verticalmente los elementos dentro del div */
-  width: 800px; 
-  height: 400px;
-  padding: 20px; /* Espaciado interno */
-  background-color: white; /* Fondo blanco para el contenedor */
-  border-radius: 8px; /* Bordes redondeados */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  margin-top: 50px;
-}
-
 .open-booking-button {
-  background-color: #f1c40f; /* Color de fondo vibrante */
-  color: white; /* Color del texto */
-  font-size: 18px; /* Tamaño de fuente */
-  padding: 15px 30px; /* Espaciado interno */
-  border: none; /* Sin borde */
-  border-radius: 5px; /* Bordes redondeados */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  transition: background-color 0.3s ease; /* Transición suave para el cambio de color */
-  margin-top: 20px; /* Espacio entre el párrafo y el botón */
+  background-color: #f1c40f; 
+  border: 1px solid #333;
+  color: white; 
+  font-size: 18px; 
+  padding: 15px 30px; 
+  border-radius: 10px; 
+  cursor: pointer; 
+  transition: background-color 0.3s ease; 
+  margin-top: 20px; 
+  z-index: 1;
 }
 
 .open-booking-button:hover {
-  background-color: #333; /* Color de fondo más oscuro al pasar el mouse */
+  background-color: #333; 
+  border: 2px solid #f1c40f;  
 }
+
+
+/* Modal Reservas. Botón de cierre */
+.btn-close-modal-booking {
+  color: #f1c40f;
+  background: none;
+  border: none;
+  font-size: 24px;
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  cursor: pointer;
+}
+
+.btn-close-modal-booking:hover {
+  color: red;
+}
+
+
+
+/* VER NUESTRA CARTA */
+/* Botón  */
+.open-carta-button {
+  background-color: #f1c40f; 
+  color: white; 
+  font-size: 18px; 
+  padding: 15px 30px; 
+  border: 1px solid #777;
+  border-radius: 10px; 
+  cursor: pointer; 
+  transition: background-color 1s ease; 
+  margin-top: 20px; 
+  z-index: 1;
+}
+
+.open-carta-button:hover {
+  background-color: #333; 
+  border: 2px solid #f1c40f;  
+}
+
+
+/* Imagen Modal Carta */
+
+/* Estilo del fondo cuando se muestra el modal */
+.carta-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.4); /* Fondo oscurecido */
+  transition: all 2s ease-in-out; /* Transición suave al abrir */
+}
+
+/* Estilo del diálogo del modal */
+.modal-dialog-carta {
+  max-width: 1200px;
+  margin: 150px auto;
+  transition: all 1s ease-in-out; /* Transición suave al abrir */
+}
+
+/* Estilo del contenido del modal */
+.modal-content-carta {
+  border-radius: 10px;
+  box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+}
+
+/* Estilo del header del modal */
+.modal-header-carta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  padding: 10px 20px;
+  background-color: #f8f9fa;
+  border-top-left-radius: 10px; 
+  border-top-right-radius: 10px; 
+}
+
+.modal-title-carta {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-weight: bold;
+  font-size: 30px;
+  padding: 0;
+  color: #333;
+  position: relative;
+  left: 35%;
+  top: 5px;
+}
+
+/* Estilo del botón de cerrar (X) */
+.btn-close-modal-carta {
+  background: none;
+  border: none;
+  font-size: 25px;
+  color: #f1c40f;
+  cursor: pointer;
+}
+
+/* Efecto hover del botón de cerrar (X) */
+.btn-close-modal-carta:hover {
+  color: red;
+}
+
+/* Estilo del cuerpo del modal */
+.modal-body-carta {
+  text-align: center;
+  padding: 20px;
+  background-color: #fff;
+  border-bottom-left-radius: 10px; 
+  border-bottom-right-radius: 10px; 
+}
+
+/* Estilo de la imagen dentro del modal */
+.modal-img-carta {
+  max-width: 80%; 
+  height: auto;
+  border-radius: 10px;
+  transition: transform 1s ease-in-out; 
+  box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Efecto hover en la imagen */
+.modal-img-carta:hover {
+  transform: scale(2); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

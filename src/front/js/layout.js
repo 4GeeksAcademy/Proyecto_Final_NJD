@@ -10,9 +10,9 @@ import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch"; 
 // import { RestaurantDetail } from "./pages/restaurantDetail"; 
-import { RegistroCompletoRestaurante } from "./pages/registro_restaurante"; // Asegúrate de que la ruta sea correcta
+import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
-import RestaurantDetail from "./pages/restaurantDetail"; // Asegúrate de que la ruta sea correcta
+import RestaurantDetail from "./pages/restaurantDetail";
 
 import { RegistroRestaurante } from "./pages/registro_restaurante";
 
