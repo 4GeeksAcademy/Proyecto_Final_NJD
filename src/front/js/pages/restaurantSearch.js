@@ -58,7 +58,7 @@ export const RestaurantSearch = () => {
             { id: 22, name: "Oasis del Sabor", tipo: "arabe", address: "Calle del Desierto 14, Granada", rating: 4.6, priceRange: "€€-€€€", image: "https://www.sientemarruecos.viajes/wp-content/uploads/2019/10/El-Restaurante-Al-Mounia-es-un-restaurante-marroqu%C3%AD-en-Madrid.jpg" },
             { id: 23, name: "El Sultán", tipo: "arabe", address: "Avenida Oasis 18, Córdoba", rating: 4.5, priceRange: "€€", image: "https://www.guiarepsol.com/content/dam/repsol-guia/contenidos-imagenes/comer/nuestros-favoritos/restaurante-el-califa-(vejer,-c%C3%A1diz)/00El_Califa_.jpg" },
             { id: 24, name: "Mezze Lounge", tipo: "arabe", address: "Boulevard Dubai 25, Madrid", rating: 4.7, priceRange: "€€€", image: "https://marruecoshoy.com/wp-content/uploads/2021/09/chebakia.png" },
-            
+
             // Tailandesa
             { id: 25, name: "Bangkok Delight", tipo: "tailandesa", address: "Calle Siam 4, Barcelona", rating: 4.4, priceRange: "€€-€€€", image: "https://viajeatailandia.com/wp-content/uploads/2018/07/Restaurantes-Tailandia.jpg" },
             { id: 26, name: "Sabai Sabai", tipo: "tailandesa", address: "Avenida Phuket 21, Madrid", rating: 4.5, priceRange: "€€-€€€", image: "https://www.topasiatour.com/pic/thailand/city/Bangkok/guide/jianxing-restaurant.jpg" },
@@ -68,13 +68,13 @@ export const RestaurantSearch = () => {
             { id: 28, name: "Haller", tipo: "internacional", address: "Avenida Montmartre 9, Barcelona", rating: 4.7, priceRange: "€€", image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/f8/0d/4d/arbol-de-yuca.jpg?w=2400&h=-1&s=1" },
             { id: 29, name: "Sublimotion", tipo: "internacional", address: "Paseo de la Castellana 13, Madrid", rating: 4.6, priceRange: "€€", image: "https://www.economistjurist.es/wp-content/uploads/sites/2/2023/08/293978.jpeg" },
             { id: 30, name: "Chez Marie", tipo: "internacional", address: "Calle Napoleón 19, Valencia", rating: 4.5, priceRange: "€€-€€€", image: "https://6e131064.rocketcdn.me/wp-content/uploads/2022/08/Girafe%C2%A9RomainRicard-5-1100x650-1.jpeg" },
-            
+
 
             // Aregintina
             { id: 31, name: "Asador Don Julio", tipo: "argentina", address: "Calle de la Carne 9, Madrid", rating: 4.7, priceRange: "€€", image: "https://media.timeout.com/images/106116523/1536/864/image.webp" },
             { id: 32, name: "Casa del Fernet", tipo: "argentina", address: "Paseo Marítimo 11, Barcelona", rating: 4.6, priceRange: "€€", image: "https://rio-marketing.com/wp-content/uploads/2024/02/fernet1.webp" },
             { id: 33, name: "Empanadas Locas", tipo: "argentina", address: "Calle de Verdad 19, Valencia", rating: 4.5, priceRange: "€€-€€€", image: "https://cdn.inteligenciaviajera.com/wp-content/uploads/2019/11/comida-tipica-argentina.jpg" },
-            
+
 
             // Saludable
             { id: 32, name: "Green Delight", tipo: "saludable", address: "Avenida de la Paz 45, Madrid", rating: 4.7, priceRange: "€€", image: "https://menusapiens.com/wp-content/uploads/2017/04/Comida-Sana-Alta-Cocina-MenuSapiens.jpeg" },
@@ -82,10 +82,10 @@ export const RestaurantSearch = () => {
             { id: 34, name: "Hortaliza Viva", tipo: "saludable", address: "Calle Mayor 21, Valencia", rating: 4.5, priceRange: "€€-€€€", image: "https://blog.covermanager.com/wp-content/uploads/2024/05/Como-Crear-un-Menu-Sostenible-para-Restaurantes-2048x1365.jpg" },
 
 
-            // Latinoamericana
-            { id: 35, name: "Sabor Latino", tipo: "latinoamerica", address: "Calle de Alcalá 22, Madrid", rating: 4.7, priceRange: "€€", image: "https://www.clarin.com/img/2021/06/03/_32tg_291_1256x620__1.jpg" },
-            { id: 36, name: "El Fogón de la Abuela", tipo: "latinoamerica", address: "Calle de la Reina 15, Barcelona", rating: 4.6, priceRange: "€€", image: "https://jotajotafoods.com/wp-content/uploads/2022/05/plato-Bandeja-Paisa.jpg" },
-            { id: 37, name: "Casa Caribe", tipo: "latinoamerica", address: "Paseo de la Castellana 33, Valencia", rating: 4.5, priceRange: "€€-€€€", image: "https://theobjective.com/wp-content/uploads/2024/04/2022-09-02.webp" }
+            // latinoamericanana
+            { id: 35, name: "Sabor Latino", tipo: "latinoamericana", address: "Calle de Alcalá 22, Madrid", rating: 4.7, priceRange: "€€", image: "https://www.clarin.com/img/2021/06/03/_32tg_291_1256x620__1.jpg" },
+            { id: 36, name: "El Fogón de la Abuela", tipo: "latinoamericana", address: "Calle de la Reina 15, Barcelona", rating: 4.6, priceRange: "€€", image: "https://jotajotafoods.com/wp-content/uploads/2022/05/plato-Bandeja-Paisa.jpg" },
+            { id: 37, name: "Casa Caribe", tipo: "latinoamericana", address: "Paseo de la Castellana 33, Valencia", rating: 4.5, priceRange: "€€-€€€", image: "https://theobjective.com/wp-content/uploads/2024/04/2022-09-02.webp" }
 
 
         ];
@@ -115,7 +115,7 @@ export const RestaurantSearch = () => {
             setFavorites([...favorites, restaurant]);
         }
     };
-console.log("prueba")
+    console.log("prueba")
     return (
         <>
 
@@ -134,12 +134,12 @@ console.log("prueba")
                         filteredRestaurants.map(restaurant => (
                             <div className="restaurant-card" key={restaurant.id}>
                                 <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                <img src={restaurant.image} alt={restaurant.name} className="restaurant-image" />
+                                    <img src={restaurant.image} alt={restaurant.name} className="restaurant-image" />
                                 </Link>
                                 <div className="restaurant-info">
-                                <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                    <h3>{restaurant.name}</h3>
-                                </Link>
+                                    <Link to={`/restaurant/detail/${restaurant.id}`}>
+                                        <h3>{restaurant.name}</h3>
+                                    </Link>
                                     <p>{restaurant.address}</p>
                                     <p><strong>Valoración:</strong> {restaurant.rating} ⭐</p>
                                     <p><strong>Rango de precios:</strong> {restaurant.priceRange}</p>
