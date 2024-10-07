@@ -3,16 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
-from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes
+from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
-from werkzeug.security import check_password_hash 
-# Crear un restaurante (POST /restaurantes)
-from werkzeug.security import generate_password_hash 
+from werkzeug.security import check_password_hash, generate_password_hash
 
 import re  # Para validación de email, contraseña y teléfono
-#Cloudinary
 import cloudinary.uploader
 
 api = Blueprint('api', __name__)
@@ -35,16 +32,21 @@ def is_valid_password(password):
         return False
     return True
 
+import re  # Asegúrate de importar el módulo re
+
 # Validar formato de teléfono
 def is_valid_phone(phone):
-    phone_regex = r'^[\d\+\-]+$'  # Permitir solo números, + y -
+    # Permitir solo números, +, -, y espacios
+    phone_regex = r'^[\d\+\-\s]+$'
     if len(phone) < 9:  # Al menos 9 caracteres
         return False
     if not re.match(phone_regex, phone):
         return False
     return True
 
-# Implementar la ruta /signup para el registro de usuarios:
+
+# REGISTRO USUARIO
+
 @api.route('/signup', methods=['POST'])
 def signup():
     body = request.get_json()
@@ -85,8 +87,12 @@ def signup():
     db.session.commit()
 
     return jsonify({'msg': 'Usuario registrado con éxito'}), 201
+ 
 
-# Implementar la ruta /login para iniciar sesión:
+
+
+# INICIO SESION USUARIO
+
 @api.route('/login', methods=['POST'])
 def login():
     body = request.get_json()
@@ -115,7 +121,10 @@ def login():
         'user_name': user.nombres  # Aquí envías el nombre del usuario
     }), 200
 
-# Ruta para generar un nuevo Access Token usando el Refresh Token
+
+
+# USAMOS REFRESH TOKEN PARA GENERAR UNO NUEVO AUTOMATICAMENTE
+
 @api.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
@@ -125,7 +134,10 @@ def refresh():
         'access_token': new_access_token
     }), 200
 
-# Ruta protegida con JWT, requiere token válido
+
+
+# RUTA PROTEGIDA CON TOKEN
+
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
@@ -144,7 +156,9 @@ def protected():
         'creado': user.creado.isoformat()
     }), 200
 
-# Ruta para validar un token JWT
+
+# VALIDAR EL TOKEN
+
 @api.route('/validate-token', methods=['GET'])
 @jwt_required()
 def validate_token():
@@ -156,13 +170,15 @@ def validate_token():
 
     return jsonify({'msg': 'Token válido', 'user_id': user.id, 'email': user.email}), 200
 
-# Obtener todos los usuarios (GET /usuarios)
+# OBTENER TODOS LOS USUARIOS
+
 @api.route('/usuarios', methods=['GET'])
 def get_all_users():
     usuarios = Usuario.query.all()
     return jsonify([usuario.serialize() for usuario in usuarios]), 200
 
-# Obtener un usuario por su ID (GET /usuario/<int:usuario_id>)
+# OBTENER UN USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['GET'])
 @jwt_required()
 def get_user(usuario_id):
@@ -172,7 +188,8 @@ def get_user(usuario_id):
     
     return jsonify(usuario.serialize()), 200
 
-# Actualiza un usuario (PUT /usuario/<int:usuario_id>)
+# ACTUALIZAR USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['PUT'])
 @jwt_required()
 def update_user(usuario_id):
@@ -195,7 +212,8 @@ def update_user(usuario_id):
 
     return jsonify({'msg': 'Usuario actualizado con éxito'}), 200
 
-# Eliminar un usuario (DELETE /usuario/<int:usuario_id>) 
+# ELIMINAR UN USUARIO
+
 @api.route('/usuario/<int:usuario_id>', methods=['DELETE'])
 @jwt_required()
 def delete_user(usuario_id):
@@ -211,58 +229,63 @@ def delete_user(usuario_id):
 
 
 
+# REGISTRO BASICO RESTAURANTE
+
 @api.route('/signup/restaurante', methods=['POST'])
 def signup_restaurante():
     body = request.get_json()
 
     nombre = body.get('nombre')
     email = body.get('email')
-    password = body.get('password')  # Obtener la contraseña del cuerpo de la solicitud
-    direccion = body.get('direccion')
-    latitud = body.get('latitud')
-    longitud = body.get('longitud')
+    password = body.get('password')
     telefono = body.get('telefono')
-    cubiertos = body.get('cubiertos')
-    cantidad_mesas = body.get('cantidad_mesas')
-    franja_horaria = body.get('franja_horaria')
-    reservas_por_dia = body.get('reservas_por_dia')
-    categorias_id = body.get('categorias_id')
 
-   # Validaciones de campos obligatorios para el registro
-    if not (nombre and email and password):
+    if not (nombre and email and password and telefono):
         return jsonify({'msg': 'Faltan datos obligatorios'}), 400
 
     # Verificar si el restaurante ya existe
     if Restaurantes.query.filter_by(email=email).first():
         return jsonify({'msg': 'El restaurante ya existe'}), 409
 
-    # Hashear la contraseña antes de guardarla
+    # Hashear la contraseña
     hashed_password = generate_password_hash(password)
 
-    # Crear el nuevo restaurante
     nuevo_restaurante = Restaurantes(
         nombre=nombre,
         email=email,
-        password_hash=hashed_password,  # Guardar la contraseña hasheada
-        direccion=direccion,
-        latitud=latitud,
-        longitud=longitud,
         telefono=telefono,
-        cubiertos=cubiertos,
-        cantidad_mesas=cantidad_mesas,
-        franja_horaria=franja_horaria,
-        reservas_por_dia=reservas_por_dia,
-        categorias_id=categorias_id
+        password_hash=hashed_password  # Guardar la contraseña hasheada
     )
-    
+
     db.session.add(nuevo_restaurante)
     db.session.commit()
 
-    return jsonify({'msg': 'Restaurante registrado con éxito'}), 201
+    return jsonify({'msg': 'Restaurante registrado con éxito', 'restaurante_id': nuevo_restaurante.id}), 201
 
 
 
-# Implementar la ruta /login/restaurante para iniciar sesión de restaurantes
+# REGISTRO DE RESTAURANTE COMPLETO
+
+@api.route('/restaurante/<int:restaurante_id>', methods=['PUT'])
+def completar_registro_restaurante(restaurante_id):
+    body = request.get_json()
+
+    restaurante = Restaurantes.query.get_or_404(restaurante_id)
+
+    restaurante.direccion = body.get('direccion')
+    restaurante.cubiertos = body.get('cubiertos')
+    restaurante.cantidad_mesas = body.get('cantidad_mesas')
+    restaurante.franja_horaria = body.get('franja_horaria')
+    restaurante.reservas_por_dia = body.get('reservas_por_dia')
+    restaurante.categorias_id = body.get('categorias_id')
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Registro completo'}), 200
+
+
+
+# LOGIN RESTAURANTE
 
 @api.route('/login/restaurante', methods=['POST'])
 def login_restaurante():
@@ -281,7 +304,7 @@ def login_restaurante():
         return jsonify({'msg': 'El restaurante no está registrado'}), 404
 
     # Verificar si la contraseña es correcta
-    if not restaurante.check_password(password):  # Usamos el método `check_password`
+    if not restaurante.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
     # Generar el Access Token y Refresh Token
@@ -293,18 +316,22 @@ def login_restaurante():
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'restaurant_name': restaurante.nombre  # Puedes devolver el nombre del restaurante
+        'restaurant_name': restaurante.nombre,  # Puedes devolver el nombre del restaurante
+        'restaurant_id': restaurante.id
     }), 200
 
 
 
-# Obtener todos los restaurantes (GET /restaurantes)
+# OBTENER TODOS LOS RESTAURANTES
+
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
     restaurantes = Restaurantes.query.all()
     return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
 
-# Obtener un restaurante por su ID (GET /restaurantes/<int:restaurante_id>)
+
+# OBTENER UN RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['GET'])
 def get_restaurante(restaurante_id):
     restaurante = Restaurantes.query.get(restaurante_id)
@@ -313,7 +340,10 @@ def get_restaurante(restaurante_id):
 
     return jsonify(restaurante.serialize()), 200
 
-# Actualizar un restaurante (PUT /restaurantes/<int:restaurante_id>)
+
+
+# ACTUALIZAR RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['PUT'])
 @jwt_required()  # Sólo los profesionales pueden actualizar los restaurantes
 def update_restaurante(restaurante_id):
@@ -327,8 +357,6 @@ def update_restaurante(restaurante_id):
     restaurante.nombre = body.get('nombre', restaurante.nombre)
     restaurante.email = body.get('email', restaurante.email)
     restaurante.direccion = body.get('direccion', restaurante.direccion)
-    restaurante.latitud = body.get('latitud', restaurante.latitud)
-    restaurante.longitud = body.get('longitud', restaurante.longitud)
     restaurante.telefono = body.get('telefono', restaurante.telefono)
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
     restaurante.franja_horaria = body.get('franja_horaria', restaurante.franja_horaria)
@@ -340,7 +368,10 @@ def update_restaurante(restaurante_id):
 
     return jsonify({'msg': 'Restaurante actualizado con éxito'}), 200
 
-# Eliminar un restaurante (DELETE /restaurantes/<int:restaurante_id>)
+
+
+# ELIMINAR RESTAURANTE
+
 @api.route('/restaurantes/<int:restaurante_id>', methods=['DELETE'])
 @jwt_required()  # Sólo los profesionales pueden eliminar los restaurantes
 def delete_restaurante(restaurante_id):
@@ -354,20 +385,60 @@ def delete_restaurante(restaurante_id):
 
     return jsonify({'msg': 'Restaurante eliminado con éxito'}), 200
 
+
+
+# CREAR CATEGORIA
+
+@api.route('/categorias', methods=['POST'])
+def create_categoria():
+    data = request.json
+    if isinstance(data, list):
+        for categoria_data in data:
+            nueva_categoria = Categorias(nombre_de_categoria=categoria_data['nombre_de_categoria'])
+            db.session.add(nueva_categoria)
+    else:
+        nueva_categoria = Categorias(nombre_de_categoria=data['nombre_de_categoria'])
+        db.session.add(nueva_categoria)
+    
+    db.session.commit()
+    
+    return jsonify({"message": "Categorías creadas correctamente"}), 201
+
+
+
+# OBTENER TODAS LAS CATEGORIAS
+
+@api.route('/categorias', methods=['GET'])
+def get_categorias():
+    categorias = Categorias.query.all()
+    return jsonify([categoria.serialize() for categoria in categorias]), 200
+
+
+# OBTENER UNA CATEGORIA
+
+@api.route('/categorias/<int:categoria_id>', methods=['GET'])
+def get_categoria(categoria_id):
+    categoria = Categorias.query.get_or_404(categoria_id)  # Obtener la categoría por ID o lanzar 404 si no se encuentra
+    return jsonify(categoria.serialize()), 200  # Retornar la categoría encontrada
+
+
+
 #CREAR RESERVA
 
-@api.route('/usuario/<int:usuario_id>/reservas', methods=['POST'])
-def crear_reserva(usuario_id):
+@api.route('/usuario/reservas', methods=['POST'])
+@jwt_required()
+def crear_reserva():
+    print("hola")
+
     body = request.get_json()
-    
+    usuario_id = get_jwt_identity()
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
     niños = body.get('niños')
     trona= body.get('trona')
-    estado_de_la_reserva = body.get('estado_de_la_reserva')
 
-    if not all([usuario_id, restaurante_id, fecha_reserva, adultos, niños, trona]):
+    if not all([restaurante_id, fecha_reserva, adultos, niños, trona]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     nueva_reserva = Reserva(
@@ -377,7 +448,6 @@ def crear_reserva(usuario_id):
         adultos=adultos,
         niños=niños,
         trona=trona,
-        estado_de_la_reserva= estado_de_la_reserva
     )
     db.session.add(nueva_reserva)
     db.session.commit()
@@ -594,3 +664,66 @@ def upload_image():
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
     
 
+@api.route('/poblar_restaurantes', methods=['POST'])
+def poblar_restaurante():
+    try:
+        mockRestaurants = [
+        { "id": 1, "nombre": "Trattoria Bella", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 1, "direccion": "Calle Mayor 45, Madrid", "valoracion": 4.7,  "image": "https://i0.wp.com/travelandleisure-es.com/wp-content/uploads/2024/04/TAL-ristorante-seating-ITLNRESTAURANTS0424-5403b234cdbd4026b2e98bed659b1634.webp?fit=750%2C500&ssl=1" },
+        { "id": 2, "nombre": "Pasta Fresca", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 1, "direccion": "Calle de la Paz 10, Valencia", "valoracion": 4.3,  "image": "https://static.wixstatic.com/media/e7e925_6e8c1ffb4cd8432ea5a37cec591048ad~mv2.jpg/v1/fill/w_2880,h_1598,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e7e925_6e8c1ffb4cd8432ea5a37cec591048ad~mv2.jpg" },
+        { "id": 3, "nombre": "Osteria del Mare", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 1, "direccion": "Paseo Marítimo 8, Barcelona", "valoracion": 4.5,  "image": "https://s3.abcstatics.com/abc/www/multimedia/gastronomia/2023/01/16/forneria-RMj62LyNsJZlBCufEion5YK-1200x840@abc.jpg" },
+        { "id": 4, "nombre": "El Mariachi Loco", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 2, "direccion": "Avenida de América 23, Madrid", "valoracion": 4.6,  "image": "https://i0.wp.com/lattin.ca/wp-content/uploads/2016/05/El_Catrin_Inside_51.png?w=1085&ssl=1" },
+        { "id": 5, "nombre": "Cantina del Cactus", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 2, "direccion": "Boulevard de los Aztecas 15, Barcelona", "valoracion": 4.2,  "image": "https://images.ecestaticos.com/kCk1Qljo-a1ll2eVt2ovDfRo7pY=/0x0:1885x900/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fc66%2Fa99%2F8d5%2Fc66a998d5952c07d264a23dfdbecdcf2.jpg" },
+        { "id": 6, "nombre": "Tacos y Más", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 2, "direccion": "Calle del Carmen 99, Valencia", "valoracion": 4.7,  "image": "https://www.lavanguardia.com/files/image_990_484/files/fp/uploads/2022/08/04/62ebd8920f8fe.r_d.3275-3425-1343.jpeg" },
+        { "id": 7, "nombre": "Sakura House", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 3, "direccion": "Calle Bonsai 12, Madrid", "valoracion": 4.8,  "image": "https://winegogh.es/wp-content/uploads/2024/08/kelsen-fernandes-2hEcc-4cwZA-unsplash-scaled.jpg" },
+        { "id": 8, "nombre": "Samurai Sushi", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 3, "direccion": "Avenida de Japón 23, Barcelona", "valoracion": 4.6,  "image": "https://imagenes.esdiario.com/files/image_990_660/uploads/2024/06/22/66765b6b14a50.jpeg" },
+        { "id": 9, "nombre": "Yoko Ramen", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 3, "direccion": "Calle del Pescador 7, Valencia", "valoracion": 4.4,  "image": "https://media.timeout.com/images/100614777/1536/864/image.webp" },
+        { "id": 10, "nombre": "Dragón Rojo", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 4, "direccion": "Calle Pagoda 34, Madrid", "valoracion": 4.5,  "image": "https://offloadmedia.feverup.com/valenciasecreta.com/wp-content/uploads/2022/01/13123703/restaurantes-chinos-valencia-1024x683.jpg" },
+        { "id": 11, "nombre": "Dim Sum Palace", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 4, "direccion": "Avenida Oriente 22, Barcelona", "valoracion": 4.3,  "image": "https://offloadmedia.feverup.com/valenciasecreta.com/wp-content/uploads/2022/01/13123704/277526606_706703347177521_4948663648545209465_n.jpg" },
+        { "id": 12, "nombre": "Pekin Express", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 4, "direccion": "Calle Muralla 8, Sevilla", "valoracion": 4.2,  "image": "https://www.lavanguardia.com/files/image_990_484/uploads/2020/01/15/5e9977269a0d4.jpeg" },
+        { "id": 13, "nombre": "Curry Masala", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 5, "direccion": "Calle Taj Mahal 12, Madrid", "valoracion": 4.6,  "image": "https://www.sentirsebiensenota.com/wp-content/uploads/2022/04/restaurantes-indios-valencia-1080x640.jpg" },
+        { "id": 14, "nombre": "Palacio del Sabor", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 5, "direccion": "Avenida Ganges 5, Valencia", "valoracion": 4.4,  "image": "https://tumediodigital.com/wp-content/uploads/2021/03/comida-india-valencia.jpg" },
+        { "id": 15, "nombre": "Namaste India", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 5, "direccion": "Boulevard Raj 10, Barcelona", "valoracion": 4.7,  "image": "https://phantom-elmundo.unidadeditorial.es/7279f37ebecb49cf7738402f76486caa/crop/0x0/1478x985/resize/746/f/webp/assets/multimedia/imagenes/2021/06/15/16237493606773.png" },
+        { "id": 16, "nombre": "Hard Rock", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 6, "direccion": "Avenida de la Libertad 45, Madrid", "valoracion": 4.2,  "image": "https://ibiza-spotlight1.b-cdn.net/sites/default/files/styles/embedded_auto_740_width/public/article-images/138583/embedded-1901415944.jpeg?itok=oWiIVuDP" },
+        { "id": 17, "nombre": "Steak House", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 6, "direccion": "Calle Ruta 66 77, Barcelona", "valoracion": 4.5,  "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/17/34/e2/7d/barbecued-pork-ribs.jpg?w=1200&h=-1&s=1" },
+        { "id": 18, "nombre": "Bernie's Diner", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 6, "direccion": "Calle Manhattan 23, Valencia", "valoracion": 4.3,  "image": "https://offloadmedia.feverup.com/barcelonasecreta.com/wp-content/uploads/2015/07/09112834/usa-2.jpg" },
+        { "id": 19, "nombre": "Taberna Flamenca", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 7, "direccion": "Calle Sevilla 7, Sevilla", "valoracion": 4.6,  "image": "https://s1.ppllstatics.com/hoy/www/multimedia/202111/13/media/cortadas/165813563--1968x1310.jpg" },
+        { "id": 20, "nombre": "Casa del Arroz", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 7, "direccion": "Paseo de la Castellana 12, Madrid", "valoracion": 4.4,  "image": "https://ibiza-spotlight1.b-cdn.net/sites/default/files/styles/embedded_auto_740_width/public/article-images/138301/embedded-1808145593.jpg?itok=06R4cJZd" },
+        { "id": 21, "nombre": "Sabores del Mar", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 7, "direccion": "Plaza del Mar 3, Barcelona", "valoracion": 4.5, "image": "https://imagenes.elpais.com/resizer/v2/D7EEJHYCERGLVFSCY43QPDLO6E.jpg?auth=0dbf855b68440ee29905c103edef7d7cc1add094e50abbc376b2494772c44dd9&width=1200" },
+        { "id": 22, "nombre": "Oasis del Sabor", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 8, "direccion": "Calle del Desierto 14, Granada", "valoracion": 4.6,  "image": "https://www.sientemarruecos.viajes/wp-content/uploads/2019/10/El-Restaurante-Al-Mounia-es-un-restaurante-marroqu%C3%AD-en-Madrid.jpg" },
+        { "id": 23, "nombre": "El Sultán", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 8, "direccion": "Avenida Oasis 18, Córdoba", "valoracion": 4.5,  "image": "https://www.guiarepsol.com/content/dam/repsol-guia/contenidos-imagenes/comer/nuestros-favoritos/restaurante-el-califa-(vejer,-c%C3%A1diz)/00El_Califa_.jpg" },
+        { "id": 24, "nombre": "Mezze Lounge", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 8, "direccion": "Boulevard Dubai 25, Madrid", "valoracion": 4.7,  "image": "https://marruecoshoy.com/wp-content/uploads/2021/09/chebakia.png" },
+        { "id": 25, "nombre": "Bangkok Delight", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 9, "direccion": "Calle Siam 4, Barcelona", "valoracion": 4.4,  "image": "https://viajeatailandia.com/wp-content/uploads/2018/07/Restaurantes-Tailandia.jpg" },
+        { "id": 26, "nombre": "Sabai Sabai", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 9, "direccion": "Avenida Phuket 21, Madrid", "valoracion": 4.5,  "image": "https://www.topasiatour.com/pic/thailand/city/Bangkok/guide/jianxing-restaurant.jpg" },
+        { "id": 27, "nombre": "Thai Spice", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 9, "direccion": "Boulevard Chiang Mai 8, Valencia", "valoracion": 4.7,  "image": "https://www.hola.com/imagenes/viajes/2015030677296/bares-restaurantes-rascacielos-bangkok-tailandia/0-311-16/a_Sirocco---interior-a.jpg" },
+        { "id": 28, "nombre": "Haller", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 10, "direccion": "Avenida Montmartre 9, Barcelona", "valoracion": 4.7,  "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/0c/f8/0d/4d/arbol-de-yuca.jpg?w=2400&h=-1&s=1" },
+        { "id": 29, "nombre": "Sublimotion", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 10, "direccion": "Paseo de la Castellana 13, Madrid", "valoracion": 4.6,  "image": "https://www.economistjurist.es/wp-content/uploads/sites/2/2023/08/293978.jpeg" },
+        { "id": 30, "nombre": "Chez Marie", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 10, "direccion": "Calle Napoleón 19, Valencia", "valoracion": 4.5,  "image": "https://6e131064.rocketcdn.me/wp-content/uploads/2022/08/Girafe%C2%A9RomainRicard-5-1100x650-1.jpeg" },
+        { "id": 31, "nombre": "Asador Don Julio", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 11, "direccion": "Calle de la Carne 9, Madrid", "valoracion": 4.7,  "image": "https://media.timeout.com/images/106116523/1536/864/image.webp" },
+        { "id": 32, "nombre": "Casa del Fernet", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 11, "direccion": "Paseo Marítimo 11, Barcelona", "valoracion": 4.6,  "image": "https://rio-marketing.com/wp-content/uploads/2024/02/fernet1.webp" },
+        { "id": 33, "nombre": "Empanadas Locas", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 11, "direccion": "Calle de Verdad 19, Valencia", "valoracion": 4.5,  "image": "https://cdn.inteligenciaviajera.com/wp-content/uploads/2019/11/comida-tipica-argentina.jpg" },
+        { "id": 34, "nombre": "Green Delight", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 12, "direccion": "Avenida de la Paz 45, Madrid", "valoracion": 4.7,  "image": "https://menusapiens.com/wp-content/uploads/2017/04/Comida-Sana-Alta-Cocina-MenuSapiens.jpeg" },
+        { "id": 35, "nombre": "Vida Verde", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 12, "direccion": "Calle de la Luna 8, Barcelona", "valoracion": 4.6,  "image": "https://imagenes.elpais.com/resizer/v2/BSUD6VP76FGXJJE75BHINHYRAY.jpg?auth=2b94a0b2cdda6a164ea7b90ff96035281c2cd1ae8ead08a9d6d24df0d8ad9882&width=1200" },
+        { "id": 36, "nombre": "Hortaliza Viva", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 12, "direccion": "Calle Mayor 21, Valencia", "valoracion": 4.5,  "image": "https://blog.covermanager.com/wp-content/uploads/2024/05/Como-Crear-un-Menu-Sostenible-para-Restaurantes-2048x1365.jpg" },
+        { "id": 37, "nombre": "Sabor Latino", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 13, "direccion": "Calle de Alcalá 22, Madrid", "valoracion": 4.7,  "image": "https://www.clarin.com/img/2021/06/03/_32tg_291_1256x620__1.jpg" },
+        { "id": 38, "nombre": "El Fogón de la Abuela", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 13, "direccion": "Calle de la Reina 15, Barcelona", "valoracion": 4.6,  "image": "https://jotajotafoods.com/wp-content/uploads/2022/05/plato-Bandeja-Paisa.jpg" },
+        { "id": 39, "nombre": "Casa Caribe", "telefono": "555-555-555", "email": "reataurante@gmail.com", "cantidad_mesas": 10, "categoria_id": 13, "direccion": "Paseo de la Castellana 33, Valencia", "valoracion": 4.5,  "image": "https://theobjective.com/wp-content/uploads/2024/04/2022-09-02.webp" }
+    ]
+        for restaurante in mockRestaurants:
+            nuevo_restaurante = Restaurantes(
+
+                nombre=restaurante['nombre'],
+                email=restaurante['email'],
+                direccion=restaurante['direccion'],
+                telefono=restaurante['telefono'],
+                cantidad_mesas=restaurante['cantidad_mesas']
+            )
+
+            db.session.add(nuevo_restaurante)
+
+        db.session.commit() 
+        
+        return jsonify({"mensaje": "Restaurantes cargados a la base de datos con éxito"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
