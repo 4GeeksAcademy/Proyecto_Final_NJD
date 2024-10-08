@@ -5,6 +5,7 @@ import ReservationModal from "../component/reservationModal";
 // import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 export const RestaurantDetail = () => {
+
   const { id } = useParams();
   const [restaurants, setRestaurants] = useState([]);
   const [restaurant, setRestaurant] = useState(null);
@@ -151,6 +152,12 @@ export const RestaurantDetail = () => {
     closeModal()
   };
 
+  
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
@@ -217,7 +224,6 @@ export const RestaurantDetail = () => {
           <button className="button-opinions2" onClick={nextOpinion}>Siguiente</button>
         </div>
       </div>
-
     </div>
   );
 };
