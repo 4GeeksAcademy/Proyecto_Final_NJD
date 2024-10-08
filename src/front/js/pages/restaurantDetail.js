@@ -3,9 +3,7 @@ import { useParams } from "react-router-dom";
 
 import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
-import UploadImageCloudinary from "../component/uploadImageCloudinary";
-//API Email
-import ReservaForm from "../component/reservaForm";
+// import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 
 export const RestaurantDetail = () => {
@@ -75,6 +73,7 @@ const ReservationModal = ({ isOpen, onClose, onSubmit, formData, handleChange })
 const RestaurantDetail = () => {
 
   const { id } = useParams();
+  const [restaurants, setRestaurants] = useState([]);
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -198,30 +197,11 @@ const RestaurantDetail = () => {
 
     if (foundRestaurant) {
       setRestaurant(foundRestaurant);
-
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-  const [formData, setFormData] = useState({
-    nombre: '',
-    apellido: '',
-    telefono: '',
-    adultos: '',
-    niños: '',
-    trona: '',
-    fecha_reserva: '',
-    hora: ''
-  });
-
-  useEffect(() => {
-    // Lógica para cargar el restaurante
-    const fetchRestaurantDetails = async () => {
-      // Simulando la carga de datos
-      const mockRestaurant = { id: 1, nombre: "Restaurante de Prueba", direccion: "Calle Ejemplo 123" }; // Ejemplo
-      setRestaurant(mockRestaurant);
-
-    
       setLoading(false);
-    };
-    fetchRestaurantDetails();
+    } else {
+      setError("Restaurant not found");
+      setLoading(false);
+    }
   }, [id]);
 
 
@@ -240,21 +220,11 @@ const RestaurantDetail = () => {
     closeModal()
   };
 
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Reservation submitted", formData);
-    // Lógica para manejar el envío de la reserva aquí
-    closeModal();
-  };
-
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
-  const openModal = () => setIsBookingModalOpen(true);
-  const closeModal = () => setIsBookingModalOpen(false);
 
 
   if (loading) return <div>Loading...</div>;
@@ -289,10 +259,6 @@ const RestaurantDetail = () => {
           Además, el servicio es atento y cercano, asegurando que cada comensal se sienta como en casa.</p>
 
         {/* Botón para abrir el modal de la reserva */}
-
-        <h1>{restaurant.nombre}</h1>
-        <p>Dirección: {restaurant.direccion}</p>
-
         <button onClick={openModal} className="open-booking-button">RESERVA AHORA</button>
         {/* Botón para abrir el moda de la carta */}
         <button onClick={CartaOpenModal} className="open-carta-button">VER NUESTRA CARTA</button>
@@ -328,24 +294,9 @@ const RestaurantDetail = () => {
           <button className="button-opinions2" onClick={nextOpinion}>Siguiente</button>
         </div>
       </div>
-
-    </div>
-  );
-
-};
-
-
-
-        isOpen={isBookingModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-        formData={formData}
-        handleChange={handleChange}
-      />
     </div>
   );
 };
-
-export default RestaurantDetail;
+}
 
 
