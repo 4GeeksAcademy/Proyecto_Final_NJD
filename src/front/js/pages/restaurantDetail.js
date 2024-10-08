@@ -5,6 +5,7 @@ import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
 // import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
+
 export const RestaurantDetail = () => {
 
 
@@ -297,5 +298,5 @@ const RestaurantDetail = () => {
   );
 };
 }
-export default RestaurantDetail;
+
 
