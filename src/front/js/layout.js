@@ -14,7 +14,6 @@ import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
 import RestaurantDetail from "./pages/restaurantDetail";
 
-import { RegistroRestaurante } from "./pages/registro_restaurante";
 
 const Layout = () => {
 

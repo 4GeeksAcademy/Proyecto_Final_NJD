@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../styles/index.css';
+import { Context } from '../store/appContext';
 
 export const LoginRestaurante = ({ onLogin }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const { actions } = useContext(Context);
     const navigate = useNavigate();
-
 
     useEffect(() => {
         const loginModalElement = document.getElementById('loginRestaurantModal');
@@ -37,94 +38,70 @@ export const LoginRestaurante = ({ onLogin }) => {
         };
     }, []);
 
-
-
-
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            const response = await fetch(process.env.BACKEND_URL + "/api/login/restaurante", {
-                method: 'POST',
-                headers: {
-                    'Content-type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: email,
-                    password: password,
-                })
+        // Mueve el fetch al flux y deja el resto de la lógica aquí
+        const result = await actions.loginRestaurante({ email, password });
+
+        if (result.success) {
+            sessionStorage.setItem('token', result.data.access_token);  // Guardar token de acceso
+            sessionStorage.setItem('restaurant_name', result.data.restaurant_name);  // Guardar nombre del restaurante en sessionStorage
+            sessionStorage.setItem('restaurant_id', result.data.restaurant_id);
+            console.log(result.data);  // Verifica qué recibe del servidor
+
+            // Actualiza el estado en la Navbar
+            onLogin(result.data.restaurant_name);
+
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); // Usa el ID correcto
+            if (loginModal) loginModal.hide();  // Cierra el modal de login
+            navigate('/registro_restaurante');
+
+        } else if (result.status === 404) {
+            // Usuario no registrado
+            Swal.fire({
+                title: 'Restaurante no registrado',
+                text: '¿Deseas registrarte?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Aceptar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    sessionStorage.setItem('signup_email', email);  // Guardar el email del intento de login
+
+                    // Cerrar el modal de login
+                    const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal'));
+                    if (loginModal) loginModal.hide();
+
+                    // Abrir el modal de signup
+                    const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));
+                    signupModal.show();
+                } else {
+                    setEmail('');  // Limpiar el email si cancela
+                    setPassword(''); //Limpiar la contraseña si cancela
+                }
             });
 
-            const data = await response.json();  // Leer la respuesta del backend
-
-            if (response.ok) {
-                sessionStorage.setItem('token', data.access_token);  // Guardar token de acceso
-                sessionStorage.setItem('restaurant_name', data.restaurant_name);  // Guardar nombre del restaurante en sessionStorage
-                sessionStorage.setItem('restaurant_id', data.restaurant_id)
-                console.log(data);  // Verifica qué recibe del servidor
-
-                // Actualiza el estado en la Navbar
-                onLogin(data.restaurant_name);
-
-                const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); // Usa el ID correcto
-                if (loginModal) loginModal.hide();  // Cierra el modal de login
-                navigate('/registro_restaurante')
-
-            } else if (response.status === 404) {
-                // Usuario no registrado
-                Swal.fire({
-                    title: 'Restaurante no registrado',
-                    text: '¿Deseas registrarte?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonText: 'Aceptar',
-                    cancelButtonText: 'Cancelar'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        sessionStorage.setItem('signup_email', email);  // Guardar el email del intento de login
-
-                        // Cerrar el modal de login
-                        const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal'));
-                        if (loginModal) loginModal.hide();
-
-                        // Abrir el modal de signup
-                        const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));
-                        signupModal.show();
-                    } else {
-                        setEmail('');  // Limpiar el email si cancela
-                        setPassword(''); //Limpiar la contraseña si cancela
-                    }
-                });
-
-            } else if (response.status === 401) {
-                // Contraseña icorrecta
-                Swal.fire({
-                    title: 'Contraseña incorrecta',
-                    text: 'Por favor, intenta nuevamente.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                }).then(() => {
-                    setPassword(''); // Limpiar la contraseña
-                });
-            } else {
-                Swal.fire({
-                    title: 'Error al iniciar sesión',
-                    text: 'Respuesta no valida del servidor.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
-            }
-        } catch (error) {
-            console.error('Error de conexión o problema grave:', error);
+        } else if (result.status === 401) {
+            // Contraseña incorrecta
             Swal.fire({
-                title: 'Error de conexión',
-                text: 'No se pudo conectar con el servidor. Inténtalo más tarde.',
+                title: 'Contraseña incorrecta',
+                text: 'Por favor, intenta nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            }).then(() => {
+                setPassword(''); // Limpiar la contraseña
+            });
+        } else {
+            Swal.fire({
+                title: 'Error al iniciar sesión',
+                text: 'Respuesta no valida del servidor.',
                 icon: 'error',
                 confirmButtonText: 'Aceptar'
             });
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit}>
