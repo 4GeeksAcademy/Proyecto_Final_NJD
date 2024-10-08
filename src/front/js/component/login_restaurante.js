@@ -61,6 +61,8 @@ export const LoginRestaurante = ({ onLogin }) => {
                 navigate('/registro_restaurante');
             }
 
+            window.location.reload()
+
         } else if (result.status === 404) {
             // Usuario no registrado
             Swal.fire({

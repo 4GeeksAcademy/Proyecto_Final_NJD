@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-
 import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
 // import UploadImageCloudinary from "./components/UploadImageCloudinary";
-
 
 export const RestaurantDetail = () => {
 
@@ -13,7 +11,6 @@ export const RestaurantDetail = () => {
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isCartaModalOpen, setIsCartaModalOpen] = useState(false); 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -140,7 +137,6 @@ export const RestaurantDetail = () => {
     }
   }, [id]);
 
-
   const nextOpinion = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % opinions.length);
   };
@@ -170,7 +166,6 @@ export const RestaurantDetail = () => {
   return (
     <div className="restaurant-detail-main-container">
       <div className="restaurant-detail-container">
-
         <h1>{restaurant.name}</h1>
         <p>
           <i className="fas fa-utensils" style={{ color: "#232323" }}></i> Tipo de comida: {restaurant.tipo}
@@ -204,7 +199,6 @@ export const RestaurantDetail = () => {
       </div>
 
       <ReservationModal
-
         isOpen={isModalOpen}
         onClose={closeModal}
         onSubmit={handleSubmit}
@@ -233,6 +227,3 @@ export const RestaurantDetail = () => {
     </div>
   );
 };
-
-
-
