@@ -1,3 +1,5 @@
+from sqlalchemy.exc import ProgrammingError  # <-- Línea añadida para manejar el error si las tablas no están listas
+
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
@@ -23,11 +25,9 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
-
-
-# HARDCODE PARA METER LAS CATEGORIAS EN CADA RESET / SOLO PARA PRUEBAS
+# HARDCODE PARA METER LAS CATEGORIAS Y RESTAURANTES EN CADA RESET / SOLO PARA PRUEBAS
 from api.setup_categorias import cargar_categorias_iniciales
-
+from api.setup_restaurantes import cargar_restaurantes_iniciales  # <-- Añadido para cargar restaurantes también
 
 # from models import Person
 
@@ -38,7 +38,6 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 CORS(app)  # <-- Aquí habilitas CORS para todas las rutas
-
 
 # Instancia de Mail API email
 mail = Mail()
@@ -74,12 +73,13 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  # El token expira 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
-
-
-
-# CARGAR CATEGORIAS INICIALES SI NO ESTAN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
+# CARGAR CATEGORIAS Y RESTAURANTES INICIALES SI NO ESTÁN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
 with app.app_context():
-    cargar_categorias_iniciales()  # <-- Llamar a la función aquí
+    try:
+        cargar_categorias_iniciales()  # <-- Cambiado para que se maneje dentro de un bloque try
+        cargar_restaurantes_iniciales()  # <-- Añadido para cargar restaurantes después de las categorías
+    except ProgrammingError:  # <-- Capturar el error si las tablas no están listas
+        print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  # <-- Mensaje de error
 
 # Inicializar JWTManager
 jwt = JWTManager(app)
