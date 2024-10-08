@@ -78,6 +78,7 @@ def cargar_restaurantes_iniciales():
             print("Los restaurantes ya están cargados.")
     except ProgrammingError:
         print("No se pueden cargar los restaurantes porque las tablas no están listas.")
+        db.session.rollback()
 
 
 
