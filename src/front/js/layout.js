@@ -12,7 +12,7 @@ import { RestaurantSearch } from "./pages/restaurantSearch";
 import { RestaurantDetail } from "./pages/restaurantDetail"; 
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
-import VistaPrivadaRestaurante from "./pages/vistaPrivadaRestaurante";
+import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante";
 
 const Layout = () => {
 

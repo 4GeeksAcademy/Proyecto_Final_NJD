@@ -4,11 +4,10 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
 from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
-from api.utils import generate_sitemap, APIException
+from api.utils import validar_horario_reserva, generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
 from werkzeug.security import check_password_hash, generate_password_hash
-
 import re  # Para validación de email, contraseña y teléfono
 import cloudinary.uploader
 
@@ -32,7 +31,6 @@ def is_valid_password(password):
         return False
     return True
 
-import re  # Asegúrate de importar el módulo re
 
 # Validar formato de teléfono
 def is_valid_phone(phone):
@@ -262,40 +260,55 @@ def signup_restaurante():
 
     return jsonify({'msg': 'Restaurante registrado con éxito', 'restaurante_id': nuevo_restaurante.id}), 201
 
+# REGISTRO COMPLETO RESTAURANTE
 
-
-# REGISTRO DE RESTAURANTE COMPLETO
-
-@api.route('/restaurante/<int:restaurante_id>', methods=['PUT'])
+@api.route('/restaurante/<int:restaurante_id>/completar', methods=['PUT'])
+@jwt_required()
 def completar_registro_restaurante(restaurante_id):
     body = request.get_json()
 
     restaurante = Restaurantes.query.get_or_404(restaurante_id)
 
-    restaurante.direccion = body.get('direccion')
-    restaurante.cubiertos = body.get('cubiertos')
-    restaurante.cantidad_mesas = body.get('cantidad_mesas')
-    restaurante.franja_horaria = body.get('franja_horaria')
-    restaurante.reservas_por_dia = body.get('reservas_por_dia')
-    restaurante.categorias_id = body.get('categorias_id')
+    # Verificar si el registro ya está completo
+    if restaurante.registro_completo:
+        return jsonify({'msg': 'El restaurante ya ha completado su registro'}), 400
+
+    # Actualizar datos de registro
+    restaurante.direccion = body.get('direccion', restaurante.direccion)
+    restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
+    restaurante.cantidad_mesas = body.get('cantidad_mesas', restaurante.cantidad_mesas)
+    restaurante.horario_mañana_inicio = body.get('horario_mañana_inicio', restaurante.horario_mañana_inicio)
+    restaurante.horario_mañana_fin = body.get('horario_mañana_fin', restaurante.horario_mañana_fin)
+    restaurante.horario_tarde_inicio = body.get('horario_tarde_inicio', restaurante.horario_tarde_inicio)
+    restaurante.horario_tarde_fin = body.get('horario_tarde_fin', restaurante.horario_tarde_fin)
+    restaurante.reservas_por_dia = body.get('reservas_por_dia', restaurante.reservas_por_dia)
+    restaurante.categorias_id = body.get('categorias_id', restaurante.categorias_id)
+
+    # Validar si todos los campos importantes están completos
+    if all([restaurante.direccion, restaurante.cubiertos, restaurante.cantidad_mesas, 
+            restaurante.horario_mañana_inicio, restaurante.horario_mañana_fin,
+            restaurante.horario_tarde_inicio, restaurante.horario_tarde_fin, restaurante.categorias_id]):
+        restaurante.registro_completo = True
+    else:
+        return jsonify({'msg': 'Faltan datos para completar el registro'}), 400
 
     db.session.commit()
 
-    return jsonify({'msg': 'Registro completo'}), 200
+    return jsonify({'msg': 'Registro completado con éxito', 'registro_completo': restaurante.registro_completo}), 200
+
+
+
 
 
 
 # LOGIN RESTAURANTE
-
 @api.route('/login/restaurante', methods=['POST'])
 def login_restaurante():
     body = request.get_json()
-    print('RESPONSE', body)
     email = body.get('email')
     password = body.get('password')
 
     if not email or not password:
-        print('CREDENCIALES INVALIDAS')
         return jsonify({'msg': 'Credenciales inválidas'}), 401
 
     # Verificar si el restaurante existe en la base de datos
@@ -311,14 +324,22 @@ def login_restaurante():
     access_token = create_access_token(identity=restaurante.id)
     refresh_token = create_refresh_token(identity=restaurante.id)
 
-    print('INICIO', email)
+    # Verificar si el restaurante ha completado su registro comprobando los campos obligatorios
+    campos_obligatorios = [restaurante.direccion, restaurante.cubiertos, restaurante.cantidad_mesas, 
+                           restaurante.horario_mañana_inicio, restaurante.horario_mañana_fin, 
+                           restaurante.horario_tarde_inicio, restaurante.horario_tarde_fin, restaurante.categorias_id]
+    
+    # Si alguno de los campos obligatorios está vacío, se considera que el registro no está completo
+    registro_completo = all(campos_obligatorios)
 
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'restaurant_name': restaurante.nombre,  # Puedes devolver el nombre del restaurante
-        'restaurant_id': restaurante.id
+        'restaurant_name': restaurante.nombre,  # Devuelve el nombre del restaurante
+        'restaurant_id': restaurante.id,
+        'registro_completo': registro_completo  # Devuelve si el registro está completo
     }), 200
+
 
 
 
@@ -342,10 +363,10 @@ def get_restaurante(restaurante_id):
 
 
 
-# ACTUALIZAR RESTAURANTE
+# ACTUALIZAR  DATOS RESTAURANTE DESDE LA PAGINA PRIVADA
 
 @api.route('/restaurantes/<int:restaurante_id>', methods=['PUT'])
-@jwt_required()  # Sólo los profesionales pueden actualizar los restaurantes
+@jwt_required()  # Solo los restaurantes autenticados pueden actualizar sus datos
 def update_restaurante(restaurante_id):
     body = request.get_json()
     restaurante = Restaurantes.query.get(restaurante_id)
@@ -353,15 +374,29 @@ def update_restaurante(restaurante_id):
     if not restaurante:
         return jsonify({'msg': 'Restaurante no encontrado'}), 404
 
+    # Validar si el nuevo email ya está en uso por otro restaurante
+    nuevo_email = body.get('email', restaurante.email)
+    if nuevo_email != restaurante.email and Restaurantes.query.filter_by(email=nuevo_email).first():
+        return jsonify({'msg': 'El email ya está en uso'}), 409
+
     # Actualizar los campos del restaurante
     restaurante.nombre = body.get('nombre', restaurante.nombre)
-    restaurante.email = body.get('email', restaurante.email)
+    restaurante.email = nuevo_email
     restaurante.direccion = body.get('direccion', restaurante.direccion)
-    restaurante.telefono = body.get('telefono', restaurante.telefono)
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
-    restaurante.franja_horaria = body.get('franja_horaria', restaurante.franja_horaria)
+    restaurante.cantidad_mesas = body.get('cantidad_mesas', restaurante.cantidad_mesas)
+
+    # Actualizar los horarios si existen en el cuerpo de la solicitud
+    if 'horario_mañana_inicio' in body:
+        restaurante.horario_mañana_inicio = datetime.strptime(body['horario_mañana_inicio'], '%H:%M').time()
+    if 'horario_mañana_fin' in body:
+        restaurante.horario_mañana_fin = datetime.strptime(body['horario_mañana_fin'], '%H:%M').time()
+    if 'horario_tarde_inicio' in body:
+        restaurante.horario_tarde_inicio = datetime.strptime(body['horario_tarde_inicio'], '%H:%M').time()
+    if 'horario_tarde_fin' in body:
+        restaurante.horario_tarde_fin = datetime.strptime(body['horario_tarde_fin'], '%H:%M').time()
+
     restaurante.reservas_por_dia = body.get('reservas_por_dia', restaurante.reservas_por_dia)
-    restaurante.valoracion = body.get('valoracion', restaurante.valoracion)
     restaurante.categorias_id = body.get('categorias_id', restaurante.categorias_id)
 
     db.session.commit()
@@ -422,37 +457,65 @@ def get_categoria(categoria_id):
     return jsonify(categoria.serialize()), 200  # Retornar la categoría encontrada
 
 
+# OBTENER RESTAURANTE POR SU CATEGORIA
+
+
 
 #CREAR RESERVA
+
+from datetime import datetime
+from api.utils import validar_horario_reserva  # Importar la función de validación
 
 @api.route('/usuario/reservas', methods=['POST'])
 @jwt_required()
 def crear_reserva():
-    print("hola")
-
     body = request.get_json()
     usuario_id = get_jwt_identity()
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
     niños = body.get('niños')
-    trona= body.get('trona')
+    trona = body.get('trona')
 
+    # Validar que no falten campos requeridos
     if not all([restaurante_id, fecha_reserva, adultos, niños, trona]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
+    # Convertir fecha_reserva de string a objeto datetime
+    try:
+        fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d %H:%M:%S')  # Asegúrate de usar este formato
+    except ValueError:
+        return jsonify({"error": "Formato de fecha no válido. Usa el formato YYYY-MM-DD HH:MM:SS"}), 400
+
+    # Obtener los horarios del restaurante para validar
+    restaurante = Restaurantes.query.get(restaurante_id)
+    if not restaurante:
+        return jsonify({"error": "Restaurante no encontrado"}), 404
+
+    # Validar que la hora de la reserva está dentro de los horarios permitidos
+    if not validar_horario_reserva(
+            fecha_reserva.time(), 
+            restaurante.horario_mañana_inicio, 
+            restaurante.horario_mañana_fin, 
+            restaurante.horario_tarde_inicio, 
+            restaurante.horario_tarde_fin):
+        return jsonify({"error": "Hora de reserva fuera del horario permitido"}), 400
+
+    # Si todo está bien, crear la reserva
     nueva_reserva = Reserva(
         user_id=usuario_id,
         restaurante_id=restaurante_id,
         fecha_reserva=fecha_reserva,
         adultos=adultos,
         niños=niños,
-        trona=trona,
+        trona=trona
     )
+
     db.session.add(nueva_reserva)
     db.session.commit()
-    
+
     return jsonify({"message": "Reserva creada con éxito", "reserva": nueva_reserva.serialize()}), 201
+
 
 #OBTENER RESERVA
 

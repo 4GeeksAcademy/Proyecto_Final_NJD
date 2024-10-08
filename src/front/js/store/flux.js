@@ -182,15 +182,53 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
-
-            // OBTENER RESTAURANTES
-            obtenerRestaurantes: async () => {
+            modificarUsuario: async (userId, formData) => {
+                const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes`);
-                    const data = await response.json();
-                    setStore({ restaurantes: data });
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            nombres: formData.nombres,
+                            apellidos: formData.apellidos,
+                            email: formData.email,
+                            telefono: formData.telefono
+                        })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, message: "Usuario modificado con éxito", data: data };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al modificar el usuario" };
+                    }
                 } catch (error) {
-                    console.log(error);
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            eliminarUsuario: async (userId) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}` // Usamos el JWT para autenticación
+                        }
+                    });
+
+                    if (response.ok) {
+                        return { success: true, message: "Usuario eliminado con éxito" };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al eliminar el usuario" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
                 }
             },
 
@@ -224,6 +262,36 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al cargar categoría", error);
                 }
             },
+
+
+            // LOGIN RESTAURANTE
+            loginRestaurante: async (formData) => {
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + "/api/login/restaurante", {
+                        method: 'POST',
+                        headers: {
+                            'Content-type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            email: formData.email,
+                            password: formData.password,
+                        })
+                    });
+
+                    const data = await response.json();  // Leer la respuesta del backend
+
+                    if (response.ok) {
+                        sessionStorage.setItem('restaurant_name', data.restaurant_name);
+                        sessionStorage.setItem('restaurant_id', data.restaurant_id);
+                        return { success: true, data: data };
+                    } else {
+                        return { success: false, status: response.status, message: data.msg || 'Error al iniciar sesión' };
+                    }
+                } catch (error) {
+                    return { success: false, message: 'Error de conexión' };
+                }
+            },
+
 
             // REGISTRAR UN RESTAURANTE DATOS INICIALES
             signupRestaurante: async (formData) => {
@@ -267,11 +335,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-            //COMPLETAR REGISTRO RESTAURANTE
+            // COMPLETAR REGISTRO RESTAURANTE
             completarRegistroRestaurante: async (restauranteId, formData) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/completar`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -281,7 +349,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                             direccion: formData.direccion,
                             cubiertos: formData.cubiertos,
                             cantidad_mesas: formData.cantidad_mesas,
-                            franja_horaria: formData.franja_horaria,
+                            horario_mañana_inicio: formData.horario_mañana_inicio,
+                            horario_mañana_fin: formData.horario_mañana_fin,
+                            horario_tarde_inicio: formData.horario_tarde_inicio,
+                            horario_tarde_fin: formData.horario_tarde_fin,
                             reservas_por_dia: formData.reservas_por_dia,
                             categorias_id: formData.categorias_id
                         })
@@ -293,6 +364,80 @@ const getState = ({ getStore, getActions, setStore }) => {
                     } else {
                         const errorData = await response.json();
                         return { success: false, message: errorData.msg || "Error al completar el registro" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // MODIFICAR DATOS DEL RESTAURANTE DESDE LA PÁGINA PRIVADA
+            modificarDatosRestaurante: async (restauranteId, formData) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            nombre: formData.nombre,
+                            email: formData.email,
+                            direccion: formData.direccion,
+                            cubiertos: formData.cubiertos,
+                            cantidad_mesas: formData.cantidad_mesas,
+                            horario_mañana_inicio: formData.horario_mañana_inicio,
+                            horario_mañana_fin: formData.horario_mañana_fin,
+                            horario_tarde_inicio: formData.horario_tarde_inicio,
+                            horario_tarde_fin: formData.horario_tarde_fin,
+                            reservas_por_dia: formData.reservas_por_dia,
+                            categorias_id: formData.categorias_id
+                        })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, message: "Datos modificados con éxito", data: data };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al modificar los datos" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+
+
+
+
+            // OBTENER RESTAURANTES
+            obtenerRestaurantes: async () => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes`);
+                    const data = await response.json();
+                    setStore({ restaurantes: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+            // ELIMINAR RESTAURANTE
+            eliminarRestaurante: async (restauranteId) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
+                        method: "DELETE",
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        return { success: true, message: "Restaurante eliminado con éxito" };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al eliminar el restaurante" };
                     }
                 } catch (error) {
                     return { success: false, message: "Error de conexión" };

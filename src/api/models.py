@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime, timezone
+from datetime import datetime, timezone, time
 
 db = SQLAlchemy()
 
@@ -72,24 +72,23 @@ class Usuario(db.Model):
         }
     
 
-    #HAY QUE PASAR EL CAMPO DE EMEIL A UNIQUE TRUE
-    # TELEFONO UNIQUE FALSE, NULLABLE TRUE
-
-
 
 class Restaurantes(db.Model):
     __tablename__ = 'restaurantes' 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(30), unique=False, nullable=False)
     nombre = db.Column(db.String(30), unique=True, nullable=False)
-    direccion = db.Column(db.String(40), nullable=True)
+    direccion = db.Column(db.String(150), nullable=True)
     telefono = db.Column(db.String(20), nullable=False)
     cubiertos = db.Column(db.Integer)
     cantidad_mesas = db.Column(db.Integer, nullable=True) 
-    franja_horaria = db.Column(db.Integer)
+    horario_mañana_inicio = db.Column(db.Time, nullable=True)
+    horario_mañana_fin = db.Column(db.Time, nullable=True)
+    horario_tarde_inicio = db.Column(db.Time, nullable=True)
+    horario_tarde_fin = db.Column(db.Time, nullable=True)    
     reservas_por_dia = db.Column(db.Integer)
-    valoracion = db.Column(db.Integer)
-
+    registro_completo = db.Column(db.Boolean, default=False)
+    image = db.Column(db.String(500), nullable=True)
     password_hash = db.Column(db.String(300), nullable=False)
 
     # Relaciónes
@@ -98,7 +97,7 @@ class Restaurantes(db.Model):
     restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
     restaurantes_res = db.relationship('Reserva', backref='restaurantes')
     restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
-    restaurantes_valoracion = db.relationship('Valoracion', backref='restaurantes')
+
 
     def __repr__(self):
         return f'<Restaurantes {self.nombre}>'
@@ -119,11 +118,14 @@ class Restaurantes(db.Model):
             "direccion": self.direccion,
             "telefono": self.telefono,
             "cubiertos": self.cubiertos,
-            "franja_horaria": self.franja_horaria,
+            "horario_mañana_inicio": self.horario_mañana_inicio,
+            "horario_mañana_fin": self.horario_mañana_fin,
+            "horario_tarde_inicio": self.horario_tarde_inicio,
+            "horario_tarde_fin": self.horario_tarde_fin,
             "reservas_por_dia": self.reservas_por_dia,
-            "valoracion": self.valoracion,
             "categorias_id": self.categorias_id,
-            "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa))
+            "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa)),
+            "image": self.image
         }
 
 
