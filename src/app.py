@@ -77,6 +77,7 @@ db.init_app(app)
 with app.app_context():
     try:
         cargar_categorias_iniciales()  # <-- Cambiado para que se maneje dentro de un bloque try
+        db.session.commit() 
         cargar_restaurantes_iniciales()  # <-- Añadido para cargar restaurantes después de las categorías
     except ProgrammingError:  # <-- Capturar el error si las tablas no están listas
         print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  # <-- Mensaje de error

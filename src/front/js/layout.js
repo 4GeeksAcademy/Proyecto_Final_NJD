@@ -9,10 +9,11 @@ import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
 import { RestaurantSearch } from "./pages/restaurantSearch"; 
-import { RestaurantDetail } from "./pages/restaurantDetail"; 
+// import { RestaurantDetail } from "./pages/restaurantDetail"; 
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
-import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante";
+import {RestaurantDetail} from "./pages/restaurantDetail";
+
 
 const Layout = () => {
 
@@ -35,10 +36,8 @@ const Layout = () => {
                         {/* Nueva ruta para el registro de restaurantes */}
                         <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
                         <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
-                        {/* Vista privada usuario */}
+                        {/* Vista privada */}
                         <Route element={<PrivateView />} path="/private" />
-                        {/* Vista privada restaurante */}
-                        <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante"  />
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />
