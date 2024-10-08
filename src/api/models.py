@@ -72,17 +72,13 @@ class Usuario(db.Model):
         }
     
 
-    #HAY QUE PASAR EL CAMPO DE EMEIL A UNIQUE TRUE
-    # TELEFONO UNIQUE FALSE, NULLABLE TRUE
-
-
 
 class Restaurantes(db.Model):
     __tablename__ = 'restaurantes' 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(30), unique=False, nullable=False)
     nombre = db.Column(db.String(30), unique=True, nullable=False)
-    direccion = db.Column(db.String(40), nullable=True)
+    direccion = db.Column(db.String(150), nullable=True)
     telefono = db.Column(db.String(20), nullable=False)
     cubiertos = db.Column(db.Integer)
     cantidad_mesas = db.Column(db.Integer, nullable=True) 
@@ -92,7 +88,7 @@ class Restaurantes(db.Model):
     horario_tarde_fin = db.Column(db.Time, nullable=True)    
     reservas_por_dia = db.Column(db.Integer)
     registro_completo = db.Column(db.Boolean, default=False)
-
+    image = db.Column(db.String(500), nullable=True)
     password_hash = db.Column(db.String(300), nullable=False)
 
     # Relaciónes
@@ -101,7 +97,8 @@ class Restaurantes(db.Model):
     restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
     restaurantes_res = db.relationship('Reserva', backref='restaurantes')
     restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
-    imagenes = db.relationship('ImagenesRestaurante', backref='restaurantes', lazy=True, overlaps="restaurante")
+
+
     def __repr__(self):
         return f'<Restaurantes {self.nombre}>'
 
@@ -128,29 +125,7 @@ class Restaurantes(db.Model):
             "reservas_por_dia": self.reservas_por_dia,
             "categorias_id": self.categorias_id,
             "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa)),
-            "imagenes": list(map(lambda img: img.serialize(), self.imagenes))
-        }
-
-
-class ImagenesRestaurante(db.Model):
-    __tablename__ = 'imagenes_restaurante'
-    id = db.Column(db.Integer, primary_key=True)
-    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'), nullable=False)
-    url_imagen = db.Column(db.String(255), nullable=True)
-    creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-
-    # Relación con el modelo de restaurantes (añadimos overlaps para evitar conflicto)
-    restaurante = db.relationship('Restaurantes', overlaps="restaurantes,imagenes")
-
-    def __repr__(self):
-        return f'<Imagen {self.id} para el restaurante {self.restaurante_id}>'
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "restaurante_id": self.restaurante_id,
-            "url_imagen": self.url_imagen,
-            "creada": self.creada.isoformat()
+            "image": self.image
         }
 
 

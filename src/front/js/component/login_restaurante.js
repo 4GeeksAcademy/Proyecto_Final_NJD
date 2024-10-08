@@ -55,7 +55,11 @@ export const LoginRestaurante = ({ onLogin }) => {
 
             const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); // Usa el ID correcto
             if (loginModal) loginModal.hide();  // Cierra el modal de login
-            navigate('/registro_restaurante');
+            if (result.data.registro_completo){
+                navigate(`/vistaPrivadaRestaurante/${result.data.restaurant_id}`)
+            } else {
+                navigate('/registro_restaurante');
+            }
 
         } else if (result.status === 404) {
             // Usuario no registrado
