@@ -76,10 +76,10 @@ db.init_app(app)
 # CARGAR CATEGORIAS Y RESTAURANTES INICIALES SI NO ESTÁN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
 with app.app_context():
     try:
-        cargar_categorias_iniciales()  # <-- Cambiado para que se maneje dentro de un bloque try
+        cargar_categorias_iniciales()
         db.session.commit()  # Asegurar que las categorías se guarden antes de continuar
-        cargar_restaurantes_iniciales()  # <-- Añadido para cargar restaurantes después de las categorías
-    except ProgrammingError:  # <-- Capturar el error si las tablas no están listas
+        cargar_restaurantes_iniciales()
+    except ProgrammingError:
         print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  # <-- Mensaje de error
 
 # Inicializar JWTManager

@@ -1,44 +1,80 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom"; // Asegúrate de importar 'useNavigate'
+import { Link, useNavigate } from "react-router-dom"; 
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
-import { SignupUsuario } from "./signup_usuario"; // Importamos el componente SignupUsuario
+import { SignupUsuario } from "./signup_usuario";
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
-    const navigate = useNavigate(); // Añadir hook de navegación
+    const [isRestaurant, setIsRestaurant] = useState(false);
+    const navigate = useNavigate(); 
 
     useEffect(() => {
-        // Revisamos si hay un token y un nombre de usuario en sessionStorage
-        const token = sessionStorage.getItem("token");
-        const storedUserName = sessionStorage.getItem("user_name");
-        if (token && storedUserName) {
-            setLoggedIn(true);
-            setUserName(storedUserName);
-        }
-    }, []);
+        const handleStorageChange = () => {
+            const token = sessionStorage.getItem("token");
+            const storedUserName = sessionStorage.getItem("user_name");
+            const storedRestaurantName = sessionStorage.getItem("restaurant_name");
+        
+            console.log("Token:", token);
+            console.log("Stored User Name:", storedUserName);
+            console.log("Stored Restaurant Name:", storedRestaurantName);
 
-    const handleLogin = (userName) => {
+            if (token && storedRestaurantName) {
+                setIsRestaurant(true);
+                setUserName(storedRestaurantName);
+                setLoggedIn(true);
+            } 
+            else if (token && storedUserName) {
+                setIsRestaurant(false);
+                setUserName(storedUserName);
+                setLoggedIn(true);
+            } else {
+                setLoggedIn(false);
+                setUserName("");
+                setIsRestaurant(false);
+            }
+        };
+
+        // Llamamos una vez al montarse el componente
+        handleStorageChange();
+
+        // Añadir un listener para escuchar los cambios en sessionStorage
+        window.addEventListener("storage", handleStorageChange);
+
+        // Limpiar el listener cuando el componente se desmonta
+        return () => {
+            window.removeEventListener("storage", handleStorageChange);
+        };
+    }, [userName]);
+
+    const handleLogin = (userName, isRestaurantLogin = false) => {
+        if (isRestaurantLogin) {
+            sessionStorage.setItem("restaurant_name", userName);
+        } else {
+            sessionStorage.setItem("user_name", userName);
+        }
+
         setUserName(userName);
+        setIsRestaurant(isRestaurantLogin);
         setLoggedIn(true);
     };
 
     const handleLogout = () => {
-        // Eliminar el token, el nombre de usuario y los datos del registro del sessionStorage
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user_name");
+        sessionStorage.removeItem("restaurant_name");
         sessionStorage.removeItem("signup_email");
         sessionStorage.removeItem("signup_password");
-        
-        // Cambiar el estado de inicio de sesión
+
         setLoggedIn(false);
-        
-        // Redirigir a la página principal
+        setUserName("");
+        setIsRestaurant(false);
+
         navigate("/");
     };
-    
+
 
     return (
         <>
@@ -52,10 +88,21 @@ export const Navbar = () => {
                     <div className="ml-auto nav-links">
                         {loggedIn ? (
                             <>
-                                <span className="navbar-text">Hola {userName}</span>
-                                <button className="btn btn-secondary ml-2" onClick={handleLogout}>
-                                    Cerrar Sesión
-                                </button>
+                                {isRestaurant ? (
+                                    <>
+                                        <span className="navbar-text">Area privada restaurante {userName}</span>
+                                        <button className="btn btn-secondary ml-2" onClick={handleLogout}>
+                                            Cerrar Sesión
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <span className="navbar-text">Hola {userName}</span>
+                                        <button className="btn btn-secondary ml-2" onClick={handleLogout}>
+                                            Cerrar Sesión
+                                        </button>
+                                    </>
+                                )}
                             </>
                         ) : (
                             <>
