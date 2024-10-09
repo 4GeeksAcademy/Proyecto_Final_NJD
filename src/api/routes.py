@@ -459,6 +459,14 @@ def get_categoria(categoria_id):
 
 # OBTENER RESTAURANTE POR SU CATEGORIA
 
+@api.route('/categorias/<int:categoria_id>/restaurantes', methods=['GET'])
+def get_restaurantes_por_categoria(categoria_id):
+    restaurantes = Restaurantes.query.filter_by(categorias_id=categoria_id).all()
+
+    if not restaurantes:
+        return jsonify({"message": "No se encontraron restaurantes para esta categoría"}), 404
+
+    return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
 
 
 #CREAR RESERVA
