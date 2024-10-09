@@ -1,3 +1,5 @@
+from sqlalchemy.exc import ProgrammingError  # <-- Línea añadida para manejar el error si las tablas no están listas
+
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
@@ -23,6 +25,10 @@ from api.routes import api
 from api.admin import setup_admin
 from api.commands import setup_commands
 
+# HARDCODE PARA METER LAS CATEGORIAS Y RESTAURANTES EN CADA RESET / SOLO PARA PRUEBAS
+from api.setup_categorias import cargar_categorias_iniciales
+from api.setup_restaurantes import cargar_restaurantes_iniciales  # <-- Añadido para cargar restaurantes también
+
 # from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
@@ -32,7 +38,6 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 CORS(app)  # <-- Aquí habilitas CORS para todas las rutas
-
 
 # Instancia de Mail API email
 mail = Mail()
@@ -64,17 +69,21 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'nelvb'  # Clave secreta para JWT
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  # El token expira en 24 horas
 
-
-
-
+# Inicializar la base de datos y realizar migraciones
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
+# CARGAR CATEGORIAS Y RESTAURANTES INICIALES SI NO ESTÁN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
+with app.app_context():
+    try:
+        cargar_categorias_iniciales()
+        db.session.commit()  # Asegurar que las categorías se guarden antes de continuar
+        cargar_restaurantes_iniciales()
+    except ProgrammingError:
+        print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  # <-- Mensaje de error
+
 # Inicializar JWTManager
-
 jwt = JWTManager(app)
-
-
 
 # Configuración de Cloudinary
 cloudinary.config(
@@ -93,15 +102,11 @@ setup_commands(app)
 app.register_blueprint(api, url_prefix='/api')
 
 # Handle/serialize errors like a JSON object
-
-
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
 # generate sitemap with all your endpoints
-
-
 @app.route('/')
 def sitemap():
     if ENV == "development":
@@ -109,8 +114,6 @@ def sitemap():
     return send_from_directory(static_file_dir, 'index.html')
 
 # any other endpoint will try to serve it like a static file
-
-
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
@@ -154,12 +157,7 @@ def send_mail():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-  
-
-
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
-

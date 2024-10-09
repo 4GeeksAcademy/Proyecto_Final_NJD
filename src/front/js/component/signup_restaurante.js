@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
 export const SignupRestaurante = () => {
+    const { actions } = useContext(Context); // Acceder a las acciones del flux
     const [formData, setFormData] = useState({
         restaurantName: "",
         email: "",
@@ -26,21 +28,14 @@ export const SignupRestaurante = () => {
                 phone: "",
             });
             setErrorMessage("");
-            setSuccessMessage(""); // Limpiamos el mensaje de éxito al cerrar el modal
+            setSuccessMessage("");
         };
 
-        const registerModalElement = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
-
-        // Limpiar el formulario cuando se cierra el modal
-        if (registerModalElement) {
-            registerModalElement.addEventListener('hidden.bs.modal', resetFormData);
-        }
-
+        const registerModalElement = document.getElementById("registerModalRestaurante");
+        registerModalElement.addEventListener('hidden.bs.modal', resetFormData);
+        
         return () => {
-            // Eliminar el listener cuando el componente se desmonte
-            if (registerModalElement) {
-                registerModalElement.removeEventListener('hidden.bs.modal', resetFormData);
-            }
+            registerModalElement.removeEventListener('hidden.bs.modal', resetFormData);
         };
     }, []);
 
@@ -56,65 +51,37 @@ export const SignupRestaurante = () => {
             return;
         }
 
-        try {
-            const response = await fetch(process.env.BACKEND_URL + "/api/signup/restaurante", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    nombre: formData.restaurantName,
-                    email: formData.email,
-                    password: formData.password, // Asegúrate de tener el campo "password" en el backend
-                    telefono: formData.phone,
-                }),
+        const result = await actions.signupRestaurante(formData); // Llama a la acción del flux
+
+        if (result.success) {
+            sessionStorage.setItem("signup_email", formData.email);
+            sessionStorage.setItem("signup_password", formData.password);
+            
+            Swal.fire({
+                title: result.message,
+                text: "Serás redirigido al login.",
+                icon: "success",
+                confirmButtonText: "Aceptar",
+            }).then(() => {
+                const registerModal = document.getElementById("registerModalRestaurante");
+                const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
+                if (registerModalInstance) registerModalInstance.hide();
+
+                const loginModal = new bootstrap.Modal(document.getElementById("loginRestaurantModal"));
+                loginModal.show();
             });
 
-            if (response.ok) {
-                setSuccessMessage("Restaurante registrado con éxito");
-                setErrorMessage("");
-
-                Swal.fire({
-                    title: "Restaurante registrado con éxito",
-                    text: "Serás redirigido al login.",
-                    icon: "success",
-                    confirmButtonText: "Aceptar",
-                }).then(() => {
-                    const registerModal = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
-                    const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
-                    if (registerModalInstance) registerModalInstance.hide();  // Aseguramos que se cierra el modal de registro
-
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginRestaurantModal"));
-                    loginModal.show();
-                });
-
-                setFormData({
-                    restaurantName: "",
-                    email: "",
-                    password: "",
-                    repeatPassword: "",
-                    phone: "",
-                });
-            } else if (response.status === 409) {
-                Swal.fire({
-                    title: "Restaurante ya registrado",
-                    text: "Serás redirigido a la página de inicio de sesión.",
-                    icon: "warning",
-                    confirmButtonText: "Aceptar",
-                }).then(() => {
-                    const registerModal = document.getElementById("registerModalRestaurante"); // Cambiado por el ID correcto del modal
-                    const registerModalInstance = bootstrap.Modal.getInstance(registerModal);
-                    if (registerModalInstance) registerModalInstance.hide();
-
-                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                    loginModal.show();
-                });
-            } else {
-                const errorData = await response.json();
-                setErrorMessage(errorData.msg || "Error al registrar el restaurante");
-            }
-        } catch (error) {
+            setFormData({
+                restaurantName: "",
+                email: "",
+                password: "",
+                repeatPassword: "",
+                phone: "",
+            });
+        } else {
             Swal.fire({
-                title: "Error de conexión",
-                text: "Intenta de nuevo más tarde.",
+                title: "Error",
+                text: result.message,
                 icon: "error",
                 confirmButtonText: "Aceptar",
             });
