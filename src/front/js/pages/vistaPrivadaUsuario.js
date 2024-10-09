@@ -4,8 +4,6 @@ import Swal from 'sweetalert2';
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css";
 
-
-
 export const AreaPrivadaUsuario = () => {
     const { actions } = useContext(Context);
     const { user_id } = useParams();
@@ -15,11 +13,40 @@ export const AreaPrivadaUsuario = () => {
         email: '',
         telefono: ''
     });
+
+    const [modalData, setModalData] = useState({
+        field: '',
+        value: ''
+    });
+
+    const openModal = (field, currentValue) => {
+        setModalData({
+            field: field,
+            value: currentValue
+        });
+        const modal = new bootstrap.Modal(document.getElementById('editModal'));
+        modal.show();
+    };
+
+    const handleModalChange = (e) => {
+        setModalData({
+            ...modalData,
+            value: e.target.value
+        });
+    };
+
+    const handleModalSave = () => {
+        setFormData({
+            ...formData,
+            [modalData.field]: modalData.value
+        });
+        const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+        modal.hide();
+    };
+
     useEffect(() => {
         const fetchUserData = async () => {
             const token = sessionStorage.getItem('token');
-
-            console.log('Token en sessionStorage:', token);
             if (token) {
                 try {
                     const data = await actions.obtenerDatosUsuario(user_id);
@@ -36,16 +63,7 @@ export const AreaPrivadaUsuario = () => {
         };
         fetchUserData();
     }, [user_id]);
-    useEffect(() => {
-        console.log(formData);
-    }, [formData]);
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value
-        });
-    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const dataToSend = {
@@ -54,7 +72,6 @@ export const AreaPrivadaUsuario = () => {
             email: formData.email,
             telefono: formData.telefono,
         };
-        console.log('Datos enviados para modificar:', dataToSend);
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
             Swal.fire({
@@ -72,75 +89,99 @@ export const AreaPrivadaUsuario = () => {
             });
         }
     };
+
     return (
         <div className="area-privada">
             <div className="area-privada-container">
                 <div className="area-header">
-                    <h2 className="form-title">Hola {sessionStorage.getItem('user_name')}, estás en tu área privada</h2>
+                    <h2 className="form-title">Bienvenido a tu área privada</h2>
                 </div>
                 <div className="area-body">
-                    <form onSubmit={handleSubmit}>
-                        <div className="mb-3">
+                    {/* Iniciamos el formulario correctamente */}
+                    <form onSubmit={handleSubmit} className="row">
+                        <div className="col-md-6 mb-3">
                             <label htmlFor="firstName" className="form-label">Nombre</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="firstName"
-                                name="firstName"
-                                value={formData.firstName}
-                                onChange={handleChange}
-                                placeholder="Tu nombre"
-                                required
-                            />
+                            <div className="input-group">
+                                <div className="input-content">
+                                    <span className="form-control-plaintext">{formData.firstName}</span>
+                                    <span className="input-group-text icon-wrapper">
+                                        <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('firstName', formData.firstName)}></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="mb-3">
+                        <div className="col-md-6 mb-3">
                             <label htmlFor="lastName" className="form-label">Apellidos</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="lastName"
-                                name="lastName"
-                                value={formData.lastName}
-                                onChange={handleChange}
-                                placeholder="Tus apellidos"
-                                required
-                            />
+                            <div className="input-group">
+                                <div className="input-content">
+                                    <span className="form-control-plaintext">{formData.lastName}</span>
+                                    <span className="input-group-text icon-wrapper">
+                                        <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('lastName', formData.lastName)}></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="mb-3">
+                        
+                        <div className="col-md-6 mb-3">
                             <label htmlFor="email" className="form-label">Correo electrónico</label>
-                            <input
-                                type="email"
-                                className="form-control"
-                                id="email"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                placeholder="Tu correo electrónico"
-                                required
-                            />
+                            <div className="email-field input-content">
+                                <span className="form-control-plaintext">{formData.email}</span>
+                            </div>
                         </div>
-                        <div className="mb-3">
+
+                        <div className="col-md-6 mb-3">
                             <label htmlFor="telefono" className="form-label">Teléfono</label>
-                            <input
-                                type="tel"
-                                className="form-control"
-                                id="telefono"
-                                name="telefono"
-                                value={formData.telefono}
-                                onChange={handleChange}
-                                placeholder="Tu número de teléfono"
-                                required
-                            />
+                            <div className="input-group">
+                                <div className="input-content">
+                                    <span className="form-control-plaintext">{formData.telefono}</span>
+                                    <span className="input-group-text icon-wrapper">
+                                        <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('telefono', formData.telefono)}></i>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <button type="submit" className="btn btn-primary">Guardar Cambios</button>
+
+                        {/* Movemos el botón dentro del formulario */}
+                        <div className="text-left mt-4 col-12">
+                            <button type="submit" className="btn btn-primary">Guardar Cambios</button>
+                        </div>
                     </form>
-                    <div className="mt-4">
-                        <button className="btn btn-secondary" onClick={() => Swal.fire("Mis reservas", "Aquí estarán tus reservas")}>
-                            Ver mis reservas
-                        </button>
-                        <button className="btn btn-secondary ml-2" onClick={() => Swal.fire("Mis favoritos", "Aquí estarán tus favoritos")}>
-                            Ver mis favoritos
-                        </button>
+
+                    <div className="row mt-5 justify-content-center">
+                        <div className="col-md-3 mb-2">
+                            <button className="btn btn-secondary w-100" onClick={() => Swal.fire("Mis reservas", "Aquí estarán tus reservas")}>
+                                Ver mis reservas
+                            </button>
+                        </div>
+                        <div className="col-md-3 mb-2">
+                            <button className="btn btn-secondary w-100" onClick={() => Swal.fire("Mis favoritos", "Aquí estarán tus favoritos")}>
+                                Ver mis favoritos
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Modal para editar */}
+                <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title" id="editModalLabel">Editar {modalData.field === "firstName" ? "Nombre" : modalData.field === "lastName" ? "Apellidos" : "Teléfono"}</h5>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    value={modalData.value}
+                                    onChange={handleModalChange}
+                                />
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Guardar</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
