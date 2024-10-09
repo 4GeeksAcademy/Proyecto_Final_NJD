@@ -8,6 +8,7 @@ import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
+    const [userId, setUserId] = useState(null);  // Agregamos el userId al estado
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
 
@@ -15,11 +16,8 @@ export const Navbar = () => {
         const handleStorageChange = () => {
             const token = sessionStorage.getItem("token");
             const storedUserName = sessionStorage.getItem("user_name");
+            const storedUserId = sessionStorage.getItem("user_id");  // Obtenemos el user_id de sessionStorage
             const storedRestaurantName = sessionStorage.getItem("restaurant_name");
-        
-            console.log("Token:", token);
-            console.log("Stored User Name:", storedUserName);
-            console.log("Stored Restaurant Name:", storedRestaurantName);
 
             if (token && storedRestaurantName) {
                 setIsRestaurant(true);
@@ -29,10 +27,12 @@ export const Navbar = () => {
             else if (token && storedUserName) {
                 setIsRestaurant(false);
                 setUserName(storedUserName);
+                setUserId(storedUserId);  // Actualizamos el estado con el user_id
                 setLoggedIn(true);
             } else {
                 setLoggedIn(false);
                 setUserName("");
+                setUserId(null);  // Limpiamos el user_id si no está logueado
                 setIsRestaurant(false);
             }
         };
@@ -65,16 +65,24 @@ export const Navbar = () => {
         sessionStorage.removeItem("token");
         sessionStorage.removeItem("user_name");
         sessionStorage.removeItem("restaurant_name");
+        sessionStorage.removeItem("user_id");
         sessionStorage.removeItem("signup_email");
         sessionStorage.removeItem("signup_password");
 
         setLoggedIn(false);
         setUserName("");
+        setUserId(null);  // Limpiamos el user_id al hacer logout
         setIsRestaurant(false);
 
         navigate("/");
     };
 
+    // Función para manejar la navegación al área privada del usuario
+    const handlePrivateAreaNavigation = () => {
+        if (userId) {
+            navigate(`/private/${userId}`);
+        }
+    };
 
     return (
         <>
@@ -97,7 +105,14 @@ export const Navbar = () => {
                                     </>
                                 ) : (
                                     <>
-                                        <span className="navbar-text">Hola {userName}</span>
+                                        <span className="navbar-text">
+                                            <i
+                                                className="fa-solid fa-user"
+                                                style={{ cursor: "pointer", marginRight: "8px" }}
+                                                onClick={handlePrivateAreaNavigation}  // Al hacer clic redirige al área privada
+                                            ></i>
+                                            Hola {userName}
+                                        </span>
                                         <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                             Cerrar Sesión
                                         </button>
