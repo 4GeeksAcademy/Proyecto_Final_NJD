@@ -1,11 +1,8 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Context } from '../store/appContext';
-import { useParams, useHistory } from 'react-router-dom';
 
-export const PaginaDeRestauranteParaReservar = () => {
+export const PaginaDeRestauranteParaReservar = ({restaurante_id, isOpen, onClose}) => {
     const { actions, store } = useContext(Context);
-    const { restaurante_id } = useParams();
-    const history = useHistory();  //------PARA IR DESPUES DE LA RESERVA-------//
     const [formData, setFormData] = useState({
         nombre: '',
         apellido: '',
@@ -14,7 +11,8 @@ export const PaginaDeRestauranteParaReservar = () => {
         niños: '',
         trona: '',
         fecha_reserva: '',
-        hora: ''
+        hora: '',
+        restaurante_id: restaurante_id
     });
 
     useEffect(() => {
@@ -25,10 +23,11 @@ export const PaginaDeRestauranteParaReservar = () => {
         event.preventDefault();
         try {
             //-----ACA SE REGISTRA LA RESERVA EN LA BASE DE DATOS------//
-            const response = await fetch(`${process.env.BACKEND_URL}/api/reserva`, {
+            const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': 'Bearer '+ sessionStorage.getItem('token'),
                 },
                 body: JSON.stringify(formData)
             });
@@ -53,16 +52,16 @@ export const PaginaDeRestauranteParaReservar = () => {
         console.log("Modal cerrado");
     };
 
-    const onClose = () => {
-        closeModal();
-    };
 
+    if (!isOpen) return null;
+  
+    // Maneja el clic en el fondo del modal
     const handleBackdropClick = (e) => {
-        if (e.target === e.currentTarget) {
-            closeModal();
-        }
+      // Si el clic se realiza en el fondo del modal, cierra el modal
+      if (e.target.classList.contains("modal-backdrop") || e.target.classList.contains("modal")) {
+        onClose();
+      }
     };
-
     return (
         <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true" onClick={handleBackdropClick}>
             <div className="modal-dialog">
