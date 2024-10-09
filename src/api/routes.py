@@ -198,7 +198,6 @@ def update_user(usuario_id):
         return jsonify({'msg': 'Usuario no encontrado'}), 404
     
     # Actualiza datos del usuario
-    usuario.email = body.get('email', usuario.email)
     usuario.nombres = body.get('nombres', usuario.nombres)
     usuario.apellidos = body.get('apellidos', usuario.apellidos)
     usuario.telefono = body.get('telefono', usuario.telefono)
