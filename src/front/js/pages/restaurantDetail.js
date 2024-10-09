@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
+import {PaginaDeRestauranteParaReservar} from "./reserva"
 // import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 export const RestaurantDetail = () => {
@@ -198,7 +199,8 @@ export const RestaurantDetail = () => {
 
       </div>
 
-      <ReservationModal
+      <PaginaDeRestauranteParaReservar
+        restaurante_id={id}
         isOpen={isModalOpen}
         onClose={closeModal}
         onSubmit={handleSubmit}
