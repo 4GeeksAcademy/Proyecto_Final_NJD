@@ -343,7 +343,7 @@ def login_restaurante():
 
 
 
-# OBTENER TODOS LOS RESTAURANTES
+# OBTENER TODOS LOS RESTAURANTES error
 
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
@@ -725,6 +725,40 @@ def upload_image():
             "url": upload_result['secure_url']}), 200
     except Exception as e:
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
+    
+##-------CAMBIAR CONTRASEÑA SÍ------
+# Cambiar Contraseña de Restaurante
+@api.route('/restaurante/cambiar_contrasena', methods=['PUT'])
+@jwt_required()
+def cambiar_contrasena():
+    print("hola")
+    restaurante_id = get_jwt_identity()  # Obtiene el ID del restaurante autenticado
+    data = request.get_json()
+
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+
+    # Verificar que los campos están presentes
+    if not current_password or not new_password:
+        return jsonify({"msg": "Debe proporcionar la contraseña actual y la nueva contraseña"}), 400
+
+    # Buscar el restaurante por ID
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    # Verificar que el restaurante existe
+    if not restaurante:
+        return jsonify({"msg": "Restaurante no encontrado"}), 404
+
+    # Verificar que la contraseña actual es correcta
+    if not check_password_hash(restaurante.password_hash, current_password):
+        return jsonify({"msg": "Contraseña actual incorrecta"}), 401
+
+    # Actualizar la contraseña con el nuevo hash
+    restaurante.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
     
 
 @api.route('/poblar_restaurantes', methods=['POST'])

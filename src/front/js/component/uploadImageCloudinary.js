@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import "../../styles/vistaPrivadaRestaurante.css";
+
 
 const UploadImageCloudinary = () => {
     const [image, setImage] = useState(null);
@@ -35,15 +37,15 @@ const UploadImageCloudinary = () => {
 
     return (
         <div>
-            <h2>Subir imagen del restaurante</h2>
+            <h2 className="titulo_ediciom">Sube una imagen del restaurante</h2>
             <form onSubmit={handleSubmit}>
-                <input type="file" onChange={handleImageChange} accept="image/*" />
-                <button type="submit">Subir Imagen</button>
+                <input className="modificar_prueba" type="file" onChange={handleImageChange} accept="image/*" />
+                <button className="restaurant-private-image-upload" type="submit">Subir Imagen</button>
             </form>
 
             {imageUrl && (
                 <div>
-                    <h4>Imagen Subida:</h4>
+                    <h4 className="imagen_subida_upload">Imagen Subida:</h4>
                     <img src={imageUrl} alt="Imagen del Restaurante" width="300" />
                 </div>
             )}
