@@ -67,7 +67,7 @@ export const Home = () => {
 				</div>
 			</div>
 
-			<div className="cuisine-scroll">
+			<div id="cuisine-scroll" className="cuisine-scroll">
 				<h2>Explora Tipos de Cocina</h2>
 				<div className="scroll-wrapper">
 					<button className="scroll-btn left" onClick={scrollLeft}>

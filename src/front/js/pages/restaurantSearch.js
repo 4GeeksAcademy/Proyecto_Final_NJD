@@ -1,632 +1,109 @@
-
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"; // Importar useParams
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 export const RestaurantSearch = () => {
-    const { tipo } = useParams(); // Capturar el tipo desde la URL
+    const { categoria_id } = useParams();  // Obtenemos categoria_id de los parámetros de la URL
+    const { store, actions } = useContext(Context);
     const [searchQuery, setSearchQuery] = useState("");
-    const [restaurants, setRestaurants] = useState([]);
-    const [favorites, setFavorites] = useState([]); // Estado para favoritos
-    const [nombreCategoria, setNombreCategoria] = useState('')
-
+    const [favorites, setFavorites] = useState([]);
+    const [nombreCategoria, setNombreCategoria] = useState('');
+    const navigate = useNavigate();  // Reemplazo de useHistory por useNavigate
 
     useEffect(() => {
-    
+        // Asegurarse de que solo se obtengan restaurantes de la categoría seleccionada
+        actions.obtenerRestaurantesPorCategoria(categoria_id);
 
-        fetch(process.env.BACKEND_URL + '/api/categorias/' + tipo)
-        .then(response=>response.json())
-        .then(data=> setNombreCategoria(data.nombre_de_categoria))
+        // Obtener el nombre de la categoría
+        actions.obtenerUnaCategoria(categoria_id)
+            .then(data => {
+                if (data) {
+                    setNombreCategoria(data.nombre_de_categoria);
+                }
+            })
+            .catch(error => {
+                console.error("Error al obtener la categoría", error);
+            });
 
+        // Hacer scroll hacia la parte superior de la página al montar el componente
+        window.scrollTo(0, 0);
+    }, [categoria_id]);
 
-
-     ;
-    }, []);
-
-    // Normalizar el tipo a minúsculas para la comparación
-    const tipoNormalizado = tipo.toLowerCase();
-
-    // Filtrar primero por tipo de restaurante
-    const filteredByType = restaurants.filter(restaurant => restaurant.tipo.toLowerCase() === tipoNormalizado);
-
-    // Filtrar por búsqueda dentro del tipo seleccionado
-    const filteredRestaurants = filteredByType.filter(restaurant =>
-        restaurant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        restaurant.address.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredRestaurants = store.restaurantes.filter(restaurant =>
+        restaurant.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        restaurant.direccion?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Agregar o quitar de favoritos
     const toggleFavorite = (restaurant) => {
         if (favorites.includes(restaurant)) {
-            // Si ya está en favoritos, se elimina
             setFavorites(favorites.filter(fav => fav.id !== restaurant.id));
         } else {
-            // Si no está en favoritos, se agrega
             setFavorites([...favorites, restaurant]);
         }
     };
-    console.log("prueba")
+
+    // Función para redirigir al home y hacer scroll al div con id 'cuisine-scroll'
+    const handleOtherCuisineClick = () => {
+        navigate("/home");  // Redirigir al home
+        setTimeout(() => {
+            const scrollTarget = document.getElementById("cuisine-scroll");
+            if (scrollTarget) {
+                scrollTarget.scrollIntoView({ behavior: 'smooth' });
+            }
+        }, 500);  // Un pequeño retraso para asegurarse de que la página esté cargada
+    };
+
     return (
-        <>
-
-            <div className="restaurant-search-container">
-                <h2 className="tituloo">Restaurantes de comida {nombreCategoria}</h2>
-                <input
-                    type="text"
-                    className="search-bar"
-                    placeholder={`Buscar en restaurantes de tipo ${tipo}...`}
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.target.value)}
-                />
-
-                <div className="restaurant-cards-container">
-                    {filteredRestaurants.length > 0 ? (
-                        filteredRestaurants.map(restaurant => (
-                            <div className="restaurant-card" key={restaurant.id}>
-                                <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                    <img src={restaurant.image} alt={restaurant.name} className="restaurant-image" />
-                                </Link>
-                                <div className="restaurant-info">
-                                    <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                        <h3>{restaurant.name}</h3>
-                                    </Link>
-                                    <p>{restaurant.address}</p>
-                                    <p><strong>Valoración:</strong> {restaurant.rating} ⭐</p>
-                                    <p><strong>Rango de precios:</strong> {restaurant.priceRange}</p>
-                                </div>
-                                {/* Botón de favoritos */}
-                                <button
-                                    className={`favorite-button ${favorites.includes(restaurant) ? 'favorited' : ''}`}
-                                    onClick={() => toggleFavorite(restaurant)}
-                                >
-                                    {favorites.includes(restaurant) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
-                                </button>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No se encontraron restaurantes que coincidan con la búsqueda en la categoría {tipo}.</p>
-                    )}
-                </div>
+        <div className="restaurant-search-container">
+            <div className="titulo-container">
+                <h1 className="titulo-principal">Restaurantes de comida {nombreCategoria}</h1>
             </div>
-        </>
+
+            <h4 className="titulo">Busca aquí tu restaurante de comida {nombreCategoria}</h4>
+
+            <input
+                type="text"
+                className="search-bar"
+                placeholder="Introduce el nombre del restaurante que estás buscando..."
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)} // Actualiza la búsqueda cada vez que el usuario escribe
+            />
+
+            <div className="restaurant-cards-container">
+                {filteredRestaurants.length > 0 ? (
+                    filteredRestaurants.map(restaurant => (
+                        <div className="restaurant-card" key={restaurant.id}>
+                            <Link to={`/restaurant/detail/${restaurant.id}`}>
+                                <img src={restaurant.image} alt={restaurant.nombre} className="restaurant-image" />
+                            </Link>
+                            <div className="restaurant-info">
+                                <Link to={`/restaurant/detail/${restaurant.id}`}>
+                                    <h3>{restaurant.nombre}</h3>
+                                </Link>
+                                <p>{restaurant.direccion}</p>
+                                <p><strong>Valoración:</strong> {restaurant.rating || 'No disponible'} ⭐</p>
+                                <p><strong>Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
+                            </div>
+                            <button
+                                className={`favorite-button ${favorites.includes(restaurant) ? 'favorited' : ''}`}
+                                onClick={() => toggleFavorite(restaurant)}
+                            >
+                                {favorites.includes(restaurant) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <p>No se encontraron restaurantes que coincidan con la búsqueda en la categoría {nombreCategoria}.</p>
+                )}
+            </div>
+
+            {/* Nueva sección para redirigir al scroll de la home */}
+            <div className="other-cuisine-section">
+                <h4>¿Prefieres otro tipo de comida?</h4>
+                <button className="scroll-to-home-btn" onClick={handleOtherCuisineClick}>
+                    Explora otros tipos de cocina
+                </button>
+            </div>
+        </div>
     );
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
