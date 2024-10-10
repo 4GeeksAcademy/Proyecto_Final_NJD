@@ -47,7 +47,8 @@ export const LoginUsuario = ({ onLogin }) => {
         if (result.success) {
             sessionStorage.setItem('token', result.data.access_token);  // Guardar el token en sessionStorage
             sessionStorage.setItem('user_name', result.data.user_name);  // Guarda el nombre de usuario
-
+            sessionStorage.setItem('user_id', result.data.user_id);
+            
             // Actualiza el estado en la Navbar
             onLogin(result.data.user_name);
 

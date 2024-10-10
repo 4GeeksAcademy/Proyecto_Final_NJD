@@ -222,8 +222,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify({
                             nombres: formData.nombres,
                             apellidos: formData.apellidos,
-                            email: formData.email,
-                            telefono: formData.telefono
+                            telefono: formData.telefono,
+                            password: formData.password ? formData.password : undefined
                         })
                     });
 
@@ -238,6 +238,35 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+
+            obtenerDatosUsuario: async (userId) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+            
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Datos obtenidos del usuario:", data);  // Para depurar
+                        return data;
+                    } else {
+                        const errorData = await response.json();
+                        console.error("Error al obtener los datos del usuario:", errorData);
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Error al obtener los datos del usuario:", error);
+                    return null;
+                }
+            },
+            
+
 
             eliminarUsuario: async (userId) => {
                 const token = sessionStorage.getItem("token");

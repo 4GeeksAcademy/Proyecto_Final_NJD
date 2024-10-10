@@ -12,10 +12,10 @@ import { RestaurantSearch } from "./pages/restaurantSearch";
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
 import { RestaurantDetail } from "./pages/restaurantDetail";
+import { AreaPrivadaUsuario } from "./pages/vistaPrivadaUsuario"; // Importación correcta
 import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante"
 
 const Layout = () => {
-
     const basename = process.env.BASENAME || "";
 
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
@@ -31,10 +31,17 @@ const Layout = () => {
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
                         <Route element={<RestaurantSearch />} path="/restaurantes/:categoria_id" />
-
                         
                         {/* Nueva ruta para el registro de restaurantes */}
                         <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
+
+                        {/* Vista privada para el usuario */}
+                        <Route element={<AreaPrivadaUsuario />} path="/private/:user_id" /> {/* Página para editar perfil del usuario con el user_id */}
+
+
+                        {/* Página de bienvenida o sección general privada */}
+                        <Route element={<PrivateView />} path="/private" /> {/* Página general de área privada */}
+                        
                         <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
                         {/* Vista privada */}
                         <Route element={<PrivateView />} path="/private" />

@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react"; 
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
+import "../../styles/vistaPrivadaUsuario.css"; // Importa los estilos desde el mismo archivo
 
 export const RestaurantSearch = () => {
     const { categoria_id } = useParams();  // Obtenemos categoria_id de los parámetros de la URL
@@ -54,55 +55,61 @@ export const RestaurantSearch = () => {
     };
 
     return (
-        <div className="restaurant-search-container">
-            <div className="titulo-container">
-                <h1 className="titulo-principal">Restaurantes de comida {nombreCategoria}</h1>
-            </div>
+        <div className="area-privada">
+            <div className="area-privada-container">
+                {/* Header con el título principal */}
+                <div className="area-header">
+                    <h1 className="titulo-principal">Restaurantes de comida {nombreCategoria}</h1>
+                </div>
 
-            <h4 className="titulo">Busca aquí tu restaurante de comida {nombreCategoria}</h4>
+                {/* Input de búsqueda y filtros */}
+                <div className="area-body">
+                    <h4 className="titulo">Busca aquí tu restaurante de comida {nombreCategoria}</h4>
+                    <input
+                        type="text"
+                        className="search-bar form-control mb-3"
+                        placeholder="Introduce el nombre del restaurante que estás buscando..."
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.target.value)} // Actualiza la búsqueda cada vez que el usuario escribe
+                    />
 
-            <input
-                type="text"
-                className="search-bar"
-                placeholder="Introduce el nombre del restaurante que estás buscando..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)} // Actualiza la búsqueda cada vez que el usuario escribe
-            />
+                    {/* Cards de restaurantes */}
+                    <div className="restaurant-cards-container">
+                        {filteredRestaurants.length > 0 ? (
+                            filteredRestaurants.map(restaurant => (
+                                <div className="restaurant-card" key={restaurant.id}>
+                                    <Link to={`/restaurant/detail/${restaurant.id}`}>
+                                        <img src={restaurant.image} alt={restaurant.nombre} className="restaurant-image" />
+                                    </Link>
+                                    <div className="restaurant-info">
+                                        <Link to={`/restaurant/detail/${restaurant.id}`}>
+                                            <h3>{restaurant.nombre}</h3>
+                                        </Link>
+                                        <p>{restaurant.direccion}</p>
+                                        <p><strong>Valoración:</strong> {restaurant.rating || 'No disponible'} ⭐</p>
+                                        <p><strong>Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
+                                    </div>
+                                    <button
+                                        className={`favorite-button ${favorites.includes(restaurant) ? 'favorited' : ''}`}
+                                        onClick={() => toggleFavorite(restaurant)}
+                                    >
+                                        {favorites.includes(restaurant) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
+                                    </button>
+                                </div>
+                            ))
+                        ) : (
+                            <p>No se encontraron restaurantes que coincidan con la búsqueda en la categoría {nombreCategoria}.</p>
+                        )}
+                    </div>
 
-            <div className="restaurant-cards-container">
-                {filteredRestaurants.length > 0 ? (
-                    filteredRestaurants.map(restaurant => (
-                        <div className="restaurant-card" key={restaurant.id}>
-                            <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                <img src={restaurant.image} alt={restaurant.nombre} className="restaurant-image" />
-                            </Link>
-                            <div className="restaurant-info">
-                                <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                    <h3>{restaurant.nombre}</h3>
-                                </Link>
-                                <p>{restaurant.direccion}</p>
-                                <p><strong>Valoración:</strong> {restaurant.rating || 'No disponible'} ⭐</p>
-                                <p><strong>Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
-                            </div>
-                            <button
-                                className={`favorite-button ${favorites.includes(restaurant) ? 'favorited' : ''}`}
-                                onClick={() => toggleFavorite(restaurant)}
-                            >
-                                {favorites.includes(restaurant) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
-                            </button>
-                        </div>
-                    ))
-                ) : (
-                    <p>No se encontraron restaurantes que coincidan con la búsqueda en la categoría {nombreCategoria}.</p>
-                )}
-            </div>
-
-            {/* Nueva sección para redirigir al scroll de la home */}
-            <div className="other-cuisine-section">
-                <h4>¿Prefieres otro tipo de comida?</h4>
-                <button className="scroll-to-home-btn" onClick={handleOtherCuisineClick}>
-                    Explora otros tipos de cocina
-                </button>
+                    {/* Nueva sección para redirigir al scroll de la home */}
+                    <div className="other-cuisine-section">
+                        <h4>¿Prefieres otro tipo de comida?</h4>
+                        <button className="scroll-to-home-btn btn btn-secondary" onClick={handleOtherCuisineClick}>
+                            Explora otros tipos de cocina
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
