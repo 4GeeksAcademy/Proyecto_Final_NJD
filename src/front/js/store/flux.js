@@ -42,6 +42,14 @@ const getState = ({ getStore, getActions, setStore }) => {
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
                 const token = sessionStorage.getItem("token");
+            
+                // Asegúrate de que "niños" y "trona" no sean null, y envía 0 por defecto si no están presentes
+                const bodyData = {
+                    ...data,
+                    niños: data.niños || 0,
+                    trona: data.trona || 0
+                };
+            
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -49,9 +57,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}` // JWT
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(bodyData)
                     });
-
+            
                     if (response.ok) {
                         const result = await response.json();
                         alert("Reserva realizada con éxito");
@@ -63,7 +71,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     alert("Hubo un error al procesar la solicitud");
                 }
             },
-
+            
             // OBTENER RESERVAS
             obtenerReservas: async function (token, usuario_id) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
@@ -75,19 +83,21 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Authorization': `Bearer ${token}` // JWT
                         }
                     });
-
+            
                     if (response.ok) {
                         const result = await response.json();
-                        setStore({ reservas: result });
+                        return result;  // Devolver el resultado para usarlo en el componente
                     } else {
                         const error = await response.json();
                         alert("Error: " + error.message);
+                        return [];
                     }
                 } catch (err) {
                     alert("Hubo un error al procesar la solicitud");
+                    return [];
                 }
             },
-
+            
             // ACTUALIZAR RESERVAS
             actualizarReserva: async function (reserva_id, data, token) {
                 const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;

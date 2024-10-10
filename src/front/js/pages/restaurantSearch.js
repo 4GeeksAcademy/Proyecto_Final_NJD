@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react"; 
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css"; // Importa los estilos desde el mismo archivo
@@ -30,10 +30,17 @@ export const RestaurantSearch = () => {
         window.scrollTo(0, 0);
     }, [categoria_id]);
 
-    const filteredRestaurants = store.restaurantes.filter(restaurant =>
-        restaurant.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        restaurant.direccion?.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    useEffect(() => {
+        console.log(store.restaurantes)
+    }, [store.restaurantes])
+
+
+    const filteredRestaurants = Array.isArray(store.restaurantes)
+        ? store.restaurantes.filter(restaurant =>
+            restaurant.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            restaurant.direccion?.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+        : [];
 
     const toggleFavorite = (restaurant) => {
         if (favorites.includes(restaurant)) {
