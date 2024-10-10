@@ -117,6 +117,7 @@ class Restaurantes(db.Model):
             "nombre": self.nombre,
             "direccion": self.direccion,
             "telefono": self.telefono,
+            "cantidad_mesas": self.cantidad_mesas,
             "cubiertos": self.cubiertos,
             "horario_mañana_inicio": self.horario_mañana_inicio.isoformat() if self.horario_mañana_inicio else None,
             "horario_mañana_fin": self.horario_mañana_fin.isoformat() if self.horario_mañana_fin else None,

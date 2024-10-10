@@ -157,6 +157,8 @@ def send_mail():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
+
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))

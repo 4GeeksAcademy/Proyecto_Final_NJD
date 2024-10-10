@@ -7,9 +7,37 @@ const getState = ({ getStore, getActions, setStore }) => {
             valoraciones: [],
             categorias: [],
             restaurantes_favoritos: [],
+            restaurantDetails: {},
+
         },
 
         actions: {
+
+            //Modificar contraseña
+            // Agrega esta función a tus actions
+            cambiarContraseña: async (data) => {
+                const token = sessionStorage.getItem('token');
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + '/api/restaurante/cambiar_contrasena', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` // Incluye el token JWT en la cabecera
+                        },
+                        body: JSON.stringify(data)
+                    });
+                        console.log(response)
+                    const result = await response.json();
+                    if (response.ok) {
+                        return { success: true, message: result.msg };
+                    } else {
+                        return { success: false, message: result.msg };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
             // CREAR RESERVA
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
@@ -422,6 +450,55 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ restaurantes: data });
                 } catch (error) {
                     console.log(error);
+                }
+            },
+
+            getRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`);
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los detalles del restaurante");
+                    }
+                    const data = await response.json();
+                    setStore({ restaurantDetails: data });
+                    return data
+                } catch (error) {
+                    console.error("Error al cargar el restaurante", error);
+                }
+
+            },
+
+            obtenerValoracionRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/valoracion`);
+                    const data = await response.json();
+                    setStore({ valoraciones: data });
+                } catch (error) {
+                    console.error("Error al cargar las valoraciones", error);
+                }
+            },
+
+
+            // FUNCIÓN PARA SUBIR IMAGEN A CLOUDINARY
+            subirImagenRestaurante: async function (file) {
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", process.env.CLOUDINARY_PRESET); // Preset de Cloudinary
+
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, url: data.secure_url };
+                    } else {
+                        return { success: false, message: "Error al subir la imagen" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
                 }
             },
 
