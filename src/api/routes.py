@@ -613,12 +613,12 @@ def eliminar_favorito(usuario_id):
 
 #OBTENER FAVORITO
 
-@api.route('/usuario/favoritos/<int:user_id>', methods=['GET'])
-def obtener_favoritos(user_id):
-    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=user_id).all()
-    all_favoritos = list(map(lambda x: x.serialize(), favoritos))
-    
-    return jsonify(all_favoritos), 200
+@api.route('/usuario/<int:usuario_id>/favoritos', methods=['GET'])
+def obtener_favoritos(usuario_id):
+    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id).all()
+    if not favoritos:
+        return jsonify({"msg": "No tienes restaurantes favoritos"}), 404
+    return jsonify([favorito.serialize() for favorito in favoritos]), 200 
 
 #CREAR VALORACION
 

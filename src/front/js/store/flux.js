@@ -562,6 +562,18 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+            // OBTENER LOS FAVORITOS DEL USUARIO
+
+            obtenerFavoritosDelUsuario: async (usuario_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
+                    const data = await response.json();
+                    setStore({ favoritos: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
         }
     };
 };

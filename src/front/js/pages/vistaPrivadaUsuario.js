@@ -5,7 +5,8 @@ import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css";
 
 export const AreaPrivadaUsuario = () => {
-    const { actions } = useContext(Context);
+    const { actions, store } = useContext(Context);
+    const [favoritos, setFavoritos] = useState([]);
     const { user_id } = useParams();
     const [formData, setFormData] = useState({
         firstName: '',
@@ -13,7 +14,32 @@ export const AreaPrivadaUsuario = () => {
         email: '',
         telefono: ''
     });
+//-----------ver favoritos desde aca------------//
+    const handleFavoritosClick = async () => {
+        const usuario_id = store.usuario?.id;
+        if (usuario_id) {
+            const userFavoritos = await actions.obtenerFavoritosDelUsuario(usuario_id);
+            setFavoritos(userFavoritos);
+            Swal.fire({
+                title: 'Mis favoritos',
+                html: renderFavoritosList(userFavoritos),
+                showCloseButton: true
+            });
+        }
+    };
 
+    const renderFavoritosList = (favoritos) => {
+        if (favoritos && favoritos.length > 0) {
+            return (
+                `<ul>
+                    ${favoritos.map(fav => `<li>${fav.restaurante.nombre}</li>`).join('')}
+                </ul>`
+            );
+        } else {
+            return '<p>No tienes restaurantes favoritos aún.</p>';
+        }
+    };
+//-------------fav hasta aca-----------------------//
     const [modalData, setModalData] = useState({
         field: '',
         value: ''
@@ -154,7 +180,7 @@ export const AreaPrivadaUsuario = () => {
                             </button>
                         </div>
                         <div className="col-md-3 mb-2">
-                            <button className="btn btn-secondary w-100" onClick={() => Swal.fire("Mis favoritos", "Aquí estarán tus favoritos")}>
+                            <button className="btn btn-secondary w-100" onClick={handleFavoritosClick}>
                                 Ver mis favoritos
                             </button>
                         </div>
