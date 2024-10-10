@@ -7,9 +7,37 @@ const getState = ({ getStore, getActions, setStore }) => {
             valoraciones: [],
             categorias: [],
             restaurantes_favoritos: [],
+            restaurantDetails: {},
+
         },
 
         actions: {
+
+            //Modificar contraseña
+            // Agrega esta función a tus actions
+            cambiarContraseña: async (data) => {
+                const token = sessionStorage.getItem('token');
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + '/api/restaurante/cambiar_contrasena', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` // Incluye el token JWT en la cabecera
+                        },
+                        body: JSON.stringify(data)
+                    });
+                        console.log(response)
+                    const result = await response.json();
+                    if (response.ok) {
+                        return { success: true, message: result.msg };
+                    } else {
+                        return { success: false, message: result.msg };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
             // CREAR RESERVA
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
@@ -278,22 +306,22 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
-           // OBTENER UNA CATEGORÍA
-obtenerUnaCategoria: async (categoria_id) => {
-    try {
-        console.log(`Intentando obtener la categoría con ID: ${categoria_id}`);
-        const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}`);
-        if (!response.ok) {
-            throw new Error("Error al obtener la categoría");
-        }
-        const data = await response.json();
-        console.log(`Datos de la categoría obtenidos: `, data); // Verificar que los datos se obtienen correctamente
-        return data;  // Asegúrate de que está retornando los datos
-    } catch (error) {
-        console.error("Error al cargar la categoría", error);
-        return null;  // Maneja el error
-    }
-},
+            // OBTENER UNA CATEGORÍA
+            obtenerUnaCategoria: async (categoria_id) => {
+                try {
+                    console.log(`Intentando obtener la categoría con ID: ${categoria_id}`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}`);
+                    if (!response.ok) {
+                        throw new Error("Error al obtener la categoría");
+                    }
+                    const data = await response.json();
+                    console.log(`Datos de la categoría obtenidos: `, data); // Verificar que los datos se obtienen correctamente
+                    return data;  // Asegúrate de que está retornando los datos
+                } catch (error) {
+                    console.error("Error al cargar la categoría", error);
+                    return null;  // Maneja el error
+                }
+            },
 
 
             // OBTENER RESTAURANTES POR CATEGORIA
@@ -443,9 +471,6 @@ obtenerUnaCategoria: async (categoria_id) => {
             },
 
 
-
-
-
             // OBTENER RESTAURANTES
             obtenerRestaurantes: async () => {
                 try {
@@ -457,6 +482,65 @@ obtenerUnaCategoria: async (categoria_id) => {
                 }
             },
 
+            getRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`);
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los detalles del restaurante");
+                    }
+                    const data = await response.json();
+                    setStore({ restaurantDetails: data });
+                    return data
+                } catch (error) {
+                    console.error("Error al cargar el restaurante", error);
+                }
+
+            },
+
+            obtenerValoracionRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/valoracion`);
+                    const data = await response.json();
+                    setStore({ valoraciones: data });
+                } catch (error) {
+                    console.error("Error al cargar las valoraciones", error);
+                }
+            },
+
+
+            // FUNCIÓN PARA SUBIR IMAGEN A CLOUDINARY
+            subirImagenRestaurante: async function (file) {
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", process.env.CLOUDINARY_PRESET); // Preset de Cloudinary
+
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, url: data.secure_url };
+                    } else {
+                        return { success: false, message: "Error al subir la imagen" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // OBTENER UN RESTAURANTES POR ID
+            obtenerRestaurantesPorId: async (restaurante_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}`);
+                    const data = await response.json();
+                    setStore({ restaurantes: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
             // ELIMINAR RESTAURANTE
             eliminarRestaurante: async (restauranteId) => {
                 const token = sessionStorage.getItem("token");

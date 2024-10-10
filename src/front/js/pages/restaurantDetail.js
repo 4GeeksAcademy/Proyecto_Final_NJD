@@ -5,6 +5,8 @@ import ReservationModal from "../component/reservationModal";
 import OpinionModal from "../component/OpinionModal"; // Importación corregida
 
 import "../../styles/restaurantDetail.css"; // Asegúrate de tener este archivo
+import {PaginaDeRestauranteParaReservar} from "./reserva"
+// import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 export const RestaurantDetail = () => {
   const { id } = useParams();
@@ -198,9 +200,10 @@ export const RestaurantDetail = () => {
             </div>
           </div>
 
-          <ReservationModal
+          <PaginaDeRestauranteParaReservar
             isOpen={isModalOpen}
             onClose={closeModal}
+            restaurante_id={id}
           />
 
           <CartaModal
