@@ -715,16 +715,25 @@ def obtener_valoracion_promedio(restaurante_id):
 @api.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
-        # Obtener la imagen del formulario (request.files)
-        image = request.files['file']  #Frontend debe enviar el archivo correctamente
-         # Subir la imagen a Cloudinary
+        # Verificar si la solicitud tiene un archivo adjunto
+        if 'file' not in request.files:
+            return jsonify({"msg": "No se ha adjuntado ninguna imagen"}), 400
+
+        image = request.files['file']  
+
+        # Subir la imagen a Cloudinary
         upload_result = cloudinary.uploader.upload(image)
+
         # Devolver la URL de la imagen subida
         return jsonify({
             "msg": "Imagen subida con éxito",
-            "url": upload_result['secure_url']}), 200
+            "url": upload_result['secure_url']
+        }), 200
+
     except Exception as e:
+        # Capturar el error específico y devolverlo
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
+
     
 ##-------CAMBIAR CONTRASEÑA SÍ------
 # Cambiar Contraseña de Restaurante

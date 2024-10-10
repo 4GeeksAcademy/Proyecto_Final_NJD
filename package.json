@@ -81,5 +81,6 @@
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^6.26.2",
 		"sweetalert2": "^11.14.1"
-	}
-}
+	},
+	"proxy": "http://localhost:5000"
+  }
