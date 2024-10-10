@@ -11,6 +11,8 @@ export const Navbar = () => {
     const [userId, setUserId] = useState(null);  // Almacenamos el userId
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
+    console.log(sessionStorage.getItem('user_id'))
+
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -47,7 +49,7 @@ export const Navbar = () => {
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
-    }, [userName]);
+    }, [userName, sessionStorage.getItem('restaurant_name')]);
 
     const handleLogin = (userName, userId, isRestaurantLogin = false) => {
         if (isRestaurantLogin) {
@@ -82,6 +84,7 @@ export const Navbar = () => {
     // Función para manejar la navegación al área privada del usuario
     const handlePrivateAreaNavigation = () => {
         const currentUserId = sessionStorage.getItem("user_id");
+        console.log(currentUserId)
         if (currentUserId) {
             navigate(`/private/${currentUserId}`);
         }

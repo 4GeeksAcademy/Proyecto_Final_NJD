@@ -74,6 +74,13 @@ export const AreaPrivadaUsuario = () => {
         };
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
+
+            // Actualizamos el sessionStorage si el nombre cambia
+        sessionStorage.setItem("user_name", formData.firstName);
+
+        // Llamar a la función para actualizar la navbar (puedes manejar esto en el contexto o pasarla como prop)
+        actions.handleAccountUpdate(formData.firstName, false);  // false indica que es un usuario, no restaurante
+
             Swal.fire({
                 title: 'Éxito',
                 text: 'Datos actualizados con éxito.',
@@ -98,7 +105,7 @@ export const AreaPrivadaUsuario = () => {
                 </div>
                 <div className="area-body">
                     {/* Iniciamos el formulario correctamente */}
-                    <form onSubmit={handleSubmit} className="row">
+                    <form onSubmit={handleSubmit} className="row ancho">
                         <div className="col-md-6 mb-3">
                             <label htmlFor="firstName" className="form-label">Nombre</label>
                             <div className="input-group">

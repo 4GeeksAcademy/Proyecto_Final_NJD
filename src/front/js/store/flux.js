@@ -192,10 +192,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     const data = await response.json();
+                    console.log(data.user_id)
 
                     if (response.ok) {
                         sessionStorage.setItem('token', data.access_token);  // Guardar el token en sessionStorage
                         sessionStorage.setItem('user_name', data.user_name);  // Guardar el nombre del usuario en sessionStorage
+                        sessionStorage.setItem('user_id', '1')
+                        localStorage.setItem('usuario', data.user_id)
                         return { success: true, data: data };  // Devolver el resultado exitoso
                     } else if (response.status === 404) {
                         return { success: false, error: 'Usuario no registrado' };
@@ -460,6 +463,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     if (response.ok) {
                         const data = await response.json();
+                        sessionStorage.setItem('restaurant_name', formData.nombre )
                         return { success: true, message: "Datos modificados con éxito", data: data };
                     } else {
                         const errorData = await response.json();
