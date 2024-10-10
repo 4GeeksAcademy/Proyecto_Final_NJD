@@ -30,7 +30,8 @@ const Layout = () => {
                         <Route element={<Home />} path="/home" />
                         <Route element={<Demo />} path="/demo" />
                         <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<RestaurantSearch />} path="/restaurantes/:tipo" />
+                        <Route element={<RestaurantSearch />} path="/restaurantes/:categoria_id" />
+
                         
                         {/* Nueva ruta para el registro de restaurantes */}
                         <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />

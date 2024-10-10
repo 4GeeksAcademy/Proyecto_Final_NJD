@@ -163,15 +163,6 @@
   font-family: 'Helvetica Neue', sans-serif; 
 }
 
-.tituloo {
-  font-size: 36px;
-  font-weight: 700;
-  color: #333; 
-  text-align: center;
-  margin-bottom: 30px;
-  text-transform: capitalize;
-}
-
 
 .search-bar {
   width: 100%;
@@ -271,6 +262,26 @@
 .favorite-button.favorited:hover {
   background-color: #e74c3c;
   border-color: #e74c3c; 
+}
+
+
+.other-cuisine-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.scroll-to-home-btn {
+  padding: 10px 20px;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.scroll-to-home-btn:hover {
+  background-color: #555;
 }
 
 

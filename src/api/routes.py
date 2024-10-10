@@ -459,6 +459,14 @@ def get_categoria(categoria_id):
 
 # OBTENER RESTAURANTE POR SU CATEGORIA
 
+@api.route('/categorias/<int:categoria_id>/restaurantes', methods=['GET'])
+def get_restaurantes_por_categoria(categoria_id):
+    restaurantes = Restaurantes.query.filter_by(categorias_id=categoria_id).all()
+
+    if not restaurantes:
+        return jsonify({"message": "No se encontraron restaurantes para esta categoría"}), 404
+
+    return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
 
 
 #CREAR RESERVA
@@ -470,23 +478,26 @@ from api.utils import validar_horario_reserva  # Importar la función de validac
 @jwt_required()
 def crear_reserva():
     body = request.get_json()
+    print(body)
     usuario_id = get_jwt_identity()
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
     niños = body.get('niños')
     trona = body.get('trona')
+    hora= body.get('hora')
 
     # Validar que no falten campos requeridos
     if not all([restaurante_id, fecha_reserva, adultos, niños, trona]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     # Convertir fecha_reserva de string a objeto datetime
+    fecha_reserva_str=fecha_reserva+' '+hora+ ':00'
     try:
-        fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d %H:%M:%S')  # Asegúrate de usar este formato
+        fecha_reserva = datetime.strptime(fecha_reserva_str, '%Y-%m-%d %H:%M:%S')  # Asegúrate de usar este formato
     except ValueError:
         return jsonify({"error": "Formato de fecha no válido. Usa el formato YYYY-MM-DD HH:MM:SS"}), 400
-
+    print(fecha_reserva)
     # Obtener los horarios del restaurante para validar
     restaurante = Restaurantes.query.get(restaurante_id)
     if not restaurante:
@@ -500,7 +511,6 @@ def crear_reserva():
             restaurante.horario_tarde_inicio, 
             restaurante.horario_tarde_fin):
         return jsonify({"error": "Hora de reserva fuera del horario permitido"}), 400
-
     # Si todo está bien, crear la reserva
     nueva_reserva = Reserva(
         user_id=usuario_id,
