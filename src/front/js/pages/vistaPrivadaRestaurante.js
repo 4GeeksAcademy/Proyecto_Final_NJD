@@ -138,7 +138,6 @@ export const VistaPrivadaRestaurante = () => {
 
       if (response.success) {
         setFormData(response.data);
-
         const restaurantesActualizados = store.restaurantes.map((rest) =>
           rest.id === restaurante_id ? response.data : rest
         );
@@ -147,6 +146,12 @@ export const VistaPrivadaRestaurante = () => {
           ...restaurante,
           ...formData
         });
+
+        if (formData.nombre) {
+          sessionStorage.setItem("restaurant_name", formData.nombre);
+        }
+
+
         console.log({
           ...restaurante,
           ...formData

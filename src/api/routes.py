@@ -116,7 +116,8 @@ def login():
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'user_name': user.nombres  # Aquí envías el nombre del usuario
+        'user_name': user.nombres, # Aquí envías el nombre del usuario
+        'user_id': user.id
     }), 200
 
 
@@ -198,7 +199,6 @@ def update_user(usuario_id):
         return jsonify({'msg': 'Usuario no encontrado'}), 404
     
     # Actualiza datos del usuario
-    usuario.email = body.get('email', usuario.email)
     usuario.nombres = body.get('nombres', usuario.nombres)
     usuario.apellidos = body.get('apellidos', usuario.apellidos)
     usuario.telefono = body.get('telefono', usuario.telefono)
@@ -483,21 +483,21 @@ def crear_reserva():
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
-    niños = body.get('niños')
-    trona = body.get('trona')
+    niños = body.get('niños', 0)  # Valor por defecto de 0 si no se incluye
+    trona = body.get('trona', 0)  # Valor por defecto de 0 si no se incluye
     hora= body.get('hora')
 
-    # Validar que no falten campos requeridos
-    if not all([restaurante_id, fecha_reserva, adultos, niños, trona]):
+    # Validar que no falten campos requeridos (quitamos niños y trona de la validación)
+    if not all([restaurante_id, fecha_reserva, adultos]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     # Convertir fecha_reserva de string a objeto datetime
-    fecha_reserva_str=fecha_reserva+' '+hora+ ':00'
+    fecha_reserva_str = fecha_reserva + ' ' + hora + ':00'
     try:
-        fecha_reserva = datetime.strptime(fecha_reserva_str, '%Y-%m-%d %H:%M:%S')  # Asegúrate de usar este formato
+        fecha_reserva = datetime.strptime(fecha_reserva_str, '%Y-%m-%d %H:%M:%S')
     except ValueError:
         return jsonify({"error": "Formato de fecha no válido. Usa el formato YYYY-MM-DD HH:MM:SS"}), 400
-    print(fecha_reserva)
+
     # Obtener los horarios del restaurante para validar
     restaurante = Restaurantes.query.get(restaurante_id)
     if not restaurante:
@@ -511,6 +511,7 @@ def crear_reserva():
             restaurante.horario_tarde_inicio, 
             restaurante.horario_tarde_fin):
         return jsonify({"error": "Hora de reserva fuera del horario permitido"}), 400
+
     # Si todo está bien, crear la reserva
     nueva_reserva = Reserva(
         user_id=usuario_id,
@@ -525,6 +526,7 @@ def crear_reserva():
     db.session.commit()
 
     return jsonify({"message": "Reserva creada con éxito", "reserva": nueva_reserva.serialize()}), 201
+
 
 
 #OBTENER RESERVA
@@ -546,14 +548,20 @@ def actualizar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
+    # Aquí debes asegurarte de que se están asignando los valores enviados en el request.
+    if 'adultos' in body:
+        reserva.adultos = body['adultos']
+    if 'niños' in body:
+        reserva.niños = body['niños']
+    if 'trona' in body:
+        reserva.trona = body['trona']
     if 'fecha_reserva' in body:
         reserva.fecha_reserva = body['fecha_reserva']
-    if 'numero_personas' in body:
-        reserva.numero_personas = body['numero_personas']
 
     db.session.commit()
     
     return jsonify({"message": "Reserva actualizada con éxito", "reserva": reserva.serialize()}), 200
+
 
 #BORRAR RESERVA
 
@@ -563,10 +571,12 @@ def cancelar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
-    reserva.estado = "cancelada"
+    # Eliminar la reserva de la base de datos
+    db.session.delete(reserva)
     db.session.commit()
 
-    return jsonify({"message": "Reserva cancelada con éxito", "reserva": reserva.serialize()}), 200
+    return jsonify({"message": "Reserva eliminada con éxito"}), 200
+
 
 #CREAR FAVORITOS
 
@@ -612,14 +622,30 @@ def eliminar_favorito(usuario_id):
 
     return jsonify({"message": "Restaurante eliminado de favoritos"}), 200
 
+# ELIMINAR 1 FAVORITO DEL USUARIO
+
+@api.route('/usuario/<int:usuario_id>/favoritos/<int:favorito_id>', methods=['DELETE'])
+def eliminar_un_favorito(usuario_id, favorito_id):
+    favorito = Restaurantes_Favoritos.query.filter_by(id=favorito_id, usuario_id=usuario_id).first()
+
+    if not favorito:
+        return jsonify({"msg": "Favorito no encontrado"}), 404
+
+    db.session.delete(favorito)
+    db.session.commit()
+
+    return jsonify({"msg": "Favorito eliminado"}), 200
+
 #OBTENER FAVORITO
 
-@api.route('/usuario/favoritos/<int:user_id>', methods=['GET'])
-def obtener_favoritos(user_id):
-    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=user_id).all()
-    all_favoritos = list(map(lambda x: x.serialize(), favoritos))
-    
-    return jsonify(all_favoritos), 200
+@api.route('/usuario/<int:usuario_id>/favoritos', methods=['GET'])
+def obtener_favoritos(usuario_id):                     
+
+          
+    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id).all()
+    if not favoritos:
+        return jsonify({"msg": "No tienes restaurantes favoritos"}), 404
+    return jsonify([favorito.serialize() for favorito in favoritos]), 200 
 
 #CREAR VALORACION
 
