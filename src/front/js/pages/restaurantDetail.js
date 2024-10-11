@@ -21,6 +21,8 @@ export const RestaurantDetail = () => {
 
     const openModal = () => {
         const token = sessionStorage.getItem("token"); 
+        console.log("Token actual:", token);
+
 
         if (token) {
             setIsModalOpen(true); 

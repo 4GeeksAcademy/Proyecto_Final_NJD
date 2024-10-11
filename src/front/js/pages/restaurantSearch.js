@@ -11,6 +11,8 @@ export const RestaurantSearch = () => {
     const [nombreCategoria, setNombreCategoria] = useState('');
     const navigate = useNavigate();  // Reemplazo de useHistory por useNavigate
 
+    const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible"; // Imagen por defecto
+
     useEffect(() => {
         // Asegurarse de que solo se obtengan restaurantes de la categoría seleccionada
         actions.obtenerRestaurantesPorCategoria(categoria_id);
@@ -29,11 +31,6 @@ export const RestaurantSearch = () => {
         // Hacer scroll hacia la parte superior de la página al montar el componente
         window.scrollTo(0, 0);
     }, [categoria_id]);
-
-    useEffect(() => {
-        console.log(store.restaurantes)
-    }, [store.restaurantes])
-
 
     const filteredRestaurants = Array.isArray(store.restaurantes)
         ? store.restaurantes.filter(restaurant =>
@@ -86,7 +83,11 @@ export const RestaurantSearch = () => {
                             filteredRestaurants.map(restaurant => (
                                 <div className="restaurant-card" key={restaurant.id}>
                                     <Link to={`/restaurant/detail/${restaurant.id}`}>
-                                        <img src={restaurant.image} alt={restaurant.nombre} className="restaurant-image" />
+                                        <img
+                                            src={restaurant.image || imagenPorDefecto}  // Usa la imagen por defecto si no hay imagen disponible
+                                            alt={restaurant.nombre}
+                                            className="restaurant-image"
+                                        />
                                     </Link>
                                     <div className="restaurant-info">
                                         <Link to={`/restaurant/detail/${restaurant.id}`}>
