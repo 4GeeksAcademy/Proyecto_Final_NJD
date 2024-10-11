@@ -185,10 +185,21 @@ form {
 }
 
 
-.imagen_subida_upload {
-  font-size: 1.2rem;
-  color: #333;
-  text-align: center;
+
+
+.restaurant-private-image {
+  max-width: 500px; /* Ajusta el tamaño máximo aquí */
+  width: 100%; /* Hace que la imagen sea responsive */
+  height: auto; /* Mantiene las proporciones */
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  display: block;
+  margin: 0 auto; /* Centra la imagen */
   margin-top: 20px;
+}
+
+.password-boton{
+  align-items: center;
 }
 

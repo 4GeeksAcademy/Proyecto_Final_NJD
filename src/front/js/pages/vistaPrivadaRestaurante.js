@@ -13,6 +13,7 @@ export const VistaPrivadaRestaurante = () => {
   const [formData, setFormData] = useState({});
   const [restaurante, setRestaurante] = useState(store.restaurantDetails);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [images, setImages] = useState([]); // Para almacenar múltiples imágenes
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -66,12 +67,15 @@ export const VistaPrivadaRestaurante = () => {
     });
   };
 
-  // Función callback que se pasará al componente UploadImageCloudinary
+   // Función callback que se pasa al componente UploadImageCloudinary
   const handleImageUpload = (url) => {
-    // Actualizamos formData con la URL de la imagen subida
+    const updatedImages = [...images, url]; // Agregar la nueva imagen al array de imágenes existentes
+    setImages(updatedImages);
+
+    // Actualizar formData para mantener consistencia con la subida
     setFormData({
       ...formData,
-      image: url
+      images: updatedImages,
     });
   };
 
@@ -177,7 +181,7 @@ export const VistaPrivadaRestaurante = () => {
       {/* Botón para cambiar la contraseña */}
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary password-boton"
         data-bs-toggle="modal"
         data-bs-target="#recuperacion"
       >
@@ -236,13 +240,7 @@ export const VistaPrivadaRestaurante = () => {
         </div>
       </div>
 
-      {restaurante.image && (
-        <img
-          className="restaurant-private-image"
-          src={restaurante.image}
-          alt={`Imagen de ${restaurante.nombre}`}
-        />
-      )}
+
 
       <div className="restaurant-private-form">
         <h3 className="restaurant-private-form-title">Modifica los datos de tu restaurante:</h3>
@@ -343,15 +341,28 @@ export const VistaPrivadaRestaurante = () => {
           />
         </div>
 
+        <button className="btn btn-primary w-100" onClick={handleUpdateRestaurante}>
+          Guardar y actualizar
+        </button>
+
+
+        {restaurante.image && (
+          <img
+            className="restaurant-private-image"
+            src={restaurante.image}
+            alt={`Imagen de ${restaurante.nombre}`}
+          />
+        )}
+
+
+
         {/* Componente UploadImageCloudinary */}
         <div className="restaurant-private-image-upload">
           <label className="restaurant-private-label" htmlFor="image"></label>
           <UploadImageCloudinary onImageUpload={handleImageUpload} />
         </div>
 
-        <button className="btn btn-primary w-100" onClick={handleUpdateRestaurante}>
-          Guardar y actualizar
-        </button>
+        
       </div>
 
       <div className="restaurant-private-reviews">
