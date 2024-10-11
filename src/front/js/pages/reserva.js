@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClose }) => {
     const { actions } = useContext(Context);
     const [formData, setFormData] = useState({
-        adultos: 1,  // Obligatorio
-        niños: 0,    // Opcional, valor predeterminado 0
-        trona: 0,    // Opcional, valor predeterminado 0
+        adultos: 1,
+        niños: 0,
+        trona: 0,
         fecha_reserva: '',
         hora: '',
         restaurante_id: restaurante_id
@@ -16,23 +16,23 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
     const navigate = useNavigate();
    
     useEffect(() => {
-        // Obtener los datos del usuario al cargar el componente
+        const userId = sessionStorage.getItem("user_id");
         const fetchUserData = async () => {
-            const userId = sessionStorage.getItem("user_id");
-            const userData = await actions.obtenerDatosUsuario(userId);
+            if (userId) {
+                const userData = await actions.obtenerDatosUsuario(userId);
 
-            // Añadimos los datos del usuario al formData, pero no los mostramos en el formulario
-            setFormData((prevState) => ({
-                ...prevState,
-                nombre: userData.nombres || '',
-                apellido: userData.apellidos || '',
-                telefono: userData.telefono || ''
-            }));
+                setFormData((prevState) => ({
+                    ...prevState,
+                    nombre: userData?.nombres || '',
+                    apellido: userData?.apellidos || '',
+                    telefono: userData?.telefono || ''
+                }));
+            }
         };
 
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
-    }, [restaurante_id]);
+    }, [restaurante_id, actions]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -46,7 +46,6 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                // SweetAlert2 con el mensaje de éxito
                 Swal.fire({
                     title: 'Reserva realizada con éxito',
                     text: 'Recibirá un email de confirmación.',
@@ -56,10 +55,8 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
                     cancelButtonText: 'Área privada'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Redirigir a la página principal
                         navigate('/');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Redirigir al área privada
                         const currentUserId = sessionStorage.getItem("user_id");
                         if (currentUserId) {
                             navigate(`/private/${currentUserId}`);
@@ -67,10 +64,8 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
                     }
                 });
 
-                // Cerramos el modal
                 onClose();
             } else {
-                console.log("Error en la reserva");
                 Swal.fire({
                     title: 'Error',
                     text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
@@ -79,7 +74,6 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
                 });
             }
         } catch (error) {
-            console.log("Error en la reserva:", error);
             Swal.fire({
                 title: 'Error',
                 text: 'Ocurrió un error inesperado.',

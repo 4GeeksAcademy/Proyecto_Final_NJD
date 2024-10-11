@@ -19,7 +19,6 @@ class Reserva(db.Model):
     creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    restaurante = db.relationship('Restaurantes', backref='reservas')
 
     def __repr__(self):
         return f'<Reserva {self.id}>'
