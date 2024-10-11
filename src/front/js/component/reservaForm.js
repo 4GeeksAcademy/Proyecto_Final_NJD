@@ -18,7 +18,7 @@ const ReservaForm = () => {
         };
 
         // Enviar los datos al backend
-        fetch('/send-mail', {
+        fetch(`${process.env.BACKEND_URL}/send-mail`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
