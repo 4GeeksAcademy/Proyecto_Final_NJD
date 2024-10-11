@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useParams, useNavigate } from "react-router-dom";
 import UploadImageCloudinary from "../component/uploadImageCloudinary";
 import "../../styles/vistaPrivadaRestaurante.css";
+
 
 export const VistaPrivadaRestaurante = () => {
   const { store, actions } = useContext(Context);
@@ -13,6 +14,9 @@ export const VistaPrivadaRestaurante = () => {
   const [formData, setFormData] = useState({});
   const [restaurante, setRestaurante] = useState(store.restaurantDetails);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [images, setImages] = useState([]); // Para almacenar múltiples imágenes
+  const carouselRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0); // Estado para el carrusel
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -27,7 +31,9 @@ export const VistaPrivadaRestaurante = () => {
         setLoading(true);
         const restaurante_api = await actions.getRestaurante(restaurante_id);
         setRestaurante(restaurante_api);
-        console.log(restaurante_api);
+        const initialImages = restaurante_api.image ? [restaurante_api.image] : [];
+        setImages([...initialImages]); // Inicializa el estado con la imagen de la base de datos
+
         await actions.obtenerValoracionRestaurante(restaurante_id);
         setLoading(false);
       } catch (err) {
@@ -66,12 +72,55 @@ export const VistaPrivadaRestaurante = () => {
     });
   };
 
-  // Función callback que se pasará al componente UploadImageCloudinary
+  const handleNextSlide = () => {
+    if (currentSlide < images.length - 1) {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  // Función para eliminar la imagen
+  const handleDeleteImage = async (public_id) => {
+    try {
+      const response = await fetch(
+        `/api/restaurantes/${restaurante_id}/imagen`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ public_id }),
+        }
+      );
+
+      if (response.ok) {
+        // Eliminar la imagen localmente del estado después de eliminarla en el backend
+        setImages(images.filter((image) => image.public_id !== public_id));
+        alert("Imagen eliminada con éxito");
+      } else {
+        alert("Error al eliminar la imagen");
+      }
+    } catch (error) {
+      console.error("Error eliminando la imagen", error);
+    }
+  };
+
+
+  // Función callback que se pasa al componente UploadImageCloudinary
   const handleImageUpload = (url) => {
-    // Actualizamos formData con la URL de la imagen subida
+    const updatedImages = [...images, url]; // Agregar la nueva imagen al array de imágenes existentes
+    setImages(updatedImages);
+
+    // Actualizar formData para mantener consistencia con la subida
     setFormData({
       ...formData,
-      image: url
+      images: updatedImages,
     });
   };
 
@@ -182,7 +231,7 @@ export const VistaPrivadaRestaurante = () => {
       {/* Botón para cambiar la contraseña */}
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary password-boton"
         data-bs-toggle="modal"
         data-bs-target="#recuperacion"
       >
@@ -241,13 +290,7 @@ export const VistaPrivadaRestaurante = () => {
         </div>
       </div>
 
-      {restaurante.image && (
-        <img
-          className="restaurant-private-image"
-          src={restaurante.image}
-          alt={`Imagen de ${restaurante.nombre}`}
-        />
-      )}
+
 
       <div className="restaurant-private-form">
         <h3 className="restaurant-private-form-title">Modifica los datos de tu restaurante:</h3>
@@ -348,15 +391,71 @@ export const VistaPrivadaRestaurante = () => {
           />
         </div>
 
+        <button className="btn btn-primary w-100" onClick={handleUpdateRestaurante}>
+          Guardar y actualizar
+        </button>
+
+
+
+
+
+
+        {/* Carrusel de imágenes */}
+        <div className="carousel-container">
+          <button
+            className="prev-slide"
+            onClick={handlePrevSlide}
+            disabled={currentSlide === 0} // Deshabilita si estamos en el primer slide
+          >
+            ◀
+          </button>
+          <div className="carousel-track">
+            <div
+              className="carousel-slide"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {images.map((image, index) => (
+                <img
+                  key={index}
+                  className="restaurant-private-image"
+                  src={image}
+                  alt={`Imagen ${index + 1} del restaurante`}
+                />
+              ))}
+              <button
+                className="delete-image-button"
+                onClick={() => handleDeleteImage(image.public_id)} // Llama a la función para eliminar la imagen
+              >
+                X
+              </button>
+            </div>
+          </div>
+          <button
+            className="next-slide"
+            onClick={handleNextSlide}
+            disabled={currentSlide === images.length - 1} // Deshabilita si estamos en el último slide
+          >
+            ▶
+          </button>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
         {/* Componente UploadImageCloudinary */}
         <div className="restaurant-private-image-upload">
           <label className="restaurant-private-label" htmlFor="image"></label>
           <UploadImageCloudinary onImageUpload={handleImageUpload} />
         </div>
 
-        <button className="btn btn-primary w-100" onClick={handleUpdateRestaurante}>
-          Guardar y actualizar
-        </button>
+
       </div>
 
       <div className="restaurant-private-reviews">

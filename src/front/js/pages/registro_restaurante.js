@@ -69,7 +69,7 @@ export const RegistroCompletoRestaurante = () => {
         const result = await actions.completarRegistroRestaurante(restauranteId, formData);
 
         if (result.success) {
-            navigate("/vistaPrivadaRestaurante/"+restauranteId);
+            navigate(`/vistaPrivadaRestaurante/${restauranteId}`); //HABLAR CON DARIA ANTES DE CAMBIAR ESTO, ES IMPORTANTE!!!!!
         } else {
             Swal.fire({
                 title: "Error",

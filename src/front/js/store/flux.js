@@ -528,9 +528,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const formData = new FormData();
                     formData.append("file", file);
-                    formData.append("upload_preset", process.env.CLOUDINARY_PRESET); // Preset de Cloudinary
+                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // Preset de Cloudinary, uso para front
+                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
 
-                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
                         method: 'POST',
                         body: formData
                     });

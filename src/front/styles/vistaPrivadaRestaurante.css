@@ -185,10 +185,85 @@ form {
 }
 
 
-.imagen_subida_upload {
-  font-size: 1.2rem;
-  color: #333;
-  text-align: center;
+
+
+.restaurant-private-image {
+  max-width: 500px; /* Ajusta el tamaño máximo aquí */
+  width: 100%; /* Hace que la imagen sea responsive */
+  height: auto; /* Mantiene las proporciones */
+  border-radius: 15px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  object-fit: cover;
+  display: block;
+  margin: 0 auto; /* Centra la imagen */
   margin-top: 20px;
 }
 
+.password-boton{
+  align-items: center;
+}
+
+
+
+
+
+
+.carousel-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.carousel-track {
+  display: flex;
+  overflow: hidden;
+  width: 80%; /* Ajusta esto según sea necesario para ocupar más espacio horizontal */
+  height: 400px; /* Ajusta el tamaño del alto del contenedor */
+  position: relative;
+}
+
+.carousel-slide {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.restaurant-private-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Asegura que las imágenes no se deformen */
+  
+}
+
+.prev-slide, .next-slide {
+  background-color: #f0f0f0;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  
+}
+
+.prev-slide:disabled, .next-slide:disabled {
+  visibility: hidden;
+}
+
+.delete-image-button {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: rgba(255, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.delete-image-button:hover {
+  background: rgba(255, 0, 0, 0.9);
+}
