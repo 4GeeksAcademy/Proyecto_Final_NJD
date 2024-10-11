@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css";
+import { ModalVerMisFavoritos } from "../component/modalVerMisFavoritos";
 
 export const AreaPrivadaUsuario = () => {
     const { actions, store } = useContext(Context);
@@ -14,36 +15,13 @@ export const AreaPrivadaUsuario = () => {
         email: '',
         telefono: ''
     });
-//-----------ver favoritos desde aca------------//
-    const handleFavoritosClick = async () => {
-        const usuario_id = store.usuario?.id;
-        if (usuario_id) {
-            const userFavoritos = await actions.obtenerFavoritosDelUsuario(usuario_id);
-            setFavoritos(userFavoritos);
-            Swal.fire({
-                title: 'Mis favoritos',
-                html: renderFavoritosList(userFavoritos),
-                showCloseButton: true
-            });
-        }
-    };
 
-    const renderFavoritosList = (favoritos) => {
-        if (favoritos && favoritos.length > 0) {
-            return (
-                `<ul>
-                    ${favoritos.map(fav => `<li>${fav.restaurante.nombre}</li>`).join('')}
-                </ul>`
-            );
-        } else {
-            return '<p>No tienes restaurantes favoritos aún.</p>';
-        }
-    };
-//-------------fav hasta aca-----------------------//
     const [modalData, setModalData] = useState({
         field: '',
         value: ''
     });
+
+    const [isFavoritosOpen, setFavoritosOpen] = useState(false);
 
     const openModal = (field, currentValue) => {
         setModalData({
@@ -180,7 +158,8 @@ export const AreaPrivadaUsuario = () => {
                             </button>
                         </div>
                         <div className="col-md-3 mb-2">
-                            <button className="btn btn-secondary w-100" onClick={handleFavoritosClick}>
+                            {/* Aquí abrimos el modal de favoritos */}
+                            <button className="btn btn-secondary w-100" onClick={() => setFavoritosOpen(true)}>
                                 Ver mis favoritos
                             </button>
                         </div>
@@ -210,6 +189,9 @@ export const AreaPrivadaUsuario = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Aquí renderizamos el modal de favoritos */}
+                <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
             </div>
         </div>
     );

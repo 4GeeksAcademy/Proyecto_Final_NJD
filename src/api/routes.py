@@ -611,10 +611,26 @@ def eliminar_favorito(usuario_id):
 
     return jsonify({"message": "Restaurante eliminado de favoritos"}), 200
 
+# ELIMINAR 1 FAVORITO DEL USUARIO
+
+@api.route('/usuario/<int:usuario_id>/favoritos/<int:favorito_id>', methods=['DELETE'])
+def eliminar_un_favorito(usuario_id, favorito_id):
+    favorito = Restaurantes_Favoritos.query.filter_by(id=favorito_id, usuario_id=usuario_id).first()
+
+    if not favorito:
+        return jsonify({"msg": "Favorito no encontrado"}), 404
+
+    db.session.delete(favorito)
+    db.session.commit()
+
+    return jsonify({"msg": "Favorito eliminado"}), 200
+
 #OBTENER FAVORITO
 
 @api.route('/usuario/<int:usuario_id>/favoritos', methods=['GET'])
-def obtener_favoritos(usuario_id):
+def obtener_favoritos(usuario_id):                     
+
+          
     favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id).all()
     if not favoritos:
         return jsonify({"msg": "No tienes restaurantes favoritos"}), 404
