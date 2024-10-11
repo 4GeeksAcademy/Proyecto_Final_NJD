@@ -193,18 +193,23 @@ export const RestaurantDetail = () => {
 
               {/* Botones fuera del div de la descripción, debajo de ella */}
               <div className="restaurant-buttons">
-                <button onClick={openModal} className="action-button">RESERVA AHORA</button>
+                {
+                  sessionStorage.getItem("user_id") &&
+                  <button onClick={openModal} className="action-button">RESERVA AHORA</button>
+                }
                 <button onClick={CartaOpenModal} className="action-button">VER NUESTRA CARTA</button>
                 <button onClick={openOpinionModal} className="action-button">VER OPINIONES</button>
               </div>
             </div>
           </div>
-
+{
+          isModalOpen &&
           <PaginaDeRestauranteParaReservar
             isOpen={isModalOpen}
             onClose={closeModal}
             restaurante_id={id}
           />
+}
 
           <CartaModal
             isOpen={isCartaModalOpen}
