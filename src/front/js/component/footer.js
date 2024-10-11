@@ -52,7 +52,7 @@ export const Footer = () => {
                     <div className="footer-section">
                         <h4>Contáctanos</h4>
                         <ul>
-                            <li>Email: contacto@hoynococino.es</li>
+                            <li>Email: hoynococino.ceo@gmail.com</li>
                             <li>Teléfono: +123 456 789</li>
                         </ul>
                     </div>

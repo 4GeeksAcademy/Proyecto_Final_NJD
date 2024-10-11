@@ -1,54 +1,51 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import "../../styles/vistaPrivadaRestaurante.css";
+import { Context } from "../store/appContext";
 
-const UploadImageCloudinary = () => {
-    const [image, setImage] = useState(null);
-    const [imageUrl, setImageUrl] = useState("");
+const UploadImageCloudinary = ({ onImageUpload }) => {
+  const [image, setImage] = useState(null);
+  const { store, actions } = useContext(Context);
 
-    const handleImageChange = (event) => {
-        setImage(event.target.files[0]); // Guardar la imagen seleccionada
-    };
+  const handleImageChange = (event) => {
+    setImage(event.target.files[0]); // guardar la imagen seleccionada
+  };
 
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const formData = new FormData();
-        formData.append("image", image); // Adjuntar la imagen al FormData
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (!image) {
+      alert("Por favor selecciona una imagen");
+      return;
+    }
 
-        try {
-            // Enviar la imagen al backend
-            const response = await fetch("/api/upload_image", {
-                method: "POST",
-                body: formData,
-            });
+    try {
+      const result = await actions.subirImagenRestaurante(image);
+      if (result.success) {
+        onImageUpload(result.url); // Llama al callback con la URL de la imagen subida
+        alert("Imagen subida exitosamente");
+      } else {
+        alert("Error subiendo la imagen: " + result.message);
+      }
+    } catch (error) {
+      alert("Error subiendo la imagen");
+    }
+  };
 
-            const result = await response.json();
-
-            if (response.ok) {
-                setImageUrl(result.url); // Guardar la URL de la imagen subida
-                alert("Imagen subida exitosamente");
-            } else {
-                alert("Error subiendo la imagen");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    };
-
-    return (
-        <div>
-            <h2>Subir imagen del restaurante</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="file" onChange={handleImageChange} accept="image/*" />
-                <button type="submit">Subir Imagen</button>
-            </form>
-
-            {imageUrl && (
-                <div>
-                    <h4>Imagen Subida:</h4>
-                    <img src={imageUrl} alt="Imagen del Restaurante" width="300" />
-                </div>
-            )}
-        </div>
-    );
+  return (
+    <div>
+      <h2 className="titulo_ediciom">Sube una imagen del restaurante:</h2>
+      <form onSubmit={handleSubmit}>
+        <input
+          className="modificar_prueba"
+          type="file"
+          onChange={handleImageChange}
+          accept="image/*"
+        />
+        <button className="restaurant-private-image-upload" type="submit">
+          Subir Imagen
+        </button>
+      </form>
+    </div>
+  );
 };
 
 export default UploadImageCloudinary;
