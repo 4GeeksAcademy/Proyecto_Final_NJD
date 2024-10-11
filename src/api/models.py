@@ -8,23 +8,24 @@ db = SQLAlchemy()
 
 
 class Reserva(db.Model):
-        __tablename__ = 'reserva' 
-        id = db.Column(db.Integer, primary_key=True)
-        user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
-        fecha_reserva = db.Column(db.DateTime, nullable=False)
-        trona = db.Column(db.Integer, nullable=False)
-        adultos = db.Column(db.Integer, nullable=False)
-        niños = db.Column(db.Integer, nullable=False)
-        restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
-        creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-        modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    __tablename__ = 'reserva' 
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
+    fecha_reserva = db.Column(db.DateTime, nullable=False)
+    trona = db.Column(db.Integer, nullable=True, default=0)  # No obligatorio, valor por defecto 0
+    adultos = db.Column(db.Integer, nullable=False)
+    niños = db.Column(db.Integer, nullable=True, default=0)  # No obligatorio, valor por defecto 0
+    restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
+    creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
+    restaurante = db.relationship('Restaurantes', backref='reservas')
 
-        def __repr__(self):
-            return f'<Reserva {self.id}>'
+    def __repr__(self):
+        return f'<Reserva {self.id}>'
 
-        def serialize(self):
-            return {
+    def serialize(self):
+        return {
             "id": self.id,
             "user_id": self.user_id,
             "fecha_reserva": self.fecha_reserva.isoformat(),
@@ -32,9 +33,12 @@ class Reserva(db.Model):
             "adultos": self.adultos,
             "niños": self.niños,
             "restaurante_id": self.restaurante_id,
+            "restaurant_name": self.restaurante.nombre, 
             "creada": self.creada.isoformat(),
             "modificada": self.modificada.isoformat()
-          }
+        }
+
+
 
 class Usuario(db.Model):
     __tablename__ = 'usuario' 

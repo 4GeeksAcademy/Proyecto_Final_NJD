@@ -50,6 +50,12 @@
     padding-right: 10px;
 }
 
+
+.ancho {
+    width: 100% !important;
+    max-width: none;
+}
+
 .input-group-text {
     background-color: transparent;
     border: none;
