@@ -116,7 +116,8 @@ def login():
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'user_name': user.nombres  # Aquí envías el nombre del usuario
+        'user_name': user.nombres, # Aquí envías el nombre del usuario
+        'user_id': user.id
     }), 200
 
 
@@ -342,7 +343,7 @@ def login_restaurante():
 
 
 
-# OBTENER TODOS LOS RESTAURANTES
+# OBTENER TODOS LOS RESTAURANTES error
 
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
@@ -477,20 +478,23 @@ from api.utils import validar_horario_reserva  # Importar la función de validac
 @jwt_required()
 def crear_reserva():
     body = request.get_json()
+    print(body)
     usuario_id = get_jwt_identity()
     restaurante_id = body.get('restaurante_id')
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
-    niños = body.get('niños')
-    trona = body.get('trona')
+    niños = body.get('niños', 0)  # Valor por defecto de 0 si no se incluye
+    trona = body.get('trona', 0)  # Valor por defecto de 0 si no se incluye
+    hora= body.get('hora')
 
-    # Validar que no falten campos requeridos
-    if not all([restaurante_id, fecha_reserva, adultos, niños, trona]):
+    # Validar que no falten campos requeridos (quitamos niños y trona de la validación)
+    if not all([restaurante_id, fecha_reserva, adultos]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
     # Convertir fecha_reserva de string a objeto datetime
+    fecha_reserva_str = fecha_reserva + ' ' + hora + ':00'
     try:
-        fecha_reserva = datetime.strptime(fecha_reserva, '%Y-%m-%d %H:%M:%S')  # Asegúrate de usar este formato
+        fecha_reserva = datetime.strptime(fecha_reserva_str, '%Y-%m-%d %H:%M:%S')
     except ValueError:
         return jsonify({"error": "Formato de fecha no válido. Usa el formato YYYY-MM-DD HH:MM:SS"}), 400
 
@@ -524,6 +528,7 @@ def crear_reserva():
     return jsonify({"message": "Reserva creada con éxito", "reserva": nueva_reserva.serialize()}), 201
 
 
+
 #OBTENER RESERVA
 
 @api.route('/usuario/<int:user_id>/reservas', methods=['GET'])
@@ -543,14 +548,20 @@ def actualizar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
+    # Aquí debes asegurarte de que se están asignando los valores enviados en el request.
+    if 'adultos' in body:
+        reserva.adultos = body['adultos']
+    if 'niños' in body:
+        reserva.niños = body['niños']
+    if 'trona' in body:
+        reserva.trona = body['trona']
     if 'fecha_reserva' in body:
         reserva.fecha_reserva = body['fecha_reserva']
-    if 'numero_personas' in body:
-        reserva.numero_personas = body['numero_personas']
 
     db.session.commit()
     
     return jsonify({"message": "Reserva actualizada con éxito", "reserva": reserva.serialize()}), 200
+
 
 #BORRAR RESERVA
 
@@ -560,10 +571,12 @@ def cancelar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
-    reserva.estado = "cancelada"
+    # Eliminar la reserva de la base de datos
+    db.session.delete(reserva)
     db.session.commit()
 
-    return jsonify({"message": "Reserva cancelada con éxito", "reserva": reserva.serialize()}), 200
+    return jsonify({"message": "Reserva eliminada con éxito"}), 200
+
 
 #CREAR FAVORITOS
 
@@ -609,14 +622,30 @@ def eliminar_favorito(usuario_id):
 
     return jsonify({"message": "Restaurante eliminado de favoritos"}), 200
 
+# ELIMINAR 1 FAVORITO DEL USUARIO
+
+@api.route('/usuario/<int:usuario_id>/favoritos/<int:favorito_id>', methods=['DELETE'])
+def eliminar_un_favorito(usuario_id, favorito_id):
+    favorito = Restaurantes_Favoritos.query.filter_by(id=favorito_id, usuario_id=usuario_id).first()
+
+    if not favorito:
+        return jsonify({"msg": "Favorito no encontrado"}), 404
+
+    db.session.delete(favorito)
+    db.session.commit()
+
+    return jsonify({"msg": "Favorito eliminado"}), 200
+
 #OBTENER FAVORITO
 
-@api.route('/usuario/favoritos/<int:user_id>', methods=['GET'])
-def obtener_favoritos(user_id):
-    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=user_id).all()
-    all_favoritos = list(map(lambda x: x.serialize(), favoritos))
-    
-    return jsonify(all_favoritos), 200
+@api.route('/usuario/<int:usuario_id>/favoritos', methods=['GET'])
+def obtener_favoritos(usuario_id):                     
+
+          
+    favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id).all()
+    if not favoritos:
+        return jsonify({"msg": "No tienes restaurantes favoritos"}), 404
+    return jsonify([favorito.serialize() for favorito in favoritos]), 200 
 
 #CREAR VALORACION
 
@@ -722,16 +751,88 @@ def obtener_valoracion_promedio(restaurante_id):
 @api.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
-        # Obtener la imagen del formulario (request.files)
-        image = request.files['file']  #Frontend debe enviar el archivo correctamente
-         # Subir la imagen a Cloudinary
+        # Verificar si la solicitud tiene un archivo adjunto
+        if 'file' not in request.files:
+            return jsonify({"msg": "No se ha adjuntado ninguna imagen"}), 400
+
+        image = request.files['file']  
+
+        # Subir la imagen a Cloudinary
         upload_result = cloudinary.uploader.upload(image)
+
         # Devolver la URL de la imagen subida
         return jsonify({
             "msg": "Imagen subida con éxito",
-            "url": upload_result['secure_url']}), 200
+            "url": upload_result['secure_url']
+        }), 200
+
     except Exception as e:
+        # Capturar el error específico y devolverlo
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
+    
+##ELIMINAR IMAGEN RESTAURANT
+@api.route('/restaurantes/<int:restaurante_id>/imagen', methods=['DELETE'])
+@jwt_required()  # Asegurarse de que el restaurante esté autenticado
+def eliminar_imagen_restaurante(restaurante_id):
+    body = request.get_json()
+    public_id = body.get('public_id')
+
+    if not public_id:
+        return jsonify({'msg': 'Falta el ID de la imagen'}), 400
+
+    restaurante = Restaurantes.query.get(restaurante_id)
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    try:
+        # Eliminar la imagen de Cloudinary
+        cloudinary.uploader.destroy(public_id)
+
+        # Eliminar la imagen de la base de datos (si las imágenes están guardadas como lista en el modelo)
+        restaurante.images = [img for img in restaurante.images if img['public_id'] != public_id]
+
+        db.session.commit()
+        return jsonify({'msg': 'Imagen eliminada con éxito'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al eliminar la imagen', 'error': str(e)}), 500
+
+
+    
+##-------CAMBIAR CONTRASEÑA SÍ------
+# Cambiar Contraseña de Restaurante
+@api.route('/restaurante/cambiar_contrasena', methods=['PUT'])
+@jwt_required()
+def cambiar_contrasena():
+    print("hola")
+    restaurante_id = get_jwt_identity()  # Obtiene el ID del restaurante autenticado
+    data = request.get_json()
+
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+
+    # Verificar que los campos están presentes
+    if not current_password or not new_password:
+        return jsonify({"msg": "Debe proporcionar la contraseña actual y la nueva contraseña"}), 400
+
+    # Buscar el restaurante por ID
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    # Verificar que el restaurante existe
+    if not restaurante:
+        return jsonify({"msg": "Restaurante no encontrado"}), 404
+
+    # Verificar que la contraseña actual es correcta
+    if not check_password_hash(restaurante.password_hash, current_password):
+        return jsonify({"msg": "Contraseña actual incorrecta"}), 401
+
+    # Actualizar la contraseña con el nuevo hash
+    restaurante.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
     
 
 @api.route('/poblar_restaurantes', methods=['POST'])

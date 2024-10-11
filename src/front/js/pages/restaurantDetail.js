@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import CartaModal from "../component/cartaModal";
 import ReservationModal from "../component/reservationModal";
+import OpinionModal from "../component/OpinionModal"; // Importación corregida
+
+import "../../styles/restaurantDetail.css"; // Asegúrate de tener este archivo
+import {PaginaDeRestauranteParaReservar} from "./reserva"
 // import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
 export const RestaurantDetail = () => {
-
   const { id } = useParams();
-  const [restaurants, setRestaurants] = useState([]);
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isCartaModalOpen, setIsCartaModalOpen] = useState(false); 
+  const [isCartaModalOpen, setIsCartaModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOpinionModalOpen, setIsOpinionModalOpen] = useState(false);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -22,6 +25,13 @@ export const RestaurantDetail = () => {
     setIsModalOpen(false);
   };
 
+  const openOpinionModal = () => {
+    setIsOpinionModalOpen(true);
+  };
+
+  const closeOpinionModal = () => {
+    setIsOpinionModalOpen(false);
+  };
 
   const CartaOpenModal = () => {
     setIsCartaModalOpen(true);
@@ -29,7 +39,6 @@ export const RestaurantDetail = () => {
   const CartaCloseModal = () => {
     setIsCartaModalOpen(false);
   };
-
 
   const opinions = [
     {
@@ -55,10 +64,15 @@ export const RestaurantDetail = () => {
     },
   ];
 
+  const nextOpinion = () => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % opinions.length);
+  };
 
+  const prevOpinion = () => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + opinions.length) % opinions.length);
+  };
 
   useEffect(() => {
-    console.log("ID from URL:", id);
     const mockRestaurants = [
       { id: 1, name: "Trattoria Bella", tipo: "Italiana", address: "Calle Mayor 45, Madrid", rating: 4.7, priceRange: "€€", image: "https://i0.wp.com/travelandleisure-es.com/wp-content/uploads/2024/04/TAL-ristorante-seating-ITLNRESTAURANTS0424-5403b234cdbd4026b2e98bed659b1634.webp?fit=750%2C500&ssl=1" },
       { id: 2, name: "Pasta Fresca", tipo: "Italiana", address: "Calle de la Paz 10, Valencia", rating: 4.3, priceRange: "€€", image: "https://static.wixstatic.com/media/e7e925_6e8c1ffb4cd8432ea5a37cec591048ad~mv2.jpg/v1/fill/w_2880,h_1598,al_c,q_90,usm_0.66_1.00_0.01,enc_auto/e7e925_6e8c1ffb4cd8432ea5a37cec591048ad~mv2.jpg" },
@@ -125,7 +139,6 @@ export const RestaurantDetail = () => {
       { id: 39, name: "Casa Caribe", tipo: "latinoamerica", address: "Paseo de la Castellana 33, Valencia", rating: 4.5, priceRange: "€€", image: "https://theobjective.com/wp-content/uploads/2024/04/2022-09-02.webp" }
 
     ];
-    setRestaurants(mockRestaurants);
     const foundRestaurant = mockRestaurants.find(r => r.id === parseInt(id));
 
     if (foundRestaurant) {
@@ -137,91 +150,76 @@ export const RestaurantDetail = () => {
     }
   }, [id]);
 
-  const nextOpinion = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % opinions.length);
-  };
-
-  const prevOpinion = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + opinions.length) % opinions.length);
-  };
-
- 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log("Reservation submitted");
-    closeModal()
-  };
-
-  
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
-
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
   if (!restaurant) return <div>No restaurant found</div>;
 
   return (
-    <div className="restaurant-detail-main-container">
-      <div className="restaurant-detail-container">
-        <h1>{restaurant.name}</h1>
-        <p>
-          <i className="fas fa-utensils" style={{ color: "#232323" }}></i> Tipo de comida: {restaurant.tipo}
-        </p>
-        <p>
-          <i className="fas fa-map-marker-alt" style={{ color: "#232323" }}></i> Dirección: {restaurant.address}
-        </p>
-        <p>
-          <strong>Valoración:</strong> {restaurant.rating} ⭐
-        </p>
-        <p>
-          <i className="fas fa-dollar-sign" style={{ color: "#232323" }}></i> Rango de Precios: {restaurant.priceRange}
-        </p>
-        <img src={restaurant.image} alt={restaurant.name} />
-      </div>
-
-      <div className="restaurant-detail-container2">
-        <h2>¿Todavía no nos conoces?</h2>
-        <p><strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad, especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo.
-          El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez, que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto para disfrutar de una comida íntima o una reunión con amigos.
-          El menú ofrece una variedad de platos elaborados con ingredientes frescos y de temporada, destacando sus tapas, pescados frescos y carnes a la brasa, acompañados de una selecta carta de vinos.
-          Además, el servicio es atento y cercano, asegurando que cada comensal se sienta como en casa.</p>
-
-        {/* Botón para abrir el modal de la reserva */}
-        <button onClick={openModal} className="open-booking-button">RESERVA AHORA</button>
-        {/* Botón para abrir el moda de la carta */}
-        <button onClick={CartaOpenModal} className="open-carta-button">VER NUESTRA CARTA</button>
-
-        <img src="https://img.freepik.com/psd-gratis/vista-superior-mesa-comedor-comida_23-2150943885.jpg?t=st=1728223273~exp=1728226873~hmac=a0558292b669aa3609f4227c053bd92e38945bcb3f56c3a0ef0a97f0bb03fc81&w=2000" alt="Fondo Restaurante" className="restaurant-image-fondo" />
-
-      </div>
-
-      <ReservationModal
-        isOpen={isModalOpen}
-        onClose={closeModal}
-        onSubmit={handleSubmit}
-      />
-
-      <CartaModal
-        isOpen={isCartaModalOpen}
-        onClose={CartaCloseModal}
-      />
-
-
-      {/* Slider de opiniones */}
-      <div className="opinions-slider">
-        <h5 className="opinions-text">Opiniones de nuestros comensales</h5>
-        <div className="opinion-card">
-          <img src={opinions[currentIndex].photo} alt={opinions[currentIndex].name} />
-          <h3>{opinions[currentIndex].name}</h3>
-          <p>{'⭐'.repeat(opinions[currentIndex].rating)}</p>
-          <p>"{opinions[currentIndex].comment}"</p>
+    <div className='container-detail'>
+      <div className='containel-detail-cards'>
+        <div className="area-header">
+          <h1 className="titulo-principal">Tu restaurante elegido</h1>
         </div>
-        <div className="button-opinions-container">
-          <button className="button-opinions1" onClick={prevOpinion}>Anterior</button>
-          <button className="button-opinions2" onClick={nextOpinion}>Siguiente</button>
+
+        <div className="restaurant-search-container">
+          <div className="restaurant-detail-layout">
+            {/* Card del restaurante a la izquierda */}
+            <div className="restaurant-card">
+              <img
+                src={restaurant.image}
+                alt={restaurant.name}
+                className="restaurant-image"
+              />
+              <div className="restaurant-info">
+                <h3>{restaurant.name}</h3>
+                <p>{restaurant.address}</p>
+                <p><strong>Valoración:</strong> {restaurant.rating} ⭐</p>
+                <p><strong>Rango de Precios:</strong> {restaurant.priceRange}</p>
+              </div>
+            </div>
+
+            {/* Descripción del restaurante a la derecha */}
+            <div className="restaurant-description-container">
+              <div className="restaurant-description">
+                <h2>¿Todavía no nos conoces?</h2>
+                <p>
+                  <strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad,
+                  especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo.
+                  El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez,
+                  que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto
+                  para disfrutar de una comida íntima o una reunión con amigos.
+                </p>
+              </div>
+
+              {/* Botones fuera del div de la descripción, debajo de ella */}
+              <div className="restaurant-buttons">
+                <button onClick={openModal} className="action-button">RESERVA AHORA</button>
+                <button onClick={CartaOpenModal} className="action-button">VER NUESTRA CARTA</button>
+                <button onClick={openOpinionModal} className="action-button">VER OPINIONES</button>
+              </div>
+            </div>
+          </div>
+
+          <PaginaDeRestauranteParaReservar
+            isOpen={isModalOpen}
+            onClose={closeModal}
+            restaurante_id={id}
+          />
+
+          <CartaModal
+            isOpen={isCartaModalOpen}
+            onClose={CartaCloseModal}
+          />
+
+          {/* Modal para opiniones */}
+          <OpinionModal
+            isOpen={isOpinionModalOpen}
+            onClose={closeOpinionModal}
+            opinions={opinions}
+            currentIndex={currentIndex}
+            nextOpinion={nextOpinion}
+            prevOpinion={prevOpinion}
+          />
         </div>
       </div>
     </div>

@@ -12,7 +12,10 @@ import { RestaurantSearch } from "./pages/restaurantSearch";
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
 import { RestaurantDetail } from "./pages/restaurantDetail";
+import { FAQ } from "./pages/faq";
+import { About } from "./pages/aboutUs";
 import { AreaPrivadaUsuario } from "./pages/vistaPrivadaUsuario"; // Importación correcta
+import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante"
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -42,6 +45,15 @@ const Layout = () => {
                         <Route element={<PrivateView />} path="/private" /> {/* Página general de área privada */}
                         
                         <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
+                        {/* Vista privada */}
+                        <Route element={<PrivateView />} path="/private" />
+                        {/* Vista privada faq */}
+                        <Route element={<FAQ />} path="/faq" />
+
+                        {/* Vista About us */}
+                        <Route element={<About />} path="/about" />
+
+                        <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante/:restaurante_id" />
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />

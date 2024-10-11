@@ -8,9 +8,11 @@ import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState(null);  // Agregamos el userId al estado
+    const [userId, setUserId] = useState(null);  // Almacenamos el userId
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
+    console.log(sessionStorage.getItem('user_id'))
+
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -24,7 +26,7 @@ export const Navbar = () => {
                 setUserName(storedRestaurantName);
                 setLoggedIn(true);
             } 
-            else if (token && storedUserName) {
+            else if (token && storedUserName && storedUserId) {
                 setIsRestaurant(false);
                 setUserName(storedUserName);
                 setUserId(storedUserId);  // Actualizamos el estado con el user_id
@@ -47,16 +49,18 @@ export const Navbar = () => {
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
-    }, [userName]);
+    }, [userName, sessionStorage.getItem('restaurant_name')]);
 
-    const handleLogin = (userName, isRestaurantLogin = false) => {
+    const handleLogin = (userName, userId, isRestaurantLogin = false) => {
         if (isRestaurantLogin) {
             sessionStorage.setItem("restaurant_name", userName);
         } else {
             sessionStorage.setItem("user_name", userName);
+            sessionStorage.setItem("user_id", userId);  // Guardamos también el user_id
         }
 
         setUserName(userName);
+        setUserId(userId);
         setIsRestaurant(isRestaurantLogin);
         setLoggedIn(true);
     };
@@ -79,8 +83,10 @@ export const Navbar = () => {
 
     // Función para manejar la navegación al área privada del usuario
     const handlePrivateAreaNavigation = () => {
-        if (userId) {
-            navigate(`/private/${userId}`);
+        const currentUserId = sessionStorage.getItem("user_id");
+        console.log(currentUserId)
+        if (currentUserId) {
+            navigate(`/private/${currentUserId}`);
         }
     };
 
@@ -109,7 +115,7 @@ export const Navbar = () => {
                                             <i
                                                 className="fa-solid fa-user"
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
-                                                onClick={handlePrivateAreaNavigation}  // Al hacer clic redirige al área privada
+                                                onClick={handlePrivateAreaNavigation}  // Ahora correctamente referenciado
                                             ></i>
                                             Hola {userName}
                                         </span>
