@@ -76,6 +76,7 @@ export const AreaPrivadaUsuario = () => {
             email: formData.email,
             telefono: formData.telefono,
         };
+        console.log(dataToSend)
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
 
@@ -83,7 +84,7 @@ export const AreaPrivadaUsuario = () => {
             sessionStorage.setItem("user_name", formData.firstName);
 
             // Llamar a la función para actualizar la navbar (puedes manejar esto en el contexto o pasarla como prop)
-            actions.handleAccountUpdate(formData.firstName, false);  // false indica que es un usuario, no restaurante
+            // actions.handleAccountUpdate(formData.firstName, false);  // false indica que es un usuario, no restaurante
 
             Swal.fire({
                 title: 'Éxito',

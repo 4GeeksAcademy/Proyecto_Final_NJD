@@ -224,6 +224,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
             modificarUsuario: async (userId, formData) => {
+                console.log(formData)
                 const token = sessionStorage.getItem("token");
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
