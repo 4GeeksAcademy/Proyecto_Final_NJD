@@ -12,6 +12,7 @@ import { RestaurantSearch } from "./pages/restaurantSearch";
 import { RegistroCompletoRestaurante } from "./pages/registro_restaurante";
 import { PrivateView } from "./pages/privateView";
 import { RestaurantDetail } from "./pages/restaurantDetail";
+import { About } from "./pages/aboutUs";
 
 const Layout = () => {
 
@@ -37,6 +38,9 @@ const Layout = () => {
                         <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
                         {/* Vista privada */}
                         <Route element={<PrivateView />} path="/private" />
+                        {/* Vista About us */}
+                        <Route element={<About />} path="/about" />
+
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />
