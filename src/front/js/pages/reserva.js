@@ -24,7 +24,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         const fetchUserData = async () => {
             const userId = sessionStorage.getItem("user_id");
             const userData = await actions.obtenerDatosUsuario(userId);
-            console.log(userData)
 
             // Añadimos los datos del usuario al formData, pero no los mostramos en el formulario
             setFormData((prevState) => ({
@@ -43,7 +42,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
-        console.log(store.reservas)
         event.preventDefault();
         try {
             const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/reservas`, {
@@ -58,7 +56,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
 
             if (response.ok) {
                 const data = await response.json()
-                console.log(data)
                 fetch(`${process.env.BACKEND_URL}/send-mail`, {
                     method: 'POST',
                     headers: {
