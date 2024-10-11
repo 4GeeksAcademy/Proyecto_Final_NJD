@@ -577,6 +577,48 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+            // OBTENER LOS FAVORITOS DEL USUARIO
+
+            obtenerFavoritosDelUsuario: async (usuario_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
+                    const data = await response.json();
+                    setStore({ favoritos: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+            // ELIMINAR FAV
+
+            eliminarFavorito: async (favorito_id, usuario_id) => {
+                try {
+                    const token = sessionStorage.getItem('token');
+                    const user_id = sessionStorage.getItem('user_id');
+            
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos/${favorito_id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+            
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Favorito eliminado:", data);
+                        return true;  // Devuelve true si la eliminación fue exitosa
+                    } else {
+                        const errorData = await response.json();
+                        console.error("Error eliminando favorito:", errorData);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Error al eliminar favorito:", error);
+                    return false;
+                }
+            }
         }
     };
 };

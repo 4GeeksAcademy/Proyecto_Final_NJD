@@ -4,9 +4,11 @@ import Swal from 'sweetalert2';
 import { Context } from "../store/appContext";
 import { ModalVerMisReservas } from '../component/modalVerMisReservas';
 import "../../styles/vistaPrivadaUsuario.css";
+import { ModalVerMisFavoritos } from "../component/modalVerMisFavoritos";
 
 export const AreaPrivadaUsuario = () => {
-    const { actions } = useContext(Context);
+    const { actions, store } = useContext(Context);
+    const [favoritos, setFavoritos] = useState([]);
     const { user_id } = useParams();
     const [formData, setFormData] = useState({
         firstName: '',
@@ -22,6 +24,7 @@ export const AreaPrivadaUsuario = () => {
 
     // Estado para abrir y cerrar el modal de reservas
     const [isModalReservasOpen, setModalReservasOpen] = useState(false);
+    const [isFavoritosOpen, setFavoritosOpen] = useState(false);
 
     const openModal = (field, currentValue) => {
         setModalData({
@@ -166,7 +169,8 @@ export const AreaPrivadaUsuario = () => {
                             </button>
                         </div>
                         <div className="col-md-3 mb-2">
-                            <button className="btn btn-secondary w-100" onClick={() => Swal.fire("Mis favoritos", "Aquí estarán tus favoritos")}>
+                            {/* Aquí abrimos el modal de favoritos */}
+                            <button className="btn btn-secondary w-100" onClick={() => setFavoritosOpen(true)}>
                                 Ver mis favoritos
                             </button>
                         </div>
@@ -203,6 +207,8 @@ export const AreaPrivadaUsuario = () => {
                     </div>
                 </div>
 
+                {/* Aquí renderizamos el modal de favoritos */}
+                <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
             </div>
         </div>
     );
