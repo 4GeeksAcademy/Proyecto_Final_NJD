@@ -586,6 +586,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
                     const data = await response.json();
                     setStore({ favoritos: data });
+                    return data
                 } catch (error) {
                     console.log(error);
                 }
