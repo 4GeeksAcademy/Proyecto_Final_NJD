@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"; 
 import { LoginRestaurante } from "./login_restaurante";
 import { SignupRestaurante } from "./signup_restaurante";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 
 export const Footer = () => {
@@ -26,7 +27,9 @@ export const Footer = () => {
                         <h4>Enlaces útiles</h4>
                         <ul>
                             <li><a href="#about">Sobre nosotros</a></li>
-                            <li><a href="#faq">Preguntas frecuentes</a></li>
+                            <li>
+                            <Link to="faq">Preguntas frecuentes</Link>
+                            </li>
                         </ul>
                     </div>
 
