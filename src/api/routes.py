@@ -642,10 +642,41 @@ def eliminar_un_favorito(usuario_id, favorito_id):
 def obtener_favoritos(usuario_id):                     
 
           
+    usuario = Usuario.query.get(usuario_id)
+    
+    if not usuario:
+        return jsonify({"error": "Usuario no encontrado"}), 404
+
+    
     favoritos = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id).all()
-    if not favoritos:
-        return jsonify({"msg": "No tienes restaurantes favoritos"}), 404
-    return jsonify([favorito.serialize() for favorito in favoritos]), 200 
+
+    
+    resultado = []
+    for favorito in favoritos:
+        restaurante = Restaurantes.query.get(favorito.restaurantes_id)
+        if restaurante:
+            resultado.append({
+                "restaurante_id": restaurante.id,
+                "nombre": restaurante.nombre,
+                "direccion": restaurante.direccion,
+                "telefono": restaurante.telefono,
+                "image": restaurante.image
+            })
+
+    return jsonify({"restaurantes_favoritos": resultado}), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #CREAR VALORACION
 
