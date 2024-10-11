@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState, useContext, useRef } from "react";
 import { Context } from "../store/appContext";
 import { useParams, useNavigate } from "react-router-dom";
 import UploadImageCloudinary from "../component/uploadImageCloudinary";
 import "../../styles/vistaPrivadaRestaurante.css";
+
 
 export const VistaPrivadaRestaurante = () => {
   const { store, actions } = useContext(Context);
@@ -14,6 +15,8 @@ export const VistaPrivadaRestaurante = () => {
   const [restaurante, setRestaurante] = useState(store.restaurantDetails);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [images, setImages] = useState([]); // Para almacenar múltiples imágenes
+  const carouselRef = useRef(null);
+  const [currentSlide, setCurrentSlide] = useState(0); // Estado para el carrusel
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
     newPassword: "",
@@ -28,7 +31,9 @@ export const VistaPrivadaRestaurante = () => {
         setLoading(true);
         const restaurante_api = await actions.getRestaurante(restaurante_id);
         setRestaurante(restaurante_api);
-        console.log(restaurante_api);
+        const initialImages = restaurante_api.image ? [restaurante_api.image] : [];
+        setImages([...initialImages]); // Inicializa el estado con la imagen de la base de datos
+
         await actions.obtenerValoracionRestaurante(restaurante_id);
         setLoading(false);
       } catch (err) {
@@ -67,7 +72,47 @@ export const VistaPrivadaRestaurante = () => {
     });
   };
 
-   // Función callback que se pasa al componente UploadImageCloudinary
+  const handleNextSlide = () => {
+    if (currentSlide < images.length - 1) {
+      setCurrentSlide(currentSlide + 1);
+    }
+  };
+
+  const handlePrevSlide = () => {
+    if (currentSlide > 0) {
+      setCurrentSlide(currentSlide - 1);
+    }
+  };
+
+  // Función para eliminar la imagen
+  const handleDeleteImage = async (public_id) => {
+    try {
+      const response = await fetch(
+        `/api/restaurantes/${restaurante_id}/imagen`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ public_id }),
+        }
+      );
+
+      if (response.ok) {
+        // Eliminar la imagen localmente del estado después de eliminarla en el backend
+        setImages(images.filter((image) => image.public_id !== public_id));
+        alert("Imagen eliminada con éxito");
+      } else {
+        alert("Error al eliminar la imagen");
+      }
+    } catch (error) {
+      console.error("Error eliminando la imagen", error);
+    }
+  };
+
+
+  // Función callback que se pasa al componente UploadImageCloudinary
   const handleImageUpload = (url) => {
     const updatedImages = [...images, url]; // Agregar la nueva imagen al array de imágenes existentes
     setImages(updatedImages);
@@ -346,13 +391,56 @@ export const VistaPrivadaRestaurante = () => {
         </button>
 
 
-        {restaurante.image && (
-          <img
-            className="restaurant-private-image"
-            src={restaurante.image}
-            alt={`Imagen de ${restaurante.nombre}`}
-          />
-        )}
+
+
+
+
+        {/* Carrusel de imágenes */}
+        <div className="carousel-container">
+          <button
+            className="prev-slide"
+            onClick={handlePrevSlide}
+            disabled={currentSlide === 0} // Deshabilita si estamos en el primer slide
+          >
+            ◀
+          </button>
+          <div className="carousel-track">
+            <div
+              className="carousel-slide"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {images.map((image, index) => (
+                <img
+                  key={index}
+                  className="restaurant-private-image"
+                  src={image}
+                  alt={`Imagen ${index + 1} del restaurante`}
+                />
+              ))}
+              <button
+                className="delete-image-button"
+                onClick={() => handleDeleteImage(image.public_id)} // Llama a la función para eliminar la imagen
+              >
+                X
+              </button>
+            </div>
+          </div>
+          <button
+            className="next-slide"
+            onClick={handleNextSlide}
+            disabled={currentSlide === images.length - 1} // Deshabilita si estamos en el último slide
+          >
+            ▶
+          </button>
+        </div>
+
+
+
+
+
+
+
+
 
 
 
@@ -362,7 +450,7 @@ export const VistaPrivadaRestaurante = () => {
           <UploadImageCloudinary onImageUpload={handleImageUpload} />
         </div>
 
-        
+
       </div>
 
       <div className="restaurant-private-reviews">

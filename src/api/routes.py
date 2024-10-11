@@ -743,6 +743,35 @@ def upload_image():
     except Exception as e:
         # Capturar el error específico y devolverlo
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
+    
+##ELIMINAR IMAGEN RESTAURANT
+@api.route('/restaurantes/<int:restaurante_id>/imagen', methods=['DELETE'])
+@jwt_required()  # Asegurarse de que el restaurante esté autenticado
+def eliminar_imagen_restaurante(restaurante_id):
+    body = request.get_json()
+    public_id = body.get('public_id')
+
+    if not public_id:
+        return jsonify({'msg': 'Falta el ID de la imagen'}), 400
+
+    restaurante = Restaurantes.query.get(restaurante_id)
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    try:
+        # Eliminar la imagen de Cloudinary
+        cloudinary.uploader.destroy(public_id)
+
+        # Eliminar la imagen de la base de datos (si las imágenes están guardadas como lista en el modelo)
+        restaurante.images = [img for img in restaurante.images if img['public_id'] != public_id]
+
+        db.session.commit()
+        return jsonify({'msg': 'Imagen eliminada con éxito'}), 200
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'msg': 'Error al eliminar la imagen', 'error': str(e)}), 500
+
 
     
 ##-------CAMBIAR CONTRASEÑA SÍ------
