@@ -7,13 +7,49 @@ const getState = ({ getStore, getActions, setStore }) => {
             valoraciones: [],
             categorias: [],
             restaurantes_favoritos: [],
+            restaurantDetails: {},
+
         },
 
         actions: {
+
+            //Modificar contraseña
+            // Agrega esta función a tus actions
+            cambiarContraseña: async (data) => {
+                const token = sessionStorage.getItem('token');
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + '/api/restaurante/cambiar_contrasena', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` // Incluye el token JWT en la cabecera
+                        },
+                        body: JSON.stringify(data)
+                    });
+                        console.log(response)
+                    const result = await response.json();
+                    if (response.ok) {
+                        return { success: true, message: result.msg };
+                    } else {
+                        return { success: false, message: result.msg };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
             // CREAR RESERVA
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
                 const token = sessionStorage.getItem("token");
+            
+                // Asegúrate de que "niños" y "trona" no sean null, y envía 0 por defecto si no están presentes
+                const bodyData = {
+                    ...data,
+                    niños: data.niños || 0,
+                    trona: data.trona || 0
+                };
+            
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -21,9 +57,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Content-Type': 'application/json',
                             'Authorization': `Bearer ${token}` // JWT
                         },
-                        body: JSON.stringify(data)
+                        body: JSON.stringify(bodyData)
                     });
-
+            
                     if (response.ok) {
                         const result = await response.json();
                         alert("Reserva realizada con éxito");
@@ -35,7 +71,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     alert("Hubo un error al procesar la solicitud");
                 }
             },
-
+            
             // OBTENER RESERVAS
             obtenerReservas: async function (token, usuario_id) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
@@ -47,19 +83,21 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Authorization': `Bearer ${token}` // JWT
                         }
                     });
-
+            
                     if (response.ok) {
                         const result = await response.json();
-                        setStore({ reservas: result });
+                        return result;  // Devolver el resultado para usarlo en el componente
                     } else {
                         const error = await response.json();
                         alert("Error: " + error.message);
+                        return [];
                     }
                 } catch (err) {
                     alert("Hubo un error al procesar la solicitud");
+                    return [];
                 }
             },
-
+            
             // ACTUALIZAR RESERVAS
             actualizarReserva: async function (reserva_id, data, token) {
                 const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;
@@ -164,10 +202,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                     });
 
                     const data = await response.json();
+                    console.log(data.user_id)
 
                     if (response.ok) {
                         sessionStorage.setItem('token', data.access_token);  // Guardar el token en sessionStorage
                         sessionStorage.setItem('user_name', data.user_name);  // Guardar el nombre del usuario en sessionStorage
+                        sessionStorage.setItem('user_id', '1')
+                        localStorage.setItem('usuario', data.user_id)
                         return { success: true, data: data };  // Devolver el resultado exitoso
                     } else if (response.status === 404) {
                         return { success: false, error: 'Usuario no registrado' };
@@ -183,6 +224,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
             modificarUsuario: async (userId, formData) => {
+                console.log(formData)
                 const token = sessionStorage.getItem("token");
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
@@ -194,8 +236,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify({
                             nombres: formData.nombres,
                             apellidos: formData.apellidos,
-                            email: formData.email,
-                            telefono: formData.telefono
+                            telefono: formData.telefono,
+                            password: formData.password ? formData.password : undefined
                         })
                     });
 
@@ -210,6 +252,35 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+
+            obtenerDatosUsuario: async (userId) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+            
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Datos obtenidos del usuario:", data);  // Para depurar
+                        return data;
+                    } else {
+                        const errorData = await response.json();
+                        console.error("Error al obtener los datos del usuario:", errorData);
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Error al obtener los datos del usuario:", error);
+                    return null;
+                }
+            },
+            
+
 
             eliminarUsuario: async (userId) => {
                 const token = sessionStorage.getItem("token");
@@ -249,22 +320,22 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
-           // OBTENER UNA CATEGORÍA
-obtenerUnaCategoria: async (categoria_id) => {
-    try {
-        console.log(`Intentando obtener la categoría con ID: ${categoria_id}`);
-        const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}`);
-        if (!response.ok) {
-            throw new Error("Error al obtener la categoría");
-        }
-        const data = await response.json();
-        console.log(`Datos de la categoría obtenidos: `, data); // Verificar que los datos se obtienen correctamente
-        return data;  // Asegúrate de que está retornando los datos
-    } catch (error) {
-        console.error("Error al cargar la categoría", error);
-        return null;  // Maneja el error
-    }
-},
+            // OBTENER UNA CATEGORÍA
+            obtenerUnaCategoria: async (categoria_id) => {
+                try {
+                    console.log(`Intentando obtener la categoría con ID: ${categoria_id}`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}`);
+                    if (!response.ok) {
+                        throw new Error("Error al obtener la categoría");
+                    }
+                    const data = await response.json();
+                    console.log(`Datos de la categoría obtenidos: `, data); // Verificar que los datos se obtienen correctamente
+                    return data;  // Asegúrate de que está retornando los datos
+                } catch (error) {
+                    console.error("Error al cargar la categoría", error);
+                    return null;  // Maneja el error
+                }
+            },
 
 
             // OBTENER RESTAURANTES POR CATEGORIA
@@ -403,6 +474,7 @@ obtenerUnaCategoria: async (categoria_id) => {
 
                     if (response.ok) {
                         const data = await response.json();
+                        sessionStorage.setItem('restaurant_name', formData.nombre )
                         return { success: true, message: "Datos modificados con éxito", data: data };
                     } else {
                         const errorData = await response.json();
@@ -412,9 +484,6 @@ obtenerUnaCategoria: async (categoria_id) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
-
-
-
 
 
             // OBTENER RESTAURANTES
@@ -428,6 +497,66 @@ obtenerUnaCategoria: async (categoria_id) => {
                 }
             },
 
+            getRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`);
+                    if (!response.ok) {
+                        throw new Error("Error al obtener los detalles del restaurante");
+                    }
+                    const data = await response.json();
+                    setStore({ restaurantDetails: data });
+                    return data
+                } catch (error) {
+                    console.error("Error al cargar el restaurante", error);
+                }
+
+            },
+
+            obtenerValoracionRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/valoracion`);
+                    const data = await response.json();
+                    setStore({ valoraciones: data });
+                } catch (error) {
+                    console.error("Error al cargar las valoraciones", error);
+                }
+            },
+
+
+            // FUNCIÓN PARA SUBIR IMAGEN A CLOUDINARY
+            subirImagenRestaurante: async function (file) {
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // Preset de Cloudinary, uso para front
+                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
+
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, url: data.secure_url };
+                    } else {
+                        return { success: false, message: "Error al subir la imagen" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // OBTENER UN RESTAURANTES POR ID
+            obtenerRestaurantesPorId: async (restaurante_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}`);
+                    const data = await response.json();
+                    setStore({ restaurantes: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
             // ELIMINAR RESTAURANTE
             eliminarRestaurante: async (restauranteId) => {
                 const token = sessionStorage.getItem("token");
@@ -449,6 +578,48 @@ obtenerUnaCategoria: async (categoria_id) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+            // OBTENER LOS FAVORITOS DEL USUARIO
+
+            obtenerFavoritosDelUsuario: async (usuario_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
+                    const data = await response.json();
+                    setStore({ favoritos: data });
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+
+            // ELIMINAR FAV
+
+            eliminarFavorito: async (favorito_id, usuario_id) => {
+                try {
+                    const token = sessionStorage.getItem('token');
+                    const user_id = sessionStorage.getItem('user_id');
+            
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos/${favorito_id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+            
+                    if (response.ok) {
+                        const data = await response.json();
+                        console.log("Favorito eliminado:", data);
+                        return true;  // Devuelve true si la eliminación fue exitosa
+                    } else {
+                        const errorData = await response.json();
+                        console.error("Error eliminando favorito:", errorData);
+                        return false;
+                    }
+                } catch (error) {
+                    console.error("Error al eliminar favorito:", error);
+                    return false;
+                }
+            }
         }
     };
 };

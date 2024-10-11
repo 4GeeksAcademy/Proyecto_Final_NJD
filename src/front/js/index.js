@@ -5,6 +5,7 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 
 //include your index.scss file into the bundle
 import "../styles/index.css";
+import "../styles/aboutUs.css";
 
 //import your own components
 import Layout from "./layout";

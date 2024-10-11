@@ -80,7 +80,7 @@ footer {
 
 
 .container-background {
-  height: 150px;
+  height: 50px;
   background: linear-gradient(to left, #2c2c2c, #6a6a6a);
   background-size: cover;
   background-position: center;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"; 
+import React, { useState, useEffect } from "react";
 import { LoginRestaurante } from "./login_restaurante";
 import { SignupRestaurante } from "./signup_restaurante";
 import { useParams, Link, useNavigate } from "react-router-dom";
@@ -26,10 +26,14 @@ export const Footer = () => {
                     <div className="footer-section">
                         <h4>Enlaces útiles</h4>
                         <ul>
-                            <li><a href="#about">Sobre nosotros</a></li>
+
                             <li>
-                            <Link to="faq">Preguntas frecuentes</Link>
+                                <Link to="faq">Preguntas frecuentes</Link>
                             </li>
+                            <li>
+                                <Link to="about">Sobre nosotros</Link>
+                            </li>
+    
                         </ul>
                     </div>
 
@@ -52,7 +56,7 @@ export const Footer = () => {
                     <div className="footer-section">
                         <h4>Contáctanos</h4>
                         <ul>
-                            <li>Email: contacto@hoynococino.es</li>
+                            <li>Email: hoynococino.ceo@gmail.com</li>
                             <li>Teléfono: +123 456 789</li>
                         </ul>
                     </div>

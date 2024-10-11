@@ -43,13 +43,16 @@ export const LoginUsuario = ({ onLogin }) => {
 
         // Llama a la acción del flux
         const result = await actions.loginUsuario(email, password);
+        console.log(result)
+
 
         if (result.success) {
             sessionStorage.setItem('token', result.data.access_token);  // Guardar el token en sessionStorage
             sessionStorage.setItem('user_name', result.data.user_name);  // Guarda el nombre de usuario
-
+            // sessionStorage.setItem('user_id', result.data.user_id);
+            
             // Actualiza el estado en la Navbar
-            onLogin(result.data.user_name);
+            onLogin(result.data.user_name,result.data.user_id);
 
             const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
             if (loginModal) loginModal.hide();  // Cierra el modal de login
