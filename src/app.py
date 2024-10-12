@@ -51,7 +51,8 @@ app.config.update(dict(
     MAIL_USE_TLS=True,
     MAIL_USE_SSL=False,
     MAIL_USERNAME=os.getenv("MAIL_USERNAME"),  # esto en .env
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD")   # esto en .env
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),  # esto en .env
+    MAIL_DEFAULT_SENDER = 'hoynococino.ceo@gmail.com'
 ))
 
 # Inicio Mail

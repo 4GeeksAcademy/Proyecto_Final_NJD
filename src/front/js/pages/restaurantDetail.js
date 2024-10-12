@@ -4,8 +4,9 @@ import Swal from "sweetalert2";
 import CartaModal from "../component/cartaModal";
 import OpinionModal from "../component/OpinionModal"; 
 import "../../styles/restaurantDetail.css"; 
-import { PaginaDeRestauranteParaReservar } from "./reserva";
 import { Context } from "../store/appContext"; 
+import "../../styles/restaurantDetail.css";
+import {Reserva} from "./reserva"
 
 export const RestaurantDetail = () => {
     const { id } = useParams();
@@ -226,7 +227,7 @@ export const RestaurantDetail = () => {
                         </div>
                     </div>
 
-                    <PaginaDeRestauranteParaReservar
+                    <Reserva
                         isOpen={isModalOpen}
                         onClose={closeModal}
                         restaurante_id={id}
