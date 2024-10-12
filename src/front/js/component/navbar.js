@@ -11,8 +11,6 @@ export const Navbar = () => {
     const [userId, setUserId] = useState(null);  // Almacenamos el userId
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
-    console.log(sessionStorage.getItem('user_id'))
-
 
     useEffect(() => {
         const handleStorageChange = () => {
