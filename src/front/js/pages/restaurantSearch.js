@@ -42,14 +42,7 @@ export const RestaurantSearch = () => {
         )
         : [];
 
-    const toggleFavorite = (restaurant) => {
-        if (favorites.includes(restaurant)) {
-            setFavorites(favorites.filter(fav => fav.id !== restaurant.id));
-        } else {
-            setFavorites([...favorites, restaurant]);
-        }
-    };
-
+    
     // Función para redirigir al home y hacer scroll al div con id 'cuisine-scroll'
     const handleOtherCuisineClick = () => {
         navigate("/home");  // Redirigir al home
@@ -61,6 +54,24 @@ export const RestaurantSearch = () => {
         }, 500);  // Un pequeño retraso para asegurarse de que la página esté cargada
     };
 
+    const toggleFavorite = (restaurant) => {
+        const user_id = sessionStorage.getItem('user_id');
+        // Verificar si el restaurante ya está en favoritos usando el id
+        const isFavorite = store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id);
+        console.log(restaurant)
+        if (isFavorite) {
+            // Eliminar favorito
+            actions.eliminarFavorito(user_id, restaurant.id);
+            setFavorites(store.restaurantes_favoritos.filter(fav => fav.restaurante_id !== restaurant.id));
+        } else {
+            // Agregar favorito
+            actions.agregarFavorito(user_id, restaurant.id);
+            setFavorites([...store.restaurantes_favoritos, restaurant]);
+        }
+    };
+useEffect(() => {
+    console.log(filteredRestaurants)
+},[store.restaurantes_favoritos,filteredRestaurants])
     return (
         <div className="area-privada">
             <div className="area-privada-container">
@@ -97,10 +108,10 @@ export const RestaurantSearch = () => {
                                         <p><strong>Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
                                     </div>
                                     <button
-                                        className={`favorite-button ${favorites.includes(restaurant) ? 'favorited' : ''}`}
+                                        className={`favorite-button ${store.restaurantes_favoritos.includes(restaurant) ? 'favorited' : ''}`}
                                         onClick={() => toggleFavorite(restaurant)}
                                     >
-                                        {favorites.includes(restaurant) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
+                                        {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id)? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
                                     </button>
                                 </div>
                             ))
