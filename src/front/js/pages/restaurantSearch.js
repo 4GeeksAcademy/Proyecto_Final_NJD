@@ -47,6 +47,8 @@ export const RestaurantSearch = () => {
         }
     };
 
+    
+
     // Función para redirigir al home y hacer scroll al div con id 'cuisine-scroll'
     const handleOtherCuisineClick = () => {
         navigate("/home");  // Redirigir al home

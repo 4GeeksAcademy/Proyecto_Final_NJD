@@ -32,7 +32,7 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
 
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
-    }, [restaurante_id, actions]);
+    }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
