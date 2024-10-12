@@ -6,9 +6,9 @@ import { useNavigate } from 'react-router-dom';
 export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     const { actions, store } = useContext(Context);
     const [formData, setFormData] = useState({
-        adultos: 1,  // Obligatorio
-        niños: 0,    // Opcional, valor predeterminado 0
-        trona: 0,    // Opcional, valor predeterminado 0
+        adultos: 1,
+        niños: 0,
+        trona: 0,
         fecha_reserva: '',
         hora: '',
         restaurante_id: restaurante_id,
@@ -20,10 +20,10 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Obtener los datos del usuario al cargar el componente
+        const userId = sessionStorage.getItem("user_id");
         const fetchUserData = async () => {
-            const userId = sessionStorage.getItem("user_id");
-            const userData = await actions.obtenerDatosUsuario(userId);
+            if (userId) {
+                const userData = await actions.obtenerDatosUsuario(userId);
 
             // Añadimos los datos del usuario al formData, pero no los mostramos en el formulario
             setFormData((prevState) => ({
@@ -34,8 +34,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 email: userData.email || '',
 
             }));
+            }
         };
-
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
         
@@ -90,10 +90,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     cancelButtonText: 'Área privada'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        // Redirigir a la página principal
                         navigate('/');
                     } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        // Redirigir al área privada
                         const currentUserId = sessionStorage.getItem("user_id");
                         if (currentUserId) {
                             navigate(`/private/${currentUserId}`);
@@ -101,10 +99,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     }
                 });
 
-                // Cerramos el modal
                 onClose();
             } else {
-                console.log("Error en la reserva");
                 Swal.fire({
                     title: 'Error',
                     text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
@@ -113,7 +109,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 });
             }
         } catch (error) {
-            console.log("Error en la reserva:", error);
             Swal.fire({
                 title: 'Error',
                 text: 'Ocurrió un error inesperado.',

@@ -8,7 +8,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             categorias: [],
             restaurantes_favoritos: [],
             restaurantDetails: {},
-
+            imagenes: [],
         },
 
         actions: {
@@ -522,31 +522,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
-
-            // FUNCIÓN PARA SUBIR IMAGEN A CLOUDINARY
-            subirImagenRestaurante: async function (file) {
-                try {
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // Preset de Cloudinary, uso para front
-                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
-
-                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        return { success: true, url: data.secure_url };
-                    } else {
-                        return { success: false, message: "Error al subir la imagen" };
-                    }
-                } catch (error) {
-                    return { success: false, message: "Error de conexión" };
-                }
-            },
-
             // OBTENER UN RESTAURANTES POR ID
             obtenerRestaurantesPorId: async (restaurante_id) => {
                 try {
@@ -622,6 +597,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
             // AGREGAR FAVORITOS DESDE EL BOTON
 
             agregarFavorito: async (usuario_id, restaurante_id) => {
@@ -649,6 +625,115 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return null;
                 }
             },
+
+            // SUBIR IMAGEN A CLOUDINARY Y ASOCIARLA AL RESTAURANTE
+            subirImagenRestaurante: async function (file, restauranteId) {
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // Preset de Cloudinary
+                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
+
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        // Aquí enviamos la URL al backend para asociarla con el restaurante
+                        const token = sessionStorage.getItem('token');
+                        const apiResponse = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ url_imagen: data.secure_url })
+                        });
+
+                        if (apiResponse.ok) {
+                            return { success: true, url: data.secure_url };
+                        } else {
+                            return { success: false, message: "Error al asociar la imagen con el restaurante" };
+                        }
+                    } else {
+                        return { success: false, message: "Error al subir la imagen a Cloudinary" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // OBTENER IMÁGENES DE UN RESTAURANTE POR SU ID (GET)
+            obtenerImagenesRestaurante: async function (restauranteId) {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagenes`, {
+                        method: 'GET'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setStore({ imagenes: data });
+                    } else {
+                        console.error("Error al obtener las imágenes del restaurante");
+                    }
+                } catch (error) {
+                    console.error("Error al conectar con el servidor", error);
+                }
+            },
+
+            // ACTUALIZAR IMAGEN DE UN RESTAURANTE (PUT)
+            actualizarImagenRestaurante: async function (restauranteId, nuevaImagenUrl) {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ url_imagen: nuevaImagenUrl })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert("Imagen actualizada con éxito");
+                        return { success: true, data: data };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al actualizar la imagen" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            deleteImageRestaurante: async (restaurante_id, imageURL) => {
+                try {
+                    const response = await fetch(
+                        `/api/restaurantes/${restaurante_id}/imagen`,
+                        {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                            },
+                            body: JSON.stringify({ url_imagen: imageURL })  // Enviamos la URL de la imagen a eliminar
+                        }
+                    );
+            
+                    if (!response.ok) {
+                        throw new Error("Error eliminando la imagen");
+                    }
+            
+                    const data = await response.json();
+                    return { success: true, data };
+                } catch (error) {
+                    console.error("Error al eliminar la imagen:", error);
+                    return { success: false, error };
+                }
+            }
 
         }
     };
