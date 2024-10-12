@@ -4,8 +4,9 @@ import Swal from "sweetalert2";
 import CartaModal from "../component/cartaModal";
 import OpinionModal from "../component/OpinionModal"; 
 import "../../styles/restaurantDetail.css"; 
-import { PaginaDeRestauranteParaReservar } from "./reserva";
 import { Context } from "../store/appContext"; 
+import ReservationModal from "../component/reservationModal";
+import {Reserva} from "./reserva"
 
 export const RestaurantDetail = () => {
     const { id } = useParams();
@@ -226,7 +227,7 @@ export const RestaurantDetail = () => {
                         </div>
                     </div>
 
-                    <PaginaDeRestauranteParaReservar
+                    <Reserva
                         isOpen={isModalOpen}
                         onClose={closeModal}
                         restaurante_id={id}
@@ -247,6 +248,30 @@ export const RestaurantDetail = () => {
                     />
                 </div>
             </div>
-        </div>
+
+            {/* Descripción del restaurante a la derecha */}
+            <div className="restaurant-description-container">
+              <div className="restaurant-description">
+                <h2>¿Todavía no nos conoces?</h2>
+                <p>
+                  <strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad,
+                  especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo.
+                  El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez,
+                  que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto
+                  para disfrutar de una comida íntima o una reunión con amigos.
+                </p>
+              </div>
+
+              {/* Botones fuera del div de la descripción, debajo de ella */}
+              <div className="restaurant-buttons">
+                {
+                  sessionStorage.getItem("user_id") &&
+                  <button onClick={openModal} className="action-button">RESERVA AHORA</button>
+                }
+                <button onClick={CartaOpenModal} className="action-button">VER NUESTRA CARTA</button>
+                <button onClick={openOpinionModal} className="action-button">VER OPINIONES</button>
+              </div>
+            </div>
+          </div>
     );
 };

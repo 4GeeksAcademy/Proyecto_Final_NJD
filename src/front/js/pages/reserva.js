@@ -3,35 +3,43 @@ import { Context } from '../store/appContext';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
-export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClose }) => {
-    const { actions } = useContext(Context);
+export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
+    const { actions, store } = useContext(Context);
     const [formData, setFormData] = useState({
         adultos: 1,
         niños: 0,
         trona: 0,
         fecha_reserva: '',
         hora: '',
-        restaurante_id: restaurante_id
+        restaurante_id: restaurante_id,
+        email: '',
+        restaurant_name: ''
+
+
     });
     const navigate = useNavigate();
-   
+
     useEffect(() => {
         const userId = sessionStorage.getItem("user_id");
         const fetchUserData = async () => {
             if (userId) {
                 const userData = await actions.obtenerDatosUsuario(userId);
 
+                // Añadimos los datos del usuario al formData, pero no los mostramos en el formulario
                 setFormData((prevState) => ({
                     ...prevState,
-                    nombre: userData?.nombres || '',
-                    apellido: userData?.apellidos || '',
-                    telefono: userData?.telefono || ''
+                    nombre: userData.nombres || '',
+                    apellido: userData.apellidos || '',
+                    telefono: userData.telefono || '',
+                    email: userData.email || '',
+
                 }));
             }
         };
 
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
+
     }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
@@ -45,7 +53,35 @@ export const PaginaDeRestauranteParaReservar = ({ restaurante_id, isOpen, onClos
                 },
                 body: JSON.stringify(formData)
             });
+
+
             if (response.ok) {
+                const data = await response.json()
+                fetch(`${process.env.BACKEND_URL}/send-mail`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email: formData.email,
+                        restaurant_name: data.reserva.restaurant_name,
+                        reservation_date: formData.fecha_reserva,
+                        reservation_time: formData.hora
+
+                    })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message) {
+                            alert("Correo de confirmación enviado correctamente.");
+                        } else {
+                            console.log("Hubo un problema enviando el correo.", data);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error enviando el correo: ", error);
+                    });
+                // SweetAlert2 con el mensaje de éxito
                 Swal.fire({
                     title: 'Reserva realizada con éxito',
                     text: 'Recibirá un email de confirmación.',
