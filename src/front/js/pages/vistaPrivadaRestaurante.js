@@ -165,7 +165,7 @@ export const VistaPrivadaRestaurante = () => {
     }
   };
 
-  // Función para enviar la nueva contraseña
+  // Función para enviar la nueva contraseña!!!!______
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     if (passwordData.newPassword !== passwordData.confirmPassword) {
