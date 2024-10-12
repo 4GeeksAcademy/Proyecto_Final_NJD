@@ -37,7 +37,6 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
             newPassword: passwordData.newPassword
         };
 
-        // Aquí llamamos a la acción que has definido en el flux
         const result = await actions.cambiarContraseña(data);
 
         if (result.success) {
@@ -61,8 +60,8 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
-            <div className="modal-dialog">
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true" data-bs-backdrop="true" onClick={onClose}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}> {/* Evitamos que el modal se cierre al hacer clic dentro de él */}
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modalPasswordLabel">Cambiar contraseña</h5>
@@ -106,7 +105,9 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
                                     required
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary">Cambiar contraseña</button>
+                            <div className="modal-footer">
+                                <button type="submit" className="btn btn-primary">Cambiar contraseña</button>
+                            </div>
                         </form>
                     </div>
                 </div>

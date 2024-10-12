@@ -5,6 +5,7 @@ import { Context } from "../store/appContext";
 import { ModalVerMisReservas } from '../component/modalVerMisReservas';
 import "../../styles/vistaPrivadaUsuario.css";
 import { ModalVerMisFavoritos } from "../component/modalVerMisFavoritos";
+import { ModalCambiarPasswordUser } from '../component/modalCambiarPasswordUser';
 
 export const AreaPrivadaUsuario = () => {
     const { actions, store } = useContext(Context);
@@ -25,6 +26,9 @@ export const AreaPrivadaUsuario = () => {
     // Estado para abrir y cerrar el modal de reservas
     const [isModalReservasOpen, setModalReservasOpen] = useState(false);
     const [isFavoritosOpen, setFavoritosOpen] = useState(false);
+
+    // Estado para abrir y cerrar el modal de cambiar contraseña
+    const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
     const openModal = (field, currentValue) => {
         setModalData({
@@ -79,16 +83,9 @@ export const AreaPrivadaUsuario = () => {
             email: formData.email,
             telefono: formData.telefono,
         };
-        console.log(dataToSend)
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
-
-            // Actualizamos el sessionStorage si el nombre cambia
             sessionStorage.setItem("user_name", formData.firstName);
-
-            // Llamar a la función para actualizar la navbar (puedes manejar esto en el contexto o pasarla como prop)
-            // actions.handleAccountUpdate(formData.firstName, false);  // false indica que es un usuario, no restaurante
-
             Swal.fire({
                 title: 'Éxito',
                 text: 'Datos actualizados con éxito.',
@@ -105,6 +102,15 @@ export const AreaPrivadaUsuario = () => {
         }
     };
 
+    // Funciones para abrir/cerrar el modal de cambiar contraseña
+    const openPasswordModal = () => {
+        setPasswordModalOpen(true);
+    };
+
+    const closePasswordModal = () => {
+        setPasswordModalOpen(false);
+    };
+
     return (
         <div className="area-privada">
             <div className="area-privada-container">
@@ -112,7 +118,6 @@ export const AreaPrivadaUsuario = () => {
                     <h2 className="form-title">Bienvenido a tu área privada</h2>
                 </div>
                 <div className="area-body">
-                    {/* Iniciamos el formulario correctamente */}
                     <form onSubmit={handleSubmit} className="row ancho">
                         <div className="col-md-6 mb-3">
                             <label htmlFor="firstName" className="form-label">Nombre</label>
@@ -156,6 +161,19 @@ export const AreaPrivadaUsuario = () => {
                             </div>
                         </div>
 
+                        {/* Contraseña */}
+                        <div className="col-md-6 mb-3">
+                            <label htmlFor="password" className="form-label">Contraseña</label>
+                            <div className="input-group">
+                                <div className="input-content">
+                                    <span className="form-control-plaintext">●●●●●●●●</span>
+                                    <span className="input-group-text icon-wrapper">
+                                        <i className="fa-solid fa-pen-to-square small-icon" onClick={openPasswordModal}></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="text-left mt-4 col-12">
                             <button type="submit" className="btn btn-primary">Guardar Cambios</button>
                         </div>
@@ -163,13 +181,11 @@ export const AreaPrivadaUsuario = () => {
 
                     <div className="row mt-5 justify-content-center">
                         <div className="col-md-3 mb-2">
-                            {/* Botón para abrir el modal de reservas */}
                             <button className="btn btn-secondary w-100" onClick={() => setModalReservasOpen(true)}>
                                 Ver mis reservas
                             </button>
                         </div>
                         <div className="col-md-3 mb-2">
-                            {/* Aquí abrimos el modal de favoritos */}
                             <button className="btn btn-secondary w-100" onClick={() => setFavoritosOpen(true)}>
                                 Ver mis favoritos
                             </button>
@@ -179,6 +195,12 @@ export const AreaPrivadaUsuario = () => {
 
                 {/* Modal para ver reservas */}
                 <ModalVerMisReservas isOpen={isModalReservasOpen} onClose={() => setModalReservasOpen(false)} />
+
+                {/* Modal para cambiar contraseña */}
+                <ModalCambiarPasswordUser
+                    isOpen={isPasswordModalOpen}
+                    onClose={closePasswordModal}
+                />
 
                 {/* Modal para editar */}
                 <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
@@ -206,6 +228,9 @@ export const AreaPrivadaUsuario = () => {
                         </div>
                     </div>
                 </div>
+
+               
+
 
                 {/* Aquí renderizamos el modal de favoritos */}
                 <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
