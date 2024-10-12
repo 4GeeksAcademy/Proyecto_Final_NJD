@@ -581,11 +581,12 @@ def cancelar_reserva(reserva_id):
 #CREAR FAVORITOS
 
 @api.route('/usuario/<int:usuario_id>/favoritos', methods=['POST'])
+@jwt_required()
 def agregar_favorito(usuario_id):
 
     body = request.json
 
-    restaurante_id = body.get('restaurantes_id')
+    restaurante_id = body.get('restaurante_id')
 
     if not usuario_id or not restaurante_id :
         return jsonify({"error": "Faltan datos para agregar a favoritos"}), 400
@@ -602,17 +603,14 @@ def agregar_favorito(usuario_id):
 
 #ELIMINAR FAVORITO
 
-@api.route('/usuario/<int:usuario_id>/favoritos', methods=['DELETE'])
-def eliminar_favorito(usuario_id):
+@api.route('/usuario/<int:usuario_id>/favoritos/<int:restaurante_id>', methods=['DELETE'])
+def eliminar_favorito(usuario_id, restaurante_id):
     
-    body = request.get_json()
 
-    restaurantes_id = body.get('restaurantes_id')
-
-    if not all([usuario_id, restaurantes_id]):
+    if not all([usuario_id, restaurante_id]):
         return jsonify({"error": "Faltan datos para eliminar de favoritos"}), 400
 
-    favorito = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id, restaurantes_id=restaurantes_id).first()
+    favorito = Restaurantes_Favoritos.query.filter_by(usuario_id=usuario_id, restaurantes_id=restaurante_id).first()
 
     if not favorito:
         return jsonify({"error": "El restaurante no está en favoritos"}), 404

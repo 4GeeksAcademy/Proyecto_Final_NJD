@@ -26,7 +26,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                         body: JSON.stringify(data)
                     });
-                        console.log(response)
+                    console.log(response)
                     const result = await response.json();
                     if (response.ok) {
                         return { success: true, message: result.msg };
@@ -42,14 +42,14 @@ const getState = ({ getStore, getActions, setStore }) => {
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
                 const token = sessionStorage.getItem("token");
-            
+
                 // Asegúrate de que "niños" y "trona" no sean null, y envía 0 por defecto si no están presentes
                 const bodyData = {
                     ...data,
                     niños: data.niños || 0,
                     trona: data.trona || 0
                 };
-            
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
@@ -59,7 +59,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         },
                         body: JSON.stringify(bodyData)
                     });
-            
+
                     if (response.ok) {
                         const result = await response.json();
                         alert("Reserva realizada con éxito");
@@ -71,7 +71,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     alert("Hubo un error al procesar la solicitud");
                 }
             },
-            
+
             // OBTENER RESERVAS
             obtenerReservas: async function (token, usuario_id) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
@@ -83,7 +83,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Authorization': `Bearer ${token}` // JWT
                         }
                     });
-            
+
                     if (response.ok) {
                         const result = await response.json();
                         return result;  // Devolver el resultado para usarlo en el componente
@@ -97,7 +97,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return [];
                 }
             },
-            
+
             // ACTUALIZAR RESERVAS
             actualizarReserva: async function (reserva_id, data, token) {
                 const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;
@@ -264,7 +264,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             "Authorization": `Bearer ${token}`
                         }
                     });
-            
+
                     if (response.ok) {
                         const data = await response.json();
                         console.log("Datos obtenidos del usuario:", data);  // Para depurar
@@ -279,7 +279,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return null;
                 }
             },
-            
+
 
 
             eliminarUsuario: async (userId) => {
@@ -474,7 +474,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     if (response.ok) {
                         const data = await response.json();
-                        sessionStorage.setItem('restaurant_name', formData.nombre )
+                        sessionStorage.setItem('restaurant_name', formData.nombre)
                         return { success: true, message: "Datos modificados con éxito", data: data };
                     } else {
                         const errorData = await response.json();
@@ -560,7 +560,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
                     const data = await response.json();
-                    setStore({ favoritos: data });
+                    setStore({ restaurantes_favoritos: data.restaurantes_favoritos });
                     return data
                 } catch (error) {
                     console.log(error);
@@ -569,20 +569,20 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // ELIMINAR FAV
 
-            eliminarFavorito: async (favorito_id, usuario_id) => {
+            eliminarFavorito: async (usuario_id, favorito_id) => {
                 try {
                     const token = sessionStorage.getItem('token');
                     const user_id = sessionStorage.getItem('user_id');
-            
+
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos/${favorito_id}`, {
                         method: 'DELETE',
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
                         },
                     });
-            
+
                     if (response.ok) {
+                        getActions().obtenerFavoritosDelUsuario(user_id)
                         const data = await response.json();
                         console.log("Favorito eliminado:", data);
                         return true;  // Devuelve true si la eliminación fue exitosa
@@ -594,6 +594,35 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     console.error("Error al eliminar favorito:", error);
                     return false;
+                }
+            },
+
+
+            // AGREGAR FAVORITOS DESDE EL BOTON
+
+            agregarFavorito: async (usuario_id, restaurante_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+                        },
+                        body: JSON.stringify({ restaurante_id: restaurante_id }),
+                    });
+
+                    if (response.ok) {
+                        const user_id = sessionStorage.getItem("user_id")
+                        getActions().obtenerFavoritosDelUsuario(user_id)
+                        const data = await response.json();
+                        return data;
+                    } else {
+                        console.error("Error al agregar favorito");
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Error en la solicitud", error);
+                    return null;
                 }
             },
 
@@ -705,6 +734,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, error };
                 }
             }
+
         }
     };
 };
