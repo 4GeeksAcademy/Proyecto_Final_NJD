@@ -223,7 +223,7 @@ export const AreaPrivadaUsuario = () => {
                             </div>
                             <div className="modal-footer">
                                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Guardar</button>
+                                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Aceptar</button>
                             </div>
                         </div>
                     </div>

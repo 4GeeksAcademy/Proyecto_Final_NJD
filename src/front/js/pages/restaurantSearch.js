@@ -1,21 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";  // Importamos SweetAlert
+import Swal from "sweetalert2"; 
 import { Context } from "../store/appContext";
-import "../../styles/vistaPrivadaUsuario.css"; // Importa los estilos desde el mismo archivo
+import "../../styles/vistaPrivadaUsuario.css"; 
 
 export const RestaurantSearch = () => {
-    const { categoria_id } = useParams();  // Obtenemos categoria_id de los parámetros de la URL
+    const { categoria_id } = useParams(); 
     const { store, actions } = useContext(Context);
     const [searchQuery, setSearchQuery] = useState("");
     const [favorites, setFavorites] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
-    const navigate = useNavigate();  // Reemplazo de useHistory por useNavigate
+    const navigate = useNavigate();
 
     const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible"; // Imagen por defecto
 
     useEffect(() => {
-        // Asegurarse de que solo se obtengan restaurantes de la categoría seleccionada
+       
         actions.obtenerRestaurantesPorCategoria(categoria_id);
 
         // Obtener el nombre de la categoría
