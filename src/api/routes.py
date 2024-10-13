@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import request, jsonify, Blueprint
-from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity, decode_token
 from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
 from api.utils import validar_horario_reserva, generate_sitemap, APIException
 from flask_cors import CORS
@@ -10,6 +10,10 @@ from datetime import datetime, timezone
 from werkzeug.security import check_password_hash, generate_password_hash
 import re  # Para validación de email, contraseña y teléfono
 import cloudinary.uploader
+from flask_mail import Message
+from api import mail
+import re  # Para validación de email, contraseña y teléfono
+
 
 api = Blueprint('api', __name__)
 
@@ -315,10 +319,28 @@ def login_restaurante():
     restaurante = Restaurantes.query.filter_by(email=email).first()
     if restaurante is None:
         return jsonify({'msg': 'El restaurante no está registrado'}), 404
+    
+     # Inicializar los intentos fallidos si no existen
+    if not hasattr(restaurante, 'login_attempts'):
+        restaurante.login_attempts = 0
 
     # Verificar si la contraseña es correcta
     if not restaurante.check_password(password):
-        return jsonify({'msg': 'Contraseña incorrecta'}), 401
+        restaurante.login_attempts += 1  # Incrementar intentos fallidos
+        db.session.commit()  # Guardar cambios en la base de datos
+
+        # Si se alcanzan o superan los 3 intentos fallidos
+        if restaurante.login_attempts >= 3:
+            return jsonify({
+                'msg': 'Contraseña incorrecta. Has alcanzado 3 intentos fallidos.',
+                'show_reset_link': True  # Señal para mostrar el enlace de recuperación
+            }), 401
+        return jsonify({'msg': 'Contraseña incorrecta.'}), 401
+
+
+    # Si el login es exitoso, restablecer el contador de intentos fallidos
+    restaurante.login_attempts = 0
+    db.session.commit()
 
     # Generar el Access Token y Refresh Token
     access_token = create_access_token(identity=restaurante.id)
@@ -906,3 +928,65 @@ def cambiar_contrasena_usuario():
     db.session.commit()
 
     return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
+
+#RECUPERAR CONTRASEÑA
+#endpoint que envíe un correo con un enlace para restablecer la contraseña
+
+@api.route('/recover/password', methods=['POST'])
+def recover_password():
+    body = request.get_json()
+    email = body.get('email')
+
+    if not email:
+        return jsonify({"msg": "Email es requerido"}), 400
+
+    # Buscar el restaurante por el email
+    restaurante = Restaurantes.query.filter_by(email=email).first()
+
+    if not restaurante:
+        return jsonify({"msg": "El email no está registrado"}), 404
+
+    # Generar un token seguro (puedes usar su ID y firmarlo con una clave secreta)
+    reset_token = create_access_token(identity=restaurante.id,  expires_delta=datetime.timedelta(minutes=15))
+
+    # Crear el enlace de recuperación de contraseña
+    reset_link = f"http://localhost:3000/reset_password?token={reset_token}"
+
+    # Enviar el correo
+    try:
+        msg = Message("Recupera tu contraseña", recipients=[email])
+        msg.body = f"Haz clic en el siguiente enlace para restablecer tu contraseña: {reset_link}"
+        mail.send(msg)
+        return jsonify({"msg": "Correo enviado con éxito"}), 200
+    except Exception as e:
+        return jsonify({"msg": "Error al enviar el correo", "error": str(e)}), 500
+
+#RECUPERAR CONTRASEÑA
+#este endpoint recibirá el token y la nueva contraseña. si el token es válido, actualiza la contraseña del usuario.
+@api.route('/reset/password/<token>', methods=['POST'])
+def reset_password(token):
+    body = request.get_json()
+    new_password = body.get('new_password')
+
+    if not new_password:
+        return jsonify({"msg": "Nueva contraseña es requerida"}), 400
+
+    try:
+        # Decodificar el token
+        decoded_token = decode_token(token)
+        user_id = decoded_token['sub']  # Extraer el ID del usuario del token
+
+        # Buscar al usuario por su ID
+        restaurante = Restaurantes.query.get(user_id)
+        if not restaurante:
+            return jsonify({'msg': 'Usuario no encontrado'}), 404
+
+        # Actualizar la contraseña del usuario
+        restaurante.password_hash = generate_password_hash(new_password)
+        db.session.commit()
+
+        return jsonify({'msg': 'Contraseña restablecida con éxito.'}), 200
+
+    except Exception as e:
+        return jsonify({'msg': 'Token inválido o expirado', 'error': str(e)}), 400

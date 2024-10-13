@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 
 class Reserva(db.Model):
-    __tablename__ = 'reserva' 
+    _tablename_ = 'reserva' 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     fecha_reserva = db.Column(db.DateTime, nullable=False)
@@ -21,7 +21,7 @@ class Reserva(db.Model):
 
     restaurante = db.relationship('Restaurantes', backref='reservas')
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<Reserva {self.id}>'
 
     def serialize(self):
@@ -39,7 +39,7 @@ class Reserva(db.Model):
         }
 
 class Usuario(db.Model):
-    __tablename__ = 'usuario' 
+    _tablename_ = 'usuario' 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     nombres = db.Column(db.String(30), nullable=True)
@@ -52,7 +52,7 @@ class Usuario(db.Model):
     restaurantes_fav= db.relationship('Restaurantes_Favoritos', backref='usuario')
     usuario_valoracion = db.relationship('Valoracion', backref='usuario')
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<Usuario {self.email}>'
 
     # Método para generar el hash de la contraseña
@@ -76,7 +76,7 @@ class Usuario(db.Model):
 
 
 class Restaurantes(db.Model):
-    __tablename__ = 'restaurantes' 
+    _tablename_ = 'restaurantes' 
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(30), unique=False, nullable=False)
     nombre = db.Column(db.String(30), unique=True, nullable=False)
@@ -101,7 +101,7 @@ class Restaurantes(db.Model):
     restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
 
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<Restaurantes {self.nombre}>'
 
     # Método para generar el hash de la contraseña
@@ -133,14 +133,14 @@ class Restaurantes(db.Model):
 
 
 class Mesas(db.Model):
-        __tablename__ = 'mesas' 
+        _tablename_ = 'mesas' 
         id = db.Column(db.Integer, primary_key=True)
         restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
         ubicacion = db.Column(db.String(30))
         capacidad = db.Column(db.Integer)
         disponibilidad = db.Column(db.Boolean(), nullable=False)
     
-        def __repr__(self):
+        def _repr_(self):
             return f'<Mesas {self.id}>'
 
         def serialize(self):
@@ -153,11 +153,11 @@ class Mesas(db.Model):
         }
 
 class Categorias(db.Model):
-    __tablename__ = 'categorias' 
+    _tablename_ = 'categorias' 
     id = db.Column(db.Integer, primary_key=True)
     nombre_de_categoria = db.Column(db.String(30), nullable=False)
 
-    def __repr__(self):
+    def _repr_(self):
         return f'<Categorias {self.nombre_de_categoria}>'
 
     def serialize(self):
@@ -168,12 +168,12 @@ class Categorias(db.Model):
 
 
 class Restaurantes_Favoritos(db.Model):
-        __tablename__ = 'restaurantes_favoritos'
+        _tablename_ = 'restaurantes_favoritos'
         id = db.Column(db.Integer, primary_key=True)
         usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
         restaurantes_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
 
-        def __repr__(self):
+        def _repr_(self):
             return f'<Restaurantes_favoritos {self.id}>'
 
         def serialize(self):
@@ -184,7 +184,7 @@ class Restaurantes_Favoritos(db.Model):
         }
 
 class Valoracion(db.Model):
-    __tablename__ = 'valoracion'
+    _tablename_ = 'valoracion'
     id = db.Column(db.Integer, primary_key=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
@@ -192,7 +192,7 @@ class Valoracion(db.Model):
     comentario = db.Column(db.Text, nullable=True)
     fecha = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     
-    def __repr__(self):
+    def _repr_(self):
         return f'<Valoracion {self.puntuacion} del usuario {self.usuario_id} para restaurante {self.restaurante_id}>'
     
     def serialize(self):

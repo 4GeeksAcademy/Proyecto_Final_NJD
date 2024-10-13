@@ -146,7 +146,7 @@ export const LoginRestaurante = ({ onLogin }) => {
                     signupModal.show();
                 }}>No tienes cuenta? Regístrate</a>
                 <br />
-                <a href="#" onClick={() => navigate('/recuperacionContraseñaUsuario')}>¿Olvidaste la contraseña?</a>
+                <a href="#" onClick={() => navigate('/recover/password')}>¿Olvidaste la contraseña?</a>
             </div>
         </form>
     );
