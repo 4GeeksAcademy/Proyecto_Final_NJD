@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
+import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"; 
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -88,6 +88,14 @@ export const Navbar = () => {
         }
     };
 
+    // Función para manejar la navegación al área privada del restaurante
+    const handlePrivateAreaRestaurante = () => {
+        const restaurantId = sessionStorage.getItem("restaurant_id");
+        if (restaurantId) {
+            navigate(`/vistaPrivadaRestaurante/${restaurantId}`);
+        }
+    };
+
     return (
         <>
             <nav className="navbar navbar-dark">
@@ -102,7 +110,14 @@ export const Navbar = () => {
                             <>
                                 {isRestaurant ? (
                                     <>
-                                        <span className="navbar-text">Area privada restaurante {userName}</span>
+                                        <span className="navbar-text">
+                                            <i
+                                                className="fa-solid fa-utensils"
+                                                style={{ cursor: "pointer", marginRight: "8px" }}
+                                                onClick={handlePrivateAreaRestaurante}  // Navega al área privada del restaurante
+                                            ></i>
+                                            Area privada restaurante {userName}
+                                        </span>
                                         <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                             Cerrar Sesión
                                         </button>
@@ -113,7 +128,7 @@ export const Navbar = () => {
                                             <i
                                                 className="fa-solid fa-user"
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
-                                                onClick={handlePrivateAreaNavigation}  // Ahora correctamente referenciado
+                                                onClick={handlePrivateAreaNavigation}  // Navega al área privada del usuario
                                             ></i>
                                             Hola {userName}
                                         </span>
@@ -137,7 +152,7 @@ export const Navbar = () => {
                 </div>
             </nav>
 
-            {/* Modal LOGIN */}
+            {/* Modal LOGIN */} 
             <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">

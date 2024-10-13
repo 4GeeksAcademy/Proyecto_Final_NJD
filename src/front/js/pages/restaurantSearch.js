@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";  // Importamos SweetAlert
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css"; // Importa los estilos desde el mismo archivo
 
@@ -38,6 +39,7 @@ export const RestaurantSearch = () => {
             restaurant.direccion?.toLowerCase().includes(searchQuery.toLowerCase())
         )
         : [];
+
     // Función para redirigir al home y hacer scroll al div con id 'cuisine-scroll'
     const handleOtherCuisineClick = () => {
         navigate("/home");  // Redirigir al home
@@ -51,9 +53,29 @@ export const RestaurantSearch = () => {
 
     const toggleFavorite = (restaurant) => {
         const user_id = sessionStorage.getItem('user_id');
+        
+        // Si no hay un usuario logueado, mostrar el SweetAlert para que se registre
+        if (!user_id) {
+            Swal.fire({
+                title: "Registro requerido",
+                text: "Debes estar registrado para agregar a favoritos.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Registrarse",
+                cancelButtonText: "Cancelar",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const signupModal = new bootstrap.Modal(document.getElementById("signupModal"));
+                    signupModal.show(); // Mostrar el modal de registro si el usuario acepta
+                } 
+                // Si cancela, no redirigir a ningún lado, solo cerramos el SweetAlert
+            });
+            return; // No continuar con la ejecución de la función si no hay usuario
+        }
+
         // Verificar si el restaurante ya está en favoritos usando el id
         const isFavorite = store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id);
-        console.log(restaurant)
+
         if (isFavorite) {
             // Eliminar favorito
             actions.eliminarFavorito(user_id, restaurant.id);
@@ -64,9 +86,11 @@ export const RestaurantSearch = () => {
             setFavorites([...store.restaurantes_favoritos, restaurant]);
         }
     };
-useEffect(() => {
-    console.log(filteredRestaurants)
-},[store.restaurantes_favoritos,filteredRestaurants])
+
+    useEffect(() => {
+        console.log(filteredRestaurants)
+    }, [store.restaurantes_favoritos, filteredRestaurants]);
+
     return (
         <div className="area-privada">
             <div className="area-privada-container">
@@ -110,7 +134,7 @@ useEffect(() => {
                                         className={`favorite-button ${store.restaurantes_favoritos.includes(restaurant) ? 'favorited' : ''}`}
                                         onClick={() => toggleFavorite(restaurant)}
                                     >
-                                        {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id)? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
+                                        {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
                                     </button>
                                 </div>
                             ))
