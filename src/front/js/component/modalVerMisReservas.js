@@ -13,19 +13,16 @@ export const ModalVerMisReservas = ({ isOpen, onClose }) => {
                 const token = sessionStorage.getItem('token');
                 const user_id = sessionStorage.getItem('user_id');
                 const result = await actions.obtenerReservas(token, user_id);
-                setReservas(result);  // Aquí guardamos las reservas obtenidas en el estado
+                setReservas(result);  
             };
             fetchReservas();
         }
     }, [isOpen]);
 
-    // Función para actualizar la reserva en la lista después de modificar o eliminar
     const actualizarReservaEnLista = (reservaActualizada, idEliminar) => {
         if (idEliminar) {
-            // Si se elimina una reserva, la removemos de la lista
             setReservas((prevReservas) => prevReservas.filter(reserva => reserva.id !== idEliminar));
         } else if (reservaActualizada) {
-            // Si se actualiza una reserva, la actualizamos en la lista
             setReservas((prevReservas) =>
                 prevReservas.map((reserva) =>
                     reserva.id === reservaActualizada.id ? reservaActualizada : reserva
@@ -34,18 +31,16 @@ export const ModalVerMisReservas = ({ isOpen, onClose }) => {
         }
     };
 
-    // Función para abrir el modal de modificación con la reserva seleccionada
     const openModificarReservaModal = (reserva) => {
         setReservaSeleccionada(reserva);
     };
 
-    // Si el modal no está abierto, no se muestra nada
     if (!isOpen) return null;
 
     return (
         <>
             <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="reservasModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">  {/* Aumentamos el tamaño del modal */}
+                <div className="modal-dialog modal-lg">  
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="reservasModalLabel">Tus reservas</h5>
@@ -84,13 +79,12 @@ export const ModalVerMisReservas = ({ isOpen, onClose }) => {
                 </div>
             </div>
 
-            {/* Modal de modificar reserva */}
             {reservaSeleccionada && (
                 <ModalModificarReserva 
                     isOpen={!!reservaSeleccionada} 
                     onClose={() => setReservaSeleccionada(null)} 
                     reserva={reservaSeleccionada}
-                    actualizarReservaEnLista={actualizarReservaEnLista}  // Pasamos la función de actualización
+                    actualizarReservaEnLista={actualizarReservaEnLista}  
                 />
             )}
         </>

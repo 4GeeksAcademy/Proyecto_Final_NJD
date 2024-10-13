@@ -23,11 +23,9 @@ export const AreaPrivadaUsuario = () => {
         value: ''
     });
 
-    // Estado para abrir y cerrar el modal de reservas
     const [isModalReservasOpen, setModalReservasOpen] = useState(false);
     const [isFavoritosOpen, setFavoritosOpen] = useState(false);
 
-    // Estado para abrir y cerrar el modal de cambiar contraseña
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
     const openModal = (field, currentValue) => {
@@ -102,7 +100,6 @@ export const AreaPrivadaUsuario = () => {
         }
     };
 
-    // Funciones para abrir/cerrar el modal de cambiar contraseña
     const openPasswordModal = () => {
         setPasswordModalOpen(true);
     };
@@ -161,7 +158,6 @@ export const AreaPrivadaUsuario = () => {
                             </div>
                         </div>
 
-                        {/* Contraseña */}
                         <div className="col-md-6 mb-3">
                             <label htmlFor="password" className="form-label">Contraseña</label>
                             <div className="input-group">
@@ -193,16 +189,13 @@ export const AreaPrivadaUsuario = () => {
                     </div>
                 </div>
 
-                {/* Modal para ver reservas */}
                 <ModalVerMisReservas isOpen={isModalReservasOpen} onClose={() => setModalReservasOpen(false)} />
 
-                {/* Modal para cambiar contraseña */}
                 <ModalCambiarPasswordUser
                     isOpen={isPasswordModalOpen}
                     onClose={closePasswordModal}
                 />
 
-                {/* Modal para editar */}
                 <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
                     <div className="modal-dialog">
                         <div className="modal-content">
@@ -232,7 +225,6 @@ export const AreaPrivadaUsuario = () => {
                
 
 
-                {/* Aquí renderizamos el modal de favoritos */}
                 <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
             </div>
         </div>

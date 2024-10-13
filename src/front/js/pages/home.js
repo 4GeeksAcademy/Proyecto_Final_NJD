@@ -1,58 +1,49 @@
 import React, { useRef } from "react";
 import "../../styles/home.css";
-import { Link } from "react-router-dom"; // Importamos Link para manejar la navegación
+import { Link } from "react-router-dom"; 
 export const Home = () => {
 	const scrollContainerRef = useRef(null);
 
-	// Función para desplazarse a la izquierda
 	const scrollLeft = () => {
 		if (scrollContainerRef.current) {
 			if (scrollContainerRef.current.scrollLeft === 0) {
-				// Si llegamos al principio, volvemos al final
 				scrollContainerRef.current.scrollBy({
 					left: scrollContainerRef.current.scrollWidth,
 					behavior: "smooth",
 				});
 			} else {
-				// Desplazarse a la izquierda normalmente
 				scrollContainerRef.current.scrollBy({ left: -300, behavior: "smooth" });
 			}
 		}
 	};
 
-	// Función para desplazarse a la derecha
 	const scrollRight = () => {
 		if (scrollContainerRef.current) {
 			const maxScrollLeft =
 				scrollContainerRef.current.scrollWidth - scrollContainerRef.current.clientWidth;
 
 			if (scrollContainerRef.current.scrollLeft >= maxScrollLeft) {
-				// Si llegamos al final, volvemos al principio
 				scrollContainerRef.current.scrollTo({
 					left: 0,
 					behavior: "smooth",
 				});
 			} else {
-				// Desplazarse a la derecha normalmente
 				scrollContainerRef.current.scrollBy({ left: 300, behavior: "smooth" });
 			}
 		}
 	};
 
-	// Función para manejar el envío del formulario
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		const form = e.target;
 		const password = form.querySelector("#password").value;
 		const repeatPassword = form.querySelector("#repeat-password").value;
 
-		// Validación de contraseñas
 		if (password !== repeatPassword) {
 			alert("Las contraseñas no coinciden");
 			return;
 		}
 
-		// Aquí puedes manejar el envío de datos al servidor
 		alert("Formulario enviado correctamente");
 		form.reset();
 	};
@@ -75,7 +66,6 @@ export const Home = () => {
 					</button>
 
 					<div className="scroll-container" ref={scrollContainerRef}>
-						{/* Tarjetas de cocina */}
 						{[
 							{
 								to: "/restaurantes/1",
@@ -170,7 +160,6 @@ export const Home = () => {
 				</div>
 			</div>
 
-			{/* Jumbotron */}
 			<div className="jumbotron-section">
 				<img
 					className="jumbotron-image"
@@ -183,7 +172,6 @@ export const Home = () => {
 						Descubre las mejores experiencias gastronómicas en tu ciudad.
 						Regístrate y obtén acceso exclusivo a las mejores ofertas.
 					</h3>
-					{/* Botón que abre el modal */}
 					<button
 						className="join-button"
 						data-bs-toggle="modal"

@@ -3,9 +3,7 @@ import React from "react";
 const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
     if (!isOpen) return null;
   
-    // Maneja el clic en el fondo del modal
     const handleBackdropClick = (e) => {
-      // Si el clic se realiza en el fondo del modal, cierra el modal
       if (e.target.classList.contains("modal-backdrop") || e.target.classList.contains("modal")) {
         onClose();
       }

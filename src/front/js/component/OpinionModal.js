@@ -20,10 +20,8 @@ const OpinionModal = ({ isOpen, onClose, opinions, currentIndex, nextOpinion, pr
             <p>"{opinion.comment}"</p>
           </div>
           <div className="modal-footer d-flex justify-content-between">
-            {/* Botón de cierre en negro */}
             <button className="btn modal-button-close" onClick={onClose}>Cerrar</button>
 
-            {/* Botones de navegación en gris */}
             <div className="d-flex gap-2">
               <button className="btn modal-button-nav" onClick={prevOpinion}>Anterior</button>
               <button className="btn modal-button-nav" onClick={nextOpinion}>Siguiente</button>

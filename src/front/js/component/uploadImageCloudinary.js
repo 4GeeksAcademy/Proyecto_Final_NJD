@@ -29,7 +29,7 @@ const UploadImageCloudinary = ({ restauranteId, onImageUpload }) => {
       const result = await response.json();
       if (result.secure_url) {
         Swal.fire("Imagen subida", "La imagen se subió con éxito", "success");
-        onImageUpload(result.secure_url); // Notifica a VistaCloudinary la nueva imagen
+        onImageUpload(result.secure_url); 
       } else {
         Swal.fire("Error", "Hubo un problema al subir la imagen", "error");
       }
