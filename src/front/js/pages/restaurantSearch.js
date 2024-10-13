@@ -1,17 +1,16 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";  
+import Swal from "sweetalert2"; 
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css"; 
 
 export const RestaurantSearch = () => {
-    const { categoria_id } = useParams();  
+    const { categoria_id } = useParams(); 
     const { store, actions } = useContext(Context);
     const [searchQuery, setSearchQuery] = useState("");
     const [favorites, setFavorites] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
-    const navigate = useNavigate();  
-
+    const navigate = useNavigate();
     const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible"; 
 
     useEffect(() => {

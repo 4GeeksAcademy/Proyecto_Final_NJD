@@ -473,6 +473,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             modificarDatosRestaurante: async (restauranteId, formData) => {
                 const token = sessionStorage.getItem("token");
                 try {
+                    const formatearHora = (hora) => {
+                        return hora ? hora.slice(0, 5) : null;
+                    };
+
                     const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
                         method: "PUT",
                         headers: {
@@ -485,10 +489,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                             direccion: formData.direccion,
                             cubiertos: formData.cubiertos,
                             cantidad_mesas: formData.cantidad_mesas,
-                            horario_mañana_inicio: formData.horario_mañana_inicio,
-                            horario_mañana_fin: formData.horario_mañana_fin,
-                            horario_tarde_inicio: formData.horario_tarde_inicio,
-                            horario_tarde_fin: formData.horario_tarde_fin,
+                            horario_mañana_inicio: formatearHora(formData.horario_mañana_inicio),
+                            horario_mañana_fin: formatearHora(formData.horario_mañana_fin),
+                            horario_tarde_inicio: formatearHora(formData.horario_tarde_inicio),
+                            horario_tarde_fin: formatearHora(formData.horario_tarde_fin),
                             reservas_por_dia: formData.reservas_por_dia,
                             categorias_id: formData.categorias_id
                         })
@@ -496,7 +500,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     if (response.ok) {
                         const data = await response.json();
-                        sessionStorage.setItem('restaurant_name', formData.nombre)
+                        sessionStorage.setItem('restaurant_name', formData.nombre);
                         return { success: true, message: "Datos modificados con éxito", data: data };
                     } else {
                         const errorData = await response.json();
@@ -506,6 +510,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
 
 
             // OBTENER RESTAURANTES
@@ -745,11 +750,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                             }
                         }
                     );
-            
+
                     if (!response.ok) {
                         throw new Error("Error eliminando la imagen");
                     }
-            
+
                     const data = await response.json();
                     return { success: true, data };
                 } catch (error) {

@@ -1,22 +1,22 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, useNavigate } from "react-router-dom"; // Importamos useNavigate para redirección
+import { useParams, useNavigate } from "react-router-dom"; 
 import UploadImageCloudinary from "../component/uploadImageCloudinary";
 import { Context } from "../store/appContext";
-import Swal from "sweetalert2"; // SweetAlert2 para notificaciones
-import "../../styles/imagenes.css"; // Importamos el archivo CSS
+import Swal from "sweetalert2";
+import "../../styles/imagenes.css"; 
 
 const VistaCloudinary = () => {
   const { restaurante_id } = useParams();
   const { actions } = useContext(Context);
   const [images, setImages] = useState([]);
-  const navigate = useNavigate(); // Hook para redirigir a otra vista
+  const navigate = useNavigate(); 
 
   // Obtener imágenes del backend al cargar la página
   useEffect(() => {
     const fetchImages = async () => {
       const result = await actions.obtenerImagenesRestaurante(restaurante_id);
       if (result?.success) {
-        setImages(result.images); // Asegúrate de que 'images' está correctamente poblado
+        setImages(result.images); 
       }
     };
 
@@ -72,7 +72,7 @@ const VistaCloudinary = () => {
 
   // Función para redirigir a la vista privada del restaurante con el restaurante_id
   const handleGoBack = () => {
-    navigate(`/vistaPrivadaRestaurante/${restaurante_id}`); // Redirige a la vista privada del restaurante con restaurante_id
+    navigate(`/vistaPrivadaRestaurante/${restaurante_id}`); 
   };
 
   return (

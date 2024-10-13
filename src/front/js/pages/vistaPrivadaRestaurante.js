@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
 import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante'; 
@@ -15,53 +15,82 @@ export const VistaPrivadaRestaurante = () => {
   };
 
   const [formData, setFormData] = useState({
-    nombre: '',
-    telefono: '',
-    email: '',
-    cubiertos: '',
-    cantidad_mesas: '',
-    reservas_por_dia: '',
-    horario_mañana_inicio: '',
-    horario_mañana_fin: '',
-    horario_tarde_inicio: '',
-    horario_tarde_fin: '',
+    nombre: "",
+    telefono: "",
+    email: "",
+    cubiertos: "",
+    cantidad_mesas: "",
+    reservas_por_dia: "",
+    horario_mañana_inicio: "",
+    horario_mañana_fin: "",
+    horario_tarde_inicio: "",
+    horario_tarde_fin: "",
+    direccion: "", // Añadido el campo de dirección
   });
 
   const [modalData, setModalData] = useState({
-    field: '',
-    value: ''
+    field: "",
+    value: "",
   });
 
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
   const openModal = (field, currentValue) => {
-    setModalData({
-      field: field,
-      value: currentValue || ''
-    });
-    const modal = new bootstrap.Modal(document.getElementById('editModal'));
+    if (field === "horario_mañana" || field === "horario_tarde") {
+      setModalData({
+        field: field,
+        value: {
+          inicio: currentValue.inicio || "",
+          fin: currentValue.fin || "",
+        },
+      });
+    } else {
+      setModalData({
+        field: field,
+        value: "",
+      });
+    }
+    const modal = new bootstrap.Modal(document.getElementById("editModal"));
     modal.show();
   };
 
-  const handleModalChange = (e) => {
-    setModalData({
-      ...modalData,
-      value: e.target.value
-    });
+  const handleModalChange = (e, timeField) => {
+    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
+      setModalData({
+        ...modalData,
+        value: {
+          ...modalData.value,
+          [timeField]: e.target.value,
+        },
+      });
+    } else {
+      setModalData({
+        ...modalData,
+        value: e.target.value,
+      });
+    }
   };
 
   const handleModalSave = () => {
-    setFormData({
-      ...formData,
-      [modalData.field]: modalData.value
-    });
-    const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
+      setFormData({
+        ...formData,
+        [modalData.field + "_inicio"]: modalData.value.inicio,
+        [modalData.field + "_fin"]: modalData.value.fin,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [modalData.field]: modalData.value,
+      });
+    }
+    const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
     modal.hide();
   };
 
   useEffect(() => {
     const fetchRestauranteData = async () => {
-      const token = sessionStorage.getItem('token');
+      const token = sessionStorage.getItem("token");
       if (token) {
         try {
           const data = await actions.getRestaurante(restaurante_id);
@@ -75,7 +104,8 @@ export const VistaPrivadaRestaurante = () => {
             horario_mañana_inicio: data.horario_mañana_inicio || "",
             horario_mañana_fin: data.horario_mañana_fin || "",
             horario_tarde_inicio: data.horario_tarde_inicio || "",
-            horario_tarde_fin: data.horario_tarde_fin || ""
+            horario_tarde_fin: data.horario_tarde_fin || "",
+            direccion: data.direccion || "", // Incluye la dirección al obtener datos
           });
         } catch (error) {
           console.error("Error al obtener datos del restaurante:", error);
@@ -91,17 +121,17 @@ export const VistaPrivadaRestaurante = () => {
     const result = await actions.modificarDatosRestaurante(restaurante_id, dataToSend);
     if (result.success) {
       Swal.fire({
-        title: 'Éxito',
-        text: 'Datos actualizados con éxito.',
-        icon: 'success',
-        confirmButtonText: 'Aceptar'
+        title: "Éxito",
+        text: "Datos actualizados con éxito.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
       });
     } else {
       Swal.fire({
-        title: 'Error',
-        text: 'No se pudieron actualizar los datos. Inténtalo más tarde.',
-        icon: 'error',
-        confirmButtonText: 'Aceptar'
+        title: "Error",
+        text: "No se pudieron actualizar los datos. Inténtalo más tarde.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
       });
     }
   };
@@ -128,7 +158,7 @@ export const VistaPrivadaRestaurante = () => {
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.nombre}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('nombre', formData.nombre)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("nombre", formData.nombre)}></i>
                   </span>
                 </div>
               </div>
@@ -140,7 +170,7 @@ export const VistaPrivadaRestaurante = () => {
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.telefono}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('telefono', formData.telefono)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("telefono", formData.telefono)}></i>
                   </span>
                 </div>
               </div>
@@ -154,12 +184,12 @@ export const VistaPrivadaRestaurante = () => {
             </div>
 
             <div className="col-md-6 mb-3">
-              <label htmlFor="cubiertos" className="form-label">Cubiertos</label>
+              <label htmlFor="cubiertos" className="form-label">Comensales</label>
               <div className="input-group">
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.cubiertos}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('cubiertos', formData.cubiertos)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("cubiertos", formData.cubiertos)}></i>
                   </span>
                 </div>
               </div>
@@ -171,7 +201,7 @@ export const VistaPrivadaRestaurante = () => {
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.cantidad_mesas}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('cantidad_mesas', formData.cantidad_mesas)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("cantidad_mesas", formData.cantidad_mesas)}></i>
                   </span>
                 </div>
               </div>
@@ -195,7 +225,33 @@ export const VistaPrivadaRestaurante = () => {
                 <div className="input-content">
                   <span className="form-control-plaintext">{`${formData.horario_mañana_inicio} - ${formData.horario_mañana_fin}`}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_mañana', formData.horario_mañana_inicio)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_mañana', { inicio: formData.horario_mañana_inicio, fin: formData.horario_mañana_fin })}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Horarios: Tarde */}
+            <div className="col-md-6 mb-3">
+              <label htmlFor="horario_tarde" className="form-label">Horario de Tarde</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{`${formData.horario_tarde_inicio} - ${formData.horario_tarde_fin}`}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_tarde', { inicio: formData.horario_tarde_inicio, fin: formData.horario_tarde_fin })}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Dirección */}
+            <div className="col-md-12 mb-3">
+              <label htmlFor="direccion" className="form-label">Dirección</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">Introduzca dirección</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('direccion', formData.direccion)}></i>
                   </span>
                 </div>
               </div>
@@ -215,7 +271,7 @@ export const VistaPrivadaRestaurante = () => {
 
             <div className="text-left mt-4 col-12 d-flex justify-content-between">
               <button type="submit" className="btn btn-primary">Guardar Cambios</button>
-              <button 
+              <button
                 className="btn btn-secondary"
                 onClick={goToCloudinary} 
               >
@@ -237,26 +293,51 @@ export const VistaPrivadaRestaurante = () => {
                 <h5 className="modal-title" id="editModalLabel">
                   Editar {modalData.field === "nombre" ? "Nombre del Restaurante" :
                     modalData.field === "telefono" ? "Teléfono" :
-                      modalData.field === "cubiertos" ? "Cubiertos" :
+                      modalData.field === "cubiertos" ? "Comensales" :
                         modalData.field === "cantidad_mesas" ? "Cantidad de Mesas" :
                           modalData.field === "reservas_por_dia" ? "Reservas por Día" :
                             modalData.field === "horario_mañana" ? "Horario de Mañana" :
-                              "Horario de Tarde"}
+                              modalData.field === "horario_tarde" ? "Horario de Tarde" :
+                                "Dirección"}
                 </h5>
                 <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
-                <input
-                  type="text"
-                  className="form-control"
-                  value={modalData.value}
-                  onChange={handleModalChange}
-                  placeholder={`Introduzca nuevo ${modalData.field}`}
-                />
+                {modalData.field === "horario_mañana" || modalData.field === "horario_tarde" ? (
+                  <div>
+                    <label htmlFor="inicio">Hora Inicio</label>
+                    <input
+                      type="time"
+                      className="form-control mb-3"
+                      value={modalData.value.inicio}
+                      onChange={(e) => handleModalChange(e, "inicio")}
+                    />
+                    <label htmlFor="fin">Hora Fin</label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      value={modalData.value.fin}
+                      onChange={(e) => handleModalChange(e, "fin")}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={modalData.value}
+                    onChange={handleModalChange}
+                    placeholder={`Introduzca nuevo ${modalData.field === "nombre" ? "nombre" :
+                      modalData.field === "telefono" ? "teléfono" :
+                        modalData.field === "cubiertos" ? "comensales" :
+                          modalData.field === "cantidad_mesas" ? "cantidad de mesas" :
+                            modalData.field === "reservas_por_dia" ? "reservas por día" :
+                              modalData.field === "direccion" ? "dirección" : "valor"}`}
+                  />
+                )}
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Guardar</button>
+                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Aceptar</button>
               </div>
             </div>
           </div>

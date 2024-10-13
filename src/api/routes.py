@@ -284,10 +284,8 @@ def completar_registro_restaurante(restaurante_id):
 
 
 
-
-
-
 # LOGIN RESTAURANTE
+
 @api.route('/login/restaurante', methods=['POST'])
 def login_restaurante():
     body = request.get_json()
@@ -324,7 +322,7 @@ def login_restaurante():
 
 
 
-# OBTENER TODOS LOS RESTAURANTES error
+# OBTENER TODOS LOS RESTAURANTES
 
 @api.route('/restaurantes', methods=['GET'])
 def get_all_restaurantes():
@@ -344,10 +342,10 @@ def get_restaurante(restaurante_id):
 
 
 
-# ACTUALIZAR  DATOS RESTAURANTE DESDE LA PAGINA PRIVADA
+# ACTUALIZAR DATOS RESTAURANTE DESDE LA PÁGINA PRIVADA
 
 @api.route('/restaurantes/<int:restaurante_id>', methods=['PUT'])
-@jwt_required()  
+@jwt_required()
 def update_restaurante(restaurante_id):
     body = request.get_json()
     restaurante = Restaurantes.query.get(restaurante_id)
@@ -365,14 +363,18 @@ def update_restaurante(restaurante_id):
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
     restaurante.cantidad_mesas = body.get('cantidad_mesas', restaurante.cantidad_mesas)
 
-    if 'horario_mañana_inicio' in body:
-        restaurante.horario_mañana_inicio = datetime.strptime(body['horario_mañana_inicio'], '%H:%M').time()
-    if 'horario_mañana_fin' in body:
-        restaurante.horario_mañana_fin = datetime.strptime(body['horario_mañana_fin'], '%H:%M').time()
-    if 'horario_tarde_inicio' in body:
-        restaurante.horario_tarde_inicio = datetime.strptime(body['horario_tarde_inicio'], '%H:%M').time()
-    if 'horario_tarde_fin' in body:
-        restaurante.horario_tarde_fin = datetime.strptime(body['horario_tarde_fin'], '%H:%M').time()
+    # Validar y actualizar los horarios
+    try:
+        if 'horario_mañana_inicio' in body:
+            restaurante.horario_mañana_inicio = datetime.strptime(body['horario_mañana_inicio'], '%H:%M').time()
+        if 'horario_mañana_fin' in body:
+            restaurante.horario_mañana_fin = datetime.strptime(body['horario_mañana_fin'], '%H:%M').time()
+        if 'horario_tarde_inicio' in body:
+            restaurante.horario_tarde_inicio = datetime.strptime(body['horario_tarde_inicio'], '%H:%M').time()
+        if 'horario_tarde_fin' in body:
+            restaurante.horario_tarde_fin = datetime.strptime(body['horario_tarde_fin'], '%H:%M').time()
+    except ValueError:
+        return jsonify({"msg": "Formato de hora no válido, debe ser HH:MM"}), 400
 
     restaurante.reservas_por_dia = body.get('reservas_por_dia', restaurante.reservas_por_dia)
     restaurante.categorias_id = body.get('categorias_id', restaurante.categorias_id)
@@ -380,6 +382,7 @@ def update_restaurante(restaurante_id):
     db.session.commit()
 
     return jsonify({'msg': 'Restaurante actualizado con éxito'}), 200
+
 
 
 
@@ -462,7 +465,7 @@ def crear_reserva():
     fecha_reserva = body.get('fecha_reserva')
     adultos = body.get('adultos')
     niños = body.get('niños', 0)  
-    trona = body.get('trona', 0)  
+    trona = body.get('trona', 0) 
     hora= body.get('hora')
 
     if not all([restaurante_id, fecha_reserva, adultos]):
