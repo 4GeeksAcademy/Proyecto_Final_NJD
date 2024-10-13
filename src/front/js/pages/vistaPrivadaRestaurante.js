@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
-import ModalCambiarPasswordRestaurante from "../component/modalCambiarPasswordRestaurante"; // Modal de contraseña
+import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante'; 
 
 export const VistaPrivadaRestaurante = () => {
   const { actions, store } = useContext(Context);
@@ -33,7 +33,6 @@ export const VistaPrivadaRestaurante = () => {
     value: "",
   });
 
-  // Estado para abrir y cerrar el modal de cambiar contraseña
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
   const openModal = (field, currentValue) => {
@@ -137,7 +136,6 @@ export const VistaPrivadaRestaurante = () => {
     }
   };
 
-  // Funciones para abrir/cerrar el modal de cambiar contraseña
   const openPasswordModal = () => {
     setPasswordModalOpen(true);
   };
@@ -154,7 +152,6 @@ export const VistaPrivadaRestaurante = () => {
         </div>
         <div className="area-body">
           <form onSubmit={handleSubmit} className="row ancho">
-            {/* Nombre del restaurante */}
             <div className="col-md-6 mb-3">
               <label htmlFor="nombre" className="form-label">Nombre del restaurante</label>
               <div className="input-group">
@@ -167,7 +164,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Teléfono */}
             <div className="col-md-6 mb-3">
               <label htmlFor="telefono" className="form-label">Teléfono</label>
               <div className="input-group">
@@ -180,7 +176,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Email */}
             <div className="col-md-6 mb-3">
               <label htmlFor="email" className="form-label">Correo electrónico</label>
               <div className="email-field input-content">
@@ -188,7 +183,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Cubiertos */}
             <div className="col-md-6 mb-3">
               <label htmlFor="cubiertos" className="form-label">Comensales</label>
               <div className="input-group">
@@ -201,7 +195,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Cantidad de mesas */}
             <div className="col-md-6 mb-3">
               <label htmlFor="cantidad_mesas" className="form-label">Cantidad de Mesas</label>
               <div className="input-group">
@@ -214,7 +207,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Reservas por día */}
             <div className="col-md-6 mb-3">
               <label htmlFor="reservas_por_dia" className="form-label">Reservas por día</label>
               <div className="input-group">
@@ -227,7 +219,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Horarios: Mañana */}
             <div className="col-md-6 mb-3">
               <label htmlFor="horario_mañana" className="form-label">Horario de Mañana</label>
               <div className="input-group">
@@ -266,7 +257,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Contraseña */}
             <div className="col-md-6 mb-3">
               <label htmlFor="password" className="form-label">Contraseña</label>
               <div className="input-group">
@@ -283,7 +273,7 @@ export const VistaPrivadaRestaurante = () => {
               <button type="submit" className="btn btn-primary">Guardar Cambios</button>
               <button
                 className="btn btn-secondary"
-                onClick={goToCloudinary} // Llama a la función de redirección
+                onClick={goToCloudinary} 
               >
                 Cargar Imágenes
               </button>
@@ -291,13 +281,11 @@ export const VistaPrivadaRestaurante = () => {
           </form>
         </div>
 
-        {/* Modal para cambiar la contraseña */}
         <ModalCambiarPasswordRestaurante
           isOpen={isPasswordModalOpen}
           onClose={closePasswordModal}
         />
 
-        {/* Modal para editar campos */}
         <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
           <div className="modal-dialog">
             <div className="modal-content">

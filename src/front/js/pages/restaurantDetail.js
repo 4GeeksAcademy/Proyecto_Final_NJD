@@ -40,7 +40,6 @@ export const RestaurantDetail = () => {
                   const signupModal = new bootstrap.Modal(document.getElementById("signupModal"));
                   signupModal.show(); 
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
-                  // Redirigir a la página de inicio si el usuario cancela
                   navigate("/");
                   
 

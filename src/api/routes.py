@@ -8,7 +8,7 @@ from api.utils import validar_horario_reserva, generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
 from werkzeug.security import check_password_hash, generate_password_hash
-import re  # Para validación de email, contraseña y teléfono
+import re 
 import cloudinary.uploader
 
 api = Blueprint('api', __name__)
@@ -16,12 +16,10 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
-# Validar formato de email
 def is_valid_email(email):
     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
     return re.match(email_regex, email)
 
-# Validar formato de contraseña (al menos una mayúscula y un número)
 def is_valid_password(password):
     if len(password) < 8 or len(password) > 16:
         return False
@@ -32,11 +30,10 @@ def is_valid_password(password):
     return True
 
 
-# Validar formato de teléfono
 def is_valid_phone(phone):
     # Permitir solo números, +, -, y espacios
     phone_regex = r'^[\d\+\-\s]+$'
-    if len(phone) < 9:  # Al menos 9 caracteres
+    if len(phone) < 9:  
         return False
     if not re.match(phone_regex, phone):
         return False
@@ -55,7 +52,6 @@ def signup():
     apellidos = body.get('apellidos')
     telefono = body.get('telefono')
 
-    # Validaciones de campos
     if not email or not password or not nombres or not apellidos or not telefono:
         return jsonify({'msg': 'Faltan datos'}), 400
 
@@ -68,11 +64,9 @@ def signup():
     if not is_valid_phone(telefono):
         return jsonify({'msg': 'Formato de teléfono no válido. Debe contener al menos 9 caracteres y solo números, +, y -'}), 400
 
-    # Verificar si el usuario ya existe
     if Usuario.query.filter_by(email=email).first():
-        return jsonify({'msg': 'El usuario ya existe'}), 409  # Conflicto
+        return jsonify({'msg': 'El usuario ya existe'}), 409  
 
-    # Crear el nuevo usuario
     new_user = Usuario(
         email=email,
         nombres=nombres,
@@ -80,7 +74,7 @@ def signup():
         telefono=telefono,
         creado=datetime.now(timezone.utc)
     )
-    new_user.set_password(password)  # Genera el hash de la contraseña
+    new_user.set_password(password)  
     db.session.add(new_user)
     db.session.commit()
 
@@ -100,23 +94,20 @@ def login():
     if not email or not password:
         return jsonify({'msg': 'Credenciales inválidas'}), 401
 
-    # Verificar si el usuario existe en la base de datos
     user = Usuario.query.filter_by(email=email).first()
     if user is None:
         return jsonify({'msg': 'El usuario no está registrado'}), 404
 
-    # Verificar si la contraseña es correcta
     if not user.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
-    # Generar el Access Token y Refresh Token
     access_token = create_access_token(identity=user.id)
     refresh_token = create_refresh_token(identity=user.id)
 
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'user_name': user.nombres, # Aquí envías el nombre del usuario
+        'user_name': user.nombres, 
         'user_id': user.id
     }), 200
 
@@ -140,7 +131,7 @@ def refresh():
 @api.route('/protected', methods=['GET'])
 @jwt_required()
 def protected():
-    current_user_id = get_jwt_identity()  # Recupera el ID del usuario a partir del JWT
+    current_user_id = get_jwt_identity()  
     user = Usuario.query.get(current_user_id)
 
     if user is None:
@@ -161,7 +152,7 @@ def protected():
 @api.route('/validate-token', methods=['GET'])
 @jwt_required()
 def validate_token():
-    current_user_id = get_jwt_identity()  # Recupera el ID del usuario del JWT
+    current_user_id = get_jwt_identity()  
     user = Usuario.query.get(current_user_id)
 
     if user is None:
@@ -204,7 +195,7 @@ def update_user(usuario_id):
     usuario.telefono = body.get('telefono', usuario.telefono)
 
     if 'password' in body:
-        usuario.set_password(body['password'])  # Actualizar la contraseña si se proporciona
+        usuario.set_password(body['password'])  
 
     db.session.commit()
 
@@ -241,18 +232,16 @@ def signup_restaurante():
     if not (nombre and email and password and telefono):
         return jsonify({'msg': 'Faltan datos obligatorios'}), 400
 
-    # Verificar si el restaurante ya existe
     if Restaurantes.query.filter_by(email=email).first():
         return jsonify({'msg': 'El restaurante ya existe'}), 409
 
-    # Hashear la contraseña
     hashed_password = generate_password_hash(password)
 
     nuevo_restaurante = Restaurantes(
         nombre=nombre,
         email=email,
         telefono=telefono,
-        password_hash=hashed_password  # Guardar la contraseña hasheada
+        password_hash=hashed_password  
     )
 
     db.session.add(nuevo_restaurante)
@@ -269,11 +258,9 @@ def completar_registro_restaurante(restaurante_id):
 
     restaurante = Restaurantes.query.get_or_404(restaurante_id)
 
-    # Verificar si el registro ya está completo
     if restaurante.registro_completo:
         return jsonify({'msg': 'El restaurante ya ha completado su registro'}), 400
 
-    # Actualizar datos de registro
     restaurante.direccion = body.get('direccion', restaurante.direccion)
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
     restaurante.cantidad_mesas = body.get('cantidad_mesas', restaurante.cantidad_mesas)
@@ -284,7 +271,6 @@ def completar_registro_restaurante(restaurante_id):
     restaurante.reservas_por_dia = body.get('reservas_por_dia', restaurante.reservas_por_dia)
     restaurante.categorias_id = body.get('categorias_id', restaurante.categorias_id)
 
-    # Validar si todos los campos importantes están completos
     if all([restaurante.direccion, restaurante.cubiertos, restaurante.cantidad_mesas, 
             restaurante.horario_mañana_inicio, restaurante.horario_mañana_fin,
             restaurante.horario_tarde_inicio, restaurante.horario_tarde_fin, restaurante.categorias_id]):
@@ -309,33 +295,28 @@ def login_restaurante():
     if not email or not password:
         return jsonify({'msg': 'Credenciales inválidas'}), 401
 
-    # Verificar si el restaurante existe en la base de datos
     restaurante = Restaurantes.query.filter_by(email=email).first()
     if restaurante is None:
         return jsonify({'msg': 'El restaurante no está registrado'}), 404
 
-    # Verificar si la contraseña es correcta
     if not restaurante.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
-    # Generar el Access Token y Refresh Token
     access_token = create_access_token(identity=restaurante.id)
     refresh_token = create_refresh_token(identity=restaurante.id)
 
-    # Verificar si el restaurante ha completado su registro comprobando los campos obligatorios
     campos_obligatorios = [restaurante.direccion, restaurante.cubiertos, restaurante.cantidad_mesas, 
                            restaurante.horario_mañana_inicio, restaurante.horario_mañana_fin, 
                            restaurante.horario_tarde_inicio, restaurante.horario_tarde_fin, restaurante.categorias_id]
     
-    # Si alguno de los campos obligatorios está vacío, se considera que el registro no está completo
     registro_completo = all(campos_obligatorios)
 
     return jsonify({
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'restaurant_name': restaurante.nombre,  # Devuelve el nombre del restaurante
+        'restaurant_name': restaurante.nombre,  
         'restaurant_id': restaurante.id,
-        'registro_completo': registro_completo  # Devuelve si el registro está completo
+        'registro_completo': registro_completo  
     }), 200
 
 
@@ -372,12 +353,10 @@ def update_restaurante(restaurante_id):
     if not restaurante:
         return jsonify({'msg': 'Restaurante no encontrado'}), 404
 
-    # Validar si el nuevo email ya está en uso por otro restaurante
     nuevo_email = body.get('email', restaurante.email)
     if nuevo_email != restaurante.email and Restaurantes.query.filter_by(email=nuevo_email).first():
         return jsonify({'msg': 'El email ya está en uso'}), 409
 
-    # Actualizar los campos del restaurante
     restaurante.nombre = body.get('nombre', restaurante.nombre)
     restaurante.email = nuevo_email
     restaurante.direccion = body.get('direccion', restaurante.direccion)
@@ -410,7 +389,7 @@ def update_restaurante(restaurante_id):
 # ELIMINAR RESTAURANTE
 
 @api.route('/restaurantes/<int:restaurante_id>', methods=['DELETE'])
-@jwt_required()  # Sólo los profesionales pueden eliminar los restaurantes
+@jwt_required()  
 def delete_restaurante(restaurante_id):
     restaurante = Restaurantes.query.get(restaurante_id)
 
@@ -455,8 +434,8 @@ def get_categorias():
 
 @api.route('/categorias/<int:categoria_id>', methods=['GET'])
 def get_categoria(categoria_id):
-    categoria = Categorias.query.get_or_404(categoria_id)  # Obtener la categoría por ID o lanzar 404 si no se encuentra
-    return jsonify(categoria.serialize()), 200  # Retornar la categoría encontrada
+    categoria = Categorias.query.get_or_404(categoria_id)  
+    return jsonify(categoria.serialize()), 200  
 
 
 # OBTENER RESTAURANTE POR SU CATEGORIA
@@ -474,7 +453,7 @@ def get_restaurantes_por_categoria(categoria_id):
 #CREAR RESERVA
 
 from datetime import datetime
-from api.utils import validar_horario_reserva  # Importar la función de validación
+from api.utils import validar_horario_reserva  
 
 @api.route('/usuario/reservas', methods=['POST'])
 @jwt_required()
@@ -489,23 +468,19 @@ def crear_reserva():
     trona = body.get('trona', 0) 
     hora= body.get('hora')
 
-    # Validar que no falten campos requeridos (quitamos niños y trona de la validación)
     if not all([restaurante_id, fecha_reserva, adultos]):
         return jsonify({"error": "Faltan datos para crear la reserva"}), 400
 
-    # Convertir fecha_reserva de string a objeto datetime
     fecha_reserva_str = fecha_reserva + ' ' + hora + ':00'
     try:
         fecha_reserva = datetime.strptime(fecha_reserva_str, '%Y-%m-%d %H:%M:%S')
     except ValueError:
         return jsonify({"error": "Formato de fecha no válido. Usa el formato YYYY-MM-DD HH:MM:SS"}), 400
 
-    # Obtener los horarios del restaurante para validar
     restaurante = Restaurantes.query.get(restaurante_id)
     if not restaurante:
         return jsonify({"error": "Restaurante no encontrado"}), 404
 
-    # Validar que la hora de la reserva está dentro de los horarios permitidos
     if not validar_horario_reserva(
             fecha_reserva.time(), 
             restaurante.horario_mañana_inicio, 
@@ -514,7 +489,6 @@ def crear_reserva():
             restaurante.horario_tarde_fin):
         return jsonify({"error": "Hora de reserva fuera del horario permitido"}), 400
 
-    # Si todo está bien, crear la reserva
     nueva_reserva = Reserva(
         user_id=usuario_id,
         restaurante_id=restaurante_id,
@@ -550,7 +524,6 @@ def actualizar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
-    # Aquí debes asegurarte de que se están asignando los valores enviados en el request.
     if 'adultos' in body:
         reserva.adultos = body['adultos']
     if 'niños' in body:
@@ -573,7 +546,6 @@ def cancelar_reserva(reserva_id):
     if not reserva:
         return jsonify({"error": "Reserva no encontrada"}), 404
 
-    # Eliminar la reserva de la base de datos
     db.session.delete(reserva)
     db.session.commit()
 
@@ -664,19 +636,6 @@ def obtener_favoritos(usuario_id):
             })
 
     return jsonify({"restaurantes_favoritos": resultado}), 200
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #CREAR VALORACION
 
@@ -785,32 +744,28 @@ def obtener_valoracion_promedio(restaurante_id):
 @api.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
-        # Verificar si la solicitud tiene un archivo adjunto
         if 'file' not in request.files:
             return jsonify({"msg": "No se ha adjuntado ninguna imagen"}), 400
 
         image = request.files['file']  
 
-        # Subir la imagen a Cloudinary
         upload_result = cloudinary.uploader.upload(image)
 
-        # Devolver la URL de la imagen subida
         return jsonify({
             "msg": "Imagen subida con éxito",
             "url": upload_result['secure_url']
         }), 200
 
     except Exception as e:
-        # Capturar el error específico y devolverlo
         return jsonify({"msg": "Error subiendo la imagen", "error": str(e)}), 400
     
 
 # RUTA PARA GUARDAR IMAGEN DEL RESTAURANTE EN EL BACKEND
 @api.route('/restaurantes/<int:restaurante_id>/imagen', methods=['PUT'])
-@jwt_required()  # Asegúrate de que el restaurante esté autenticado
+@jwt_required()  
 def actualizar_imagen_restaurante(restaurante_id):
-    body = request.get_json()  # Obtener datos enviados en el request body
-    url_imagen = body.get('url_imagen')  # La URL de la imagen subida
+    body = request.get_json()  
+    url_imagen = body.get('url_imagen')  
 
     if not url_imagen:
         return jsonify({'msg': 'Falta la URL de la imagen'}), 400
@@ -819,7 +774,6 @@ def actualizar_imagen_restaurante(restaurante_id):
     if not restaurante:
         return jsonify({'msg': 'Restaurante no encontrado'}), 404
 
-    # Asocia la URL de la imagen al restaurante
     restaurante.image = url_imagen
     db.session.commit()
 
@@ -855,28 +809,23 @@ def eliminar_imagen_restaurante(restaurante_id):
 @jwt_required()
 def cambiar_contrasena():
     print("hola")
-    restaurante_id = get_jwt_identity()  # Obtiene el ID del restaurante autenticado
+    restaurante_id = get_jwt_identity()  
     data = request.get_json()
 
     current_password = data.get('currentPassword')
     new_password = data.get('newPassword')
 
-    # Verificar que los campos están presentes
     if not current_password or not new_password:
         return jsonify({"msg": "Debe proporcionar la contraseña actual y la nueva contraseña"}), 400
 
-    # Buscar el restaurante por ID
     restaurante = Restaurantes.query.get(restaurante_id)
 
-    # Verificar que el restaurante existe
     if not restaurante:
         return jsonify({"msg": "Restaurante no encontrado"}), 404
 
-    # Verificar que la contraseña actual es correcta
     if not check_password_hash(restaurante.password_hash, current_password):
         return jsonify({"msg": "Contraseña actual incorrecta"}), 401
 
-    # Actualizar la contraseña con el nuevo hash
     restaurante.password_hash = generate_password_hash(new_password)
     db.session.commit()
 

@@ -5,7 +5,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
 
 export const Footer = () => {
-    const [userName, setUserName] = useState(""); // Estado para almacenar el nombre del restaurante
+    const [userName, setUserName] = useState(""); 
 
     const handleLogin = (name) => {
         setUserName(name);
@@ -77,7 +77,6 @@ export const Footer = () => {
                 </div>
             </footer>
 
-            {/* Modal LOGIN Restaurante */}
             <div className="modal fade" id="loginRestaurantModal" tabIndex="-1" aria-labelledby="loginRestaurantModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -86,13 +85,12 @@ export const Footer = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <LoginRestaurante onLogin={handleLogin} /> {/* Usamos el componente LoginRestaurante */}
+                            <LoginRestaurante onLogin={handleLogin} /> 
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Modal SIGNUP Restaurante */}
             <div className="modal fade" id="registerModalRestaurante" tabIndex="-1" aria-labelledby="registerModalRestauranteLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -101,7 +99,7 @@ export const Footer = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <SignupRestaurante /> {/* Usamos el componente SignupRestaurante */}
+                            <SignupRestaurante /> 
                         </div>
                     </div>
                 </div>

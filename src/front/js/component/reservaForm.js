@@ -17,7 +17,6 @@ const ReservaForm = () => {
             reservation_time: reservationTime
         };
 
-        // Enviar los datos al backend
         fetch(`${process.env.BACKEND_URL}/send-mail`, {
             method: 'POST',
             headers: {

@@ -46,7 +46,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
             });
-            onClose();  // Cerramos el modal tras el éxito
+            onClose();  
         } else {
             Swal.fire({
                 title: 'Error',
@@ -61,7 +61,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
 
     return (
         <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true" data-bs-backdrop="true" onClick={onClose}>
-            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}> {/* Evitamos que el modal se cierre al hacer clic dentro de él */}
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}> 
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modalPasswordLabel">Cambiar contraseña</h5>

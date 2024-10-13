@@ -51,7 +51,7 @@ export const SignupRestaurante = () => {
             return;
         }
 
-        const result = await actions.signupRestaurante(formData); // Llama a la acción del flux
+        const result = await actions.signupRestaurante(formData); 
 
         if (result.success) {
             sessionStorage.setItem("signup_email", formData.email);

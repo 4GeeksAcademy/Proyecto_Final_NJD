@@ -6,7 +6,6 @@ export const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
 
   useEffect(() => {
-    // Desplazar la ventana hacia el tope superior al cargar el componente
     window.scrollTo(0, 0);
   }, []);
 

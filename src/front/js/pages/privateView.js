@@ -6,9 +6,8 @@ export const PrivateView = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Redirigir si no hay usuario autenticado
         if (!sessionStorage.getItem('token')) {
-            navigate('/'); // Redirige a la página principal si no hay usuario
+            navigate('/'); 
         }
     }, []);
 
