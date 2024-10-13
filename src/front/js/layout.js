@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
@@ -14,8 +14,9 @@ import { PrivateView } from "./pages/privateView";
 import { RestaurantDetail } from "./pages/restaurantDetail";
 import { FAQ } from "./pages/faq";
 import { About } from "./pages/aboutUs";
-import { AreaPrivadaUsuario } from "./pages/vistaPrivadaUsuario"; // Importación correcta
-import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante"
+import { AreaPrivadaUsuario } from "./pages/vistaPrivadaUsuario"; 
+import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante";
+import VistaCloudinary from "./pages/vistaCloudinary";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -40,7 +41,6 @@ const Layout = () => {
                         {/* Vista privada para el usuario */}
                         <Route element={<AreaPrivadaUsuario />} path="/private/:user_id" /> {/* Página para editar perfil del usuario con el user_id */}
 
-
                         {/* Página de bienvenida o sección general privada */}
                         <Route element={<PrivateView />} path="/private" /> {/* Página general de área privada */}
                         
@@ -53,7 +53,13 @@ const Layout = () => {
                         {/* Vista About us */}
                         <Route element={<About />} path="/about" />
 
+                        {/* Vista privada restaurante */}
                         <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante/:restaurante_id" />
+
+                        {/* Nueva ruta para VistaCloudinary */}
+                        <Route element={<VistaCloudinary />} path="/vistaCloudinary/:restaurante_id" />
+
+
                         <Route element={<h1>Not found!</h1>} path="*" />
                     </Routes>
                     <Footer />

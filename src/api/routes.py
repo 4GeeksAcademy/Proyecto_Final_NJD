@@ -778,7 +778,8 @@ def obtener_valoracion_promedio(restaurante_id):
 
 
 
-#Cloudinary
+# CLOUDINARY
+
 @api.route('/upload_image', methods=['POST'])
 def upload_image():
     try:
@@ -823,12 +824,12 @@ def actualizar_imagen_restaurante(restaurante_id):
     return jsonify({'msg': 'Imagen actualizada con éxito', 'image': restaurante.image}), 200
 
 
-
+# ELIMINAR IMAGENES
 @api.route('/restaurantes/<int:restaurante_id>/imagen', methods=['DELETE'])
-@jwt_required()  # Asegúrate de que el restaurante esté autenticado
+@jwt_required()
 def eliminar_imagen_restaurante(restaurante_id):
     body = request.get_json()
-    url_imagen = body.get('url_imagen')  # Obtener la URL de la imagen a eliminar
+    url_imagen = body.get('url_imagen')  
 
     if not url_imagen:
         return jsonify({'msg': 'Falta la URL de la imagen'}), 400
@@ -837,19 +838,17 @@ def eliminar_imagen_restaurante(restaurante_id):
     if not restaurante:
         return jsonify({'msg': 'Restaurante no encontrado'}), 404
 
-    # Eliminar la URL de la imagen en la base de datos
     if restaurante.image == url_imagen:
-        restaurante.image = None  # Eliminar la imagen asociada
+        restaurante.image = None 
         db.session.commit()
         return jsonify({'msg': 'Imagen eliminada con éxito'}), 200
     else:
         return jsonify({'msg': 'Imagen no encontrada o no coincide'}), 404
 
 
-
     
-##-------CAMBIAR CONTRASEÑA SÍ------
-# Cambiar Contraseña de Restaurante
+#CAMBIAR CONTRASEÑA RESTAURANTE
+
 @api.route('/restaurante/cambiar_contrasena', methods=['PUT'])
 @jwt_required()
 def cambiar_contrasena():
@@ -881,3 +880,29 @@ def cambiar_contrasena():
 
     return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
 
+
+# CAMBIAR CONTRASEÑA USUARIO
+
+@api.route('/usuario/cambiar_contrasena', methods=['PUT'])
+@jwt_required()
+def cambiar_contrasena_usuario():
+    usuario_id = get_jwt_identity()
+    data = request.get_json()
+
+    current_password = data.get('currentPassword')
+    new_password = data.get('newPassword')
+
+    if not current_password or not new_password:
+        return jsonify({"msg": "Debe proporcionar la contraseña actual y la nueva contraseña"}), 400
+    usuario = Usuario.query.get(usuario_id)
+
+    if not usuario:
+        return jsonify({"msg": "Usuario no encontrado"}), 404
+
+    if not check_password_hash(usuario.password_hash, current_password):
+        return jsonify({"msg": "Contraseña actual incorrecta"}), 401
+
+    usuario.password_hash = generate_password_hash(new_password)
+    db.session.commit()
+
+    return jsonify({"msg": "Contraseña actualizada con éxito"}), 200

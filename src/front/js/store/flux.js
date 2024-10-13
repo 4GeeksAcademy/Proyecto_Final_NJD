@@ -13,8 +13,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
         actions: {
 
-            //Modificar contraseña
-            // Agrega esta función a tus actions
+            // CAMBIAR CONTRASEÑA RESTAURANTE
             cambiarContraseña: async (data) => {
                 const token = sessionStorage.getItem('token');
                 try {
@@ -37,6 +36,30 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
+            // CAMBIAR CONTRASEÑA USUARIO
+            cambiarContraseñaUser: async (data) => {
+                const token = sessionStorage.getItem('token');
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + '/api/usuario/cambiar_contrasena', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` // Incluye el token JWT en la cabecera
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        return { success: true, message: result.msg };
+                    } else {
+                        return { success: false, message: result.msg };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
 
             // CREAR RESERVA
             crearReserva: async function (data) {
@@ -709,17 +732,19 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+
+
+
             deleteImageRestaurante: async (restaurante_id, imageURL) => {
                 try {
                     const response = await fetch(
-                        `/api/restaurantes/${restaurante_id}/imagen`,
+                        `${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,  // Pasar la URL de la imagen como parámetro
                         {
                             method: "DELETE",
                             headers: {
                                 "Content-Type": "application/json",
                                 Authorization: `Bearer ${sessionStorage.getItem("token")}`
-                            },
-                            body: JSON.stringify({ url_imagen: imageURL })  // Enviamos la URL de la imagen a eliminar
+                            }
                         }
                     );
             
@@ -734,7 +759,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, error };
                 }
             }
-
         }
     };
 };

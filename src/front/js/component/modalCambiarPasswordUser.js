@@ -37,7 +37,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
             newPassword: passwordData.newPassword
         };
 
-        const result = await actions.cambiarContraseña(data);
+        const result = await actions.cambiarContraseñaUser(data);
 
         if (result.success) {
             Swal.fire({
