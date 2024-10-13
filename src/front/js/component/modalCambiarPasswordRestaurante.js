@@ -1,43 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Swal from 'sweetalert2';
+import { Context } from '../store/appContext';
 
-const ModalCambiarPasswordRestaurante = ({ isOpen, onClose, onSubmit }) => {
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
+  const { actions } = useContext(Context);  // Obtenemos las acciones del contexto
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmPassword: ''
+  });
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordData({
+      ...passwordData,
+      [name]: value
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (newPassword !== confirmPassword) {
+
+    // Verificación de que las contraseñas coinciden
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
       Swal.fire({
-        title: "Error",
-        text: "Las contraseñas no coinciden.",
-        icon: "error",
-        confirmButtonText: "Aceptar",
+        title: 'Error',
+        text: 'Las contraseñas no coinciden.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
       });
       return;
     }
 
-    // Aquí llamas a la función onSubmit y pasas los datos
-    onSubmit({
-      currentPassword: currentPassword,
-      newPassword: newPassword,
-    });
-    
-    // Limpias los campos de los inputs
-    setCurrentPassword("");
-    setNewPassword("");
-    setConfirmPassword("");
-    
-    // Cierras el modal
-    onClose();
+    // Preparar los datos para la API
+    const data = {
+      currentPassword: passwordData.currentPassword,
+      newPassword: passwordData.newPassword
+    };
+
+    // Llamamos a la acción en el flux para cambiar la contraseña
+    const result = await actions.cambiarContraseña(data);
+
+    if (result.success) {
+      Swal.fire({
+        title: 'Éxito',
+        text: 'Contraseña cambiada con éxito.',
+        icon: 'success',
+        confirmButtonText: 'Aceptar'
+      });
+      onClose();  // Cerramos el modal tras el éxito
+    } else {
+      Swal.fire({
+        title: 'Error',
+        text: result.message || 'No se pudo cambiar la contraseña. Inténtalo más tarde.',
+        icon: 'error',
+        confirmButtonText: 'Aceptar'
+      });
+    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="modal fade show" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
-      <div className="modal-dialog" role="document">
+    <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog" aria-labelledby="modalPasswordLabel" aria-hidden="true" data-bs-backdrop="true" onClick={onClose}>
+      <div className="modal-dialog" role="document" onClick={(e) => e.stopPropagation()}> {/* Evitamos que el modal se cierre al hacer clic dentro de él */}
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Cambiar Contraseña</h5>
@@ -51,8 +77,9 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose, onSubmit }) => {
                   type="password"
                   className="form-control"
                   id="currentPassword"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  name="currentPassword"
+                  value={passwordData.currentPassword}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -62,8 +89,9 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose, onSubmit }) => {
                   type="password"
                   className="form-control"
                   id="newPassword"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
+                  name="newPassword"
+                  value={passwordData.newPassword}
+                  onChange={handleChange}
                   required
                 />
               </div>
@@ -73,12 +101,13 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose, onSubmit }) => {
                   type="password"
                   className="form-control"
                   id="confirmPassword"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  name="confirmPassword"
+                  value={passwordData.confirmPassword}
+                  onChange={handleChange}
                   required
                 />
               </div>
-              <button type="submit" className="btn btn-primary">Guardar cambios</button>
+              <button type="submit" className="btn btn-primary">Cambiar contraseña</button>
             </form>
           </div>
         </div>
