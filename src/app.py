@@ -27,7 +27,7 @@ from api.commands import setup_commands
 
 # HARDCODE PARA METER LAS CATEGORIAS Y RESTAURANTES EN CADA RESET / SOLO PARA PRUEBAS
 from api.setup_categorias import cargar_categorias_iniciales
-from api.setup_restaurantes import cargar_restaurantes_iniciales  # <-- Añadido para cargar restaurantes también
+from api.setup_restaurantes import cargar_restaurantes_iniciales  
 
 # from models import Person
 
@@ -37,7 +37,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-CORS(app)  # <-- Aquí habilitas CORS para todas las rutas
+CORS(app)  
 
 # Instancia de Mail API email
 mail = Mail()
@@ -67,10 +67,9 @@ else:
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'nelvb'  # Clave secreta para JWT
-app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  # El token expira en 24 horas
+app.config['JWT_SECRET_KEY'] = 'nelvb' 
+app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  
 
-# Inicializar la base de datos y realizar migraciones
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
@@ -78,12 +77,11 @@ db.init_app(app)
 with app.app_context():
     try:
         cargar_categorias_iniciales()
-        db.session.commit()  # Asegurar que las categorías se guarden antes de continuar
+        db.session.commit()  
         cargar_restaurantes_iniciales()
     except ProgrammingError:
-        print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  # <-- Mensaje de error
+        print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  
 
-# Inicializar JWTManager
 jwt = JWTManager(app)
 
 # Configuración de Cloudinary
@@ -93,44 +91,37 @@ cloudinary.config(
     api_secret=os.getenv("CLOUDINARY_API_SECRET")
 )
 
-# add the admin
 setup_admin(app)
 
-# add the admin
 setup_commands(app)
 
-# Add all endpoints form the API with a "api" prefix
 app.register_blueprint(api, url_prefix='/api')
 
-# Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
-# generate sitemap with all your endpoints
 @app.route('/')
 def sitemap():
     if ENV == "development":
         return generate_sitemap(app)
     return send_from_directory(static_file_dir, 'index.html')
 
-# any other endpoint will try to serve it like a static file
 @app.route('/<path:path>', methods=['GET'])
 def serve_any_other_file(path):
     if not os.path.isfile(os.path.join(static_file_dir, path)):
         path = 'index.html'
     response = send_from_directory(static_file_dir, path)
-    response.cache_control.max_age = 0  # avoid cache memory
+    response.cache_control.max_age = 0  
     return response
 
-# Endpoint de prueba para enviar correo
 @app.route('/send-mail', methods=['POST'])
 def send_mail():
     data = request.json
-    user_email = data.get('email')  # Email del usuario que hizo la reserva
-    restaurant_name = data.get('restaurant_name')  # Nombre del restaurante
-    reservation_date = data.get('reservation_date')  # Fecha de la reserva
-    reservation_time = data.get('reservation_time')  # Hora de la reserva
+    user_email = data.get('email')  
+    restaurant_name = data.get('restaurant_name')  
+    reservation_date = data.get('reservation_date')  
+    reservation_time = data.get('reservation_time')  
 
     try:
         # Crear el mensaje de correo

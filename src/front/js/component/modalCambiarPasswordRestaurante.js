@@ -3,7 +3,7 @@ import Swal from 'sweetalert2';
 import { Context } from '../store/appContext';
 
 const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
-  const { actions } = useContext(Context);  // Obtenemos las acciones del contexto
+  const { actions } = useContext(Context);  
   const [passwordData, setPasswordData] = useState({
     currentPassword: '',
     newPassword: '',
@@ -21,7 +21,6 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Verificación de que las contraseñas coinciden
     if (passwordData.newPassword !== passwordData.confirmPassword) {
       Swal.fire({
         title: 'Error',
@@ -32,13 +31,11 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
       return;
     }
 
-    // Preparar los datos para la API
     const data = {
       currentPassword: passwordData.currentPassword,
       newPassword: passwordData.newPassword
     };
 
-    // Llamamos a la acción en el flux para cambiar la contraseña
     const result = await actions.cambiarContraseña(data);
 
     if (result.success) {
@@ -48,7 +45,7 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
         icon: 'success',
         confirmButtonText: 'Aceptar'
       });
-      onClose();  // Cerramos el modal tras el éxito
+      onClose();  
     } else {
       Swal.fire({
         title: 'Error',
@@ -63,7 +60,7 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
 
   return (
     <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" role="dialog" aria-labelledby="modalPasswordLabel" aria-hidden="true" data-bs-backdrop="true" onClick={onClose}>
-      <div className="modal-dialog" role="document" onClick={(e) => e.stopPropagation()}> {/* Evitamos que el modal se cierre al hacer clic dentro de él */}
+      <div className="modal-dialog" role="document" onClick={(e) => e.stopPropagation()}> 
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Cambiar Contraseña</h5>

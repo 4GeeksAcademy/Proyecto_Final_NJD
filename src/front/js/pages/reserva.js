@@ -25,7 +25,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
             if (userId) {
                 const userData = await actions.obtenerDatosUsuario(userId);
 
-            // Añadimos los datos del usuario al formData, pero no los mostramos en el formulario
             setFormData((prevState) => ({
                 ...prevState,
                 nombre: userData.nombres || '',
@@ -80,7 +79,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     .catch(error => {
                         console.error("Error enviando el correo: ", error);
                     });
-                // SweetAlert2 con el mensaje de éxito
                 Swal.fire({
                     title: 'Reserva realizada con éxito',
                     text: 'Recibirá un email de confirmación.',

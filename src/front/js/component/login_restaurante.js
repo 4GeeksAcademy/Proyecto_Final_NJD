@@ -17,23 +17,19 @@ export const LoginRestaurante = ({ onLogin }) => {
             const savedEmail = sessionStorage.getItem('signup_email');
             const savedPassword = sessionStorage.getItem('signup_password');
 
-            // Si no hay email o contraseña guardada en sessionStorage, limpia los campos
             if (!savedEmail) setEmail('');
             if (!savedPassword) setPassword('');
 
             if (savedEmail) setEmail(savedEmail);
             if (savedPassword) setPassword(savedPassword);
 
-            // Limpiar el sessionStorage después de rellenar los campos
             sessionStorage.removeItem('signup_email');
             sessionStorage.removeItem('signup_password');
         };
 
-        // Añadir un listener para cuando se abra el modal
         loginModalElement.addEventListener('shown.bs.modal', onModalOpen);
 
         return () => {
-            // Eliminar el listener cuando el componente se desmonte
             loginModalElement.removeEventListener('shown.bs.modal', onModalOpen);
         };
     }, []);
@@ -41,20 +37,18 @@ export const LoginRestaurante = ({ onLogin }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Mueve el fetch al flux y deja el resto de la lógica aquí
         const result = await actions.loginRestaurante({ email, password });
 
         if (result.success) {
-            sessionStorage.setItem('token', result.data.access_token);  // Guardar token de acceso
-            sessionStorage.setItem('restaurant_name', result.data.restaurant_name);  // Guardar nombre del restaurante en sessionStorage
+            sessionStorage.setItem('token', result.data.access_token);  
+            sessionStorage.setItem('restaurant_name', result.data.restaurant_name);  
             sessionStorage.setItem('restaurant_id', result.data.restaurant_id);
-            console.log(result.data);  // Verifica qué recibe del servidor
+            console.log(result.data);  
 
-            // Actualiza el estado en la Navbar
             onLogin(result.data.restaurant_name);
 
-            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); // Usa el ID correcto
-            if (loginModal) loginModal.hide();  // Cierra el modal de login
+            const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal')); 
+            if (loginModal) loginModal.hide();  
             if (result.data.registro_completo){
                 navigate(`/vistaPrivadaRestaurante/${result.data.restaurant_id}`)
             } else {
@@ -64,7 +58,6 @@ export const LoginRestaurante = ({ onLogin }) => {
             window.location.reload()
 
         } else if (result.status === 404) {
-            // Usuario no registrado
             Swal.fire({
                 title: 'Restaurante no registrado',
                 text: '¿Deseas registrarte?',
@@ -74,30 +67,27 @@ export const LoginRestaurante = ({ onLogin }) => {
                 cancelButtonText: 'Cancelar'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    sessionStorage.setItem('signup_email', email);  // Guardar el email del intento de login
+                    sessionStorage.setItem('signup_email', email);  
 
-                    // Cerrar el modal de login
                     const loginModal = bootstrap.Modal.getInstance(document.getElementById('loginRestaurantModal'));
                     if (loginModal) loginModal.hide();
 
-                    // Abrir el modal de signup
                     const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));
                     signupModal.show();
                 } else {
-                    setEmail('');  // Limpiar el email si cancela
-                    setPassword(''); //Limpiar la contraseña si cancela
+                    setEmail('');  
+                    setPassword(''); 
                 }
             });
 
         } else if (result.status === 401) {
-            // Contraseña incorrecta
             Swal.fire({
                 title: 'Contraseña incorrecta',
                 text: 'Por favor, intenta nuevamente.',
                 icon: 'error',
                 confirmButtonText: 'Aceptar'
             }).then(() => {
-                setPassword(''); // Limpiar la contraseña
+                setPassword(''); 
             });
         } else {
             Swal.fire({
@@ -139,7 +129,6 @@ export const LoginRestaurante = ({ onLogin }) => {
             </div>
             <button type='submit' className='btn btn-primary'>Iniciar Sesión</button>
 
-            {/* Enlaces para registro y recuperación de contraseña */}
             <div className="mt-3 enlaces_contraseñas">
                 <a href="#" onClick={() => {
                     const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));

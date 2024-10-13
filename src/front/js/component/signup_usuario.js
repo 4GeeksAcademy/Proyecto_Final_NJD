@@ -30,16 +30,14 @@ export const SignupUsuario = () => {
                 phone: "",
             });
             setErrorMessage("");
-            setSuccessMessage("");  // Limpiamos el mensaje de éxito al cerrar el modal
+            setSuccessMessage("");  
         };
     
         const signupModalElement = document.getElementById("signupModal");
     
-        // Limpiar el formulario cuando se cierra el modal
         signupModalElement.addEventListener('hidden.bs.modal', resetFormData);
     
         return () => {
-            // Eliminar el listener cuando el componente se desmonte
             signupModalElement.removeEventListener('hidden.bs.modal', resetFormData);
         };
     }, []);
@@ -56,7 +54,6 @@ export const SignupUsuario = () => {
             return;
         }
 
-        // Llama a la acción del flux
         const result = await actions.signupUsuario(formData);
 
         if (result.success) {
@@ -68,17 +65,14 @@ export const SignupUsuario = () => {
                 icon: "success",
                 confirmButtonText: "Aceptar",
             }).then(() => {
-                // Guardar email y password en sessionStorage
                 sessionStorage.setItem("signup_email", formData.email);
                 sessionStorage.setItem("signup_password", formData.password);
                
-                // Cerrar el modal de registro
                 const signupModal = document.getElementById("signupModal");
                 const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
                 signupModalInstance.hide();
-                setSuccessMessage("");  // Limpiar el mensaje
+                setSuccessMessage("");  
 
-                // Abrir el modal de login usando Bootstrap
                 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
                 loginModal.show();
             });
@@ -99,7 +93,6 @@ export const SignupUsuario = () => {
                 confirmButtonText: "Aceptar",
             }).then(() => {
 
-                // Guardar email y password en sessionStorage
                 sessionStorage.setItem("signup_email", formData.email);
                 sessionStorage.setItem("signup_password", formData.password);
 
@@ -107,7 +100,6 @@ export const SignupUsuario = () => {
                 const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
                 signupModalInstance.hide();
 
-                // Abrir el modal de login
                 const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
                 loginModal.show();
             });

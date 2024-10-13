@@ -12,7 +12,6 @@ export const ModalVerMisFavoritos = ({ isOpen, onClose }) => {
 
         setFavoritos(result);
     };
-    // Cargar los favoritos del usuario cuando el modal se abre
     useEffect(() => {
         
             
@@ -20,7 +19,6 @@ export const ModalVerMisFavoritos = ({ isOpen, onClose }) => {
         
     }, []); 
 console.log(favoritos)
-    // Función para eliminar un favorito de la lista después de eliminarlo de la base
     const eliminarFavEnLista = (idEliminar) => {
         setFavoritos((prevFav) => prevFav.filter(favorito => favorito.id !== idEliminar));
     };
@@ -29,7 +27,7 @@ console.log(favoritos)
 
     return (
         <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="favModalLabel" aria-hidden="true">
-            <div className="modal-dialog modal-lg">  {/* Aumentamos el tamaño del modal */}
+            <div className="modal-dialog modal-lg">  
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="favModalLabel">Tus favoritos</h5>

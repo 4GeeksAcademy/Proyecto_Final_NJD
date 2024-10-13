@@ -8,8 +8,8 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
         adultos: reserva.adultos,  
         niños: reserva.niños || 0,  
         trona: reserva.trona || 0,  
-        fecha_reserva: reserva.fecha_reserva.split('T')[0],  // Formato de fecha
-        hora: reserva.fecha_reserva.split('T')[1].substring(0, 5),  // Formato de hora
+        fecha_reserva: reserva.fecha_reserva.split('T')[0],  
+        hora: reserva.fecha_reserva.split('T')[1].substring(0, 5), 
         restaurante_id: reserva.restaurante_id
     });
 
@@ -26,15 +26,15 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
                 body: JSON.stringify(formData)
             });
             if (response.ok) {
-                const reservaActualizada = await response.json();  // Obtenemos la reserva actualizada
-                actualizarReservaEnLista(reservaActualizada.reserva);  // Actualizamos la lista de reservas
+                const reservaActualizada = await response.json();  
+                actualizarReservaEnLista(reservaActualizada.reserva);  
                 Swal.fire({
                     title: 'Reserva actualizada con éxito',
                     text: 'La reserva ha sido modificada correctamente.',
                     icon: 'success',
                     confirmButtonText: 'Aceptar'
                 });
-                onClose();  // Cerrar el modal
+                onClose();  
             } else {
                 Swal.fire({
                     title: 'Error',
@@ -83,9 +83,8 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
                             'Tu reserva ha sido eliminada con éxito.',
                             'success'
                         );
-                        // Aquí eliminamos la reserva de la lista del frontend
-                        actualizarReservaEnLista(reserva.id);  // Pasamos solo el id para eliminarla de la lista
-                        onClose();  // Cerrar el modal y volver a la vista de reservas
+                        actualizarReservaEnLista(reserva.id);  
+                        onClose();  
                     } else {
                         Swal.fire(
                             'Error',

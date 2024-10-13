@@ -48,7 +48,7 @@ mock_restaurantes = [
 
 def cargar_restaurantes_iniciales():
     try:
-        if Restaurantes.query.count() == 0:  # Verificar si no hay restaurantes en la base de datos
+        if Restaurantes.query.count() == 0:  
             for restaurante in mock_restaurantes:
                 nuevo_restaurante = Restaurantes(
                     nombre=restaurante['nombre'],
@@ -66,10 +66,10 @@ def cargar_restaurantes_iniciales():
                     image=restaurante['image']
                 )
 
-                nuevo_restaurante.set_password("defaultpassword")  # <-- Contraseña por defecto
+                nuevo_restaurante.set_password("defaultpassword")  
 
                 db.session.add(nuevo_restaurante)
-                db.session.flush()  # Se realiza flush para obtener el ID generado del restaurante
+                db.session.flush()  
 
             
                 db.session.commit()
