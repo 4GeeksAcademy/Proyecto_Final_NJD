@@ -197,7 +197,7 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Horario de mañana */}
+            {/* Horarios: Mañana y Tarde */}
             <div className="col-md-6 mb-3">
               <label htmlFor="horario_mañana" className="form-label">Horario de Mañana</label>
               <div className="input-group">
@@ -210,8 +210,20 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Contraseña */}
             <div className="col-md-6 mb-3">
+              <label htmlFor="horario_tarde" className="form-label">Horario de Tarde</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{`${formData.horario_tarde_inicio} - ${formData.horario_tarde_fin}`}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_tarde', formData.horario_tarde_inicio)}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contraseña */}
+            <div className="col-md-12 mb-3">
               <label htmlFor="password" className="form-label">Contraseña</label>
               <div className="input-group">
                 <div className="input-content">
