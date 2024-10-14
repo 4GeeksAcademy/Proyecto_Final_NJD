@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { LoginRestaurante } from "./login_restaurante";
 import { SignupRestaurante } from "./signup_restaurante";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
+import "../../styles/index.css";
 
 export const Footer = () => {
     const [userName, setUserName] = useState(""); 
