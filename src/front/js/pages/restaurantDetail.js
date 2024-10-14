@@ -3,10 +3,11 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; 
 import CartaModal from "../component/cartaModal";
 import OpinionModal from "../component/OpinionModal"; 
-import "../../styles/restaurantDetail.css"; 
 import { Context } from "../store/appContext"; 
-import "../../styles/restaurantDetail.css";
 import {Reserva} from "./reserva"
+import "../../styles/vistaDetails.css";
+
+
 
 export const RestaurantDetail = () => {
     const { id } = useParams();
