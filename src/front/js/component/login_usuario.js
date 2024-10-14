@@ -131,9 +131,8 @@ export const LoginUsuario = ({ onLogin }) => {
                 <a href="#" onClick={() => {
                     const signupModal = new bootstrap.Modal(document.getElementById('signupModal'));
                     signupModal.show();
-                }}>No tienes cuenta? Regístrate</a>
-                <br />
-                <a href="#" onClick={() => navigate('/recuperacionContraseñaUsuario')}>¿Olvidaste la contraseña?</a>
+                }}>¿No tienes cuenta? Regístrate</a>
+                
             </div>
         </form>
     );
