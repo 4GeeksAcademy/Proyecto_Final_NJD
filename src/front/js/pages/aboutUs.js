@@ -15,7 +15,7 @@ export const About = () => {
                     alt="Foto"
                     className="rounded-circle custom-img"
                 />
-                <h2 className="custom-title">Daria Dacha Dacha</h2>
+                <h2 className="custom-title">Daria Dacha Zotova</h2>
                 <p className="custom-text">A todos mis amigos que estuvieron a mi lado cada día, gracias por su apoyo incondicional. Este proyecto es también suyo. Y, sobre todo, a mis compañeros de equipo: sin vostros, nada de esto habría sido posible.</p>
 
             </div>
