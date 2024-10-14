@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2"; 
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaUsuario.css"; 
+import "../../styles/restaurantSearch.css"
 
 export const RestaurantSearch = () => {
     const { categoria_id } = useParams(); 

@@ -27,7 +27,7 @@ export const About = () => {
                     className="rounded-circle custom-img"
                 />
                 <h2 className="custom-title">Nelson Valero</h2>
-                <p className="custom-text">“Desde siempre, he creído en el poder de la buena comida para conectar personas y crear momentos memorables. Con HOY NO COCINO, mi objetivo es ofrecer una plataforma que no solo facilite encontrar y reservar en los mejores restaurantes, sino que también enriquezca la experiencia gastronómica de cada usuario. Queremos ser el puente entre los amantes de la buena mesa y los restaurantes que tienen mucho que ofrecer. Nuestro compromiso es seguir mejorando y creciendo para brindar siempre un servicio de excelencia. ¡Gracias por ser parte de esta gran comunidad!”</p>
+                <p className="custom-text">"Desde siempre, he creído en el poder de la buena comida para conectar personas y crear momentos memorables. Con HOY NO COCINO, mi objetivo es ofrecer una plataforma que no solo facilite encontrar y reservar en los mejores restaurantes, sino que también enriquezca la experiencia gastronómica de cada usuario. Queremos ser el puente entre los amantes de la buena mesa y los restaurantes que tienen mucho que ofrecer. Nuestro compromiso es seguir mejorando y creciendo para brindar siempre un servicio de excelencia. ¡Gracias por ser parte de esta gran comunidad!”</p>
             </div>
 
             <div className="custom-container position-relative text-center">
