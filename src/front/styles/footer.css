@@ -1,0 +1,93 @@
+footer {
+  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado elegante */
+  color: white;
+  padding: 40px 20px; /* Ajustado para pantallas pequeñas */
+  text-align: center;
+  width: 100%; /* Asegura que el footer ocupe todo el ancho */
+  margin-top: auto; /* Empuja el footer al final */
+  height: auto; /* Para ajustarse mejor al contenido */
+  margin-top: 50px;
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between; /* Asegura espacio entre las secciones */
+  flex-wrap: wrap; /* Permitir que las secciones se envuelvan en pantallas pequeñas */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 180px; /* Ajustamos el tamaño mínimo para evitar que colapse en pantallas pequeñas */
+  padding: 10px;
+  text-align: left; /* Alinear el texto a la izquierda en pantallas grandes */
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+}
+
+.footer-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  color: #cccccc;
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  font-size: 14px;
+}
+
+.footer-section a {
+  color: white;
+  text-decoration: none;
+  margin: 0 5px;
+}
+
+.footer-section a:hover {
+  color: #00000064; /* Cambia a gris fuerte */
+}
+
+.footer-small-text {
+  font-size: 12px; /* Ajusta este valor según el tamaño que prefieras */
+  color: #cccccc; /* Puedes ajustar el color si lo deseas */
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column; /* Apilar las secciones en una columna */
+    text-align: center; /* Centrar el texto para pantallas pequeñas */
+  }
+
+  .footer-section {
+    min-width: 100%; /* Hacer que las secciones ocupen el 100% del ancho en móviles */
+    padding: 20px 0; /* Ajustar el padding para más espacio entre secciones */
+  }
+
+  .footer-bottom {
+    font-size: 12px; /* Reducir el tamaño del texto en pantallas pequeñas */
+  }
+
+  .footer-section ul {
+    padding: 0; /* Eliminar el padding en listas */
+  }
+
+  .footer-section ul li {
+    margin-bottom: 5px; /* Reducir el espacio entre elementos de la lista */
+  }
+}

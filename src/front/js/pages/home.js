@@ -1,6 +1,10 @@
 import React, { useRef } from "react";
 import "../../styles/home.css";
+import "../../styles/jumbotron.css";
+import "../../styles/footer.css";
 import { Link } from "react-router-dom"; 
+
+
 export const Home = () => {
 	const scrollContainerRef = useRef(null);
 

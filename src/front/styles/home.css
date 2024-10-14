@@ -1,84 +1,4 @@
-footer {
-  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado elegante */
-  color: white;
-  padding: 40px 0;
-  text-align: center;
-  width: 100%; /* Asegura que el footer ocupe todo el ancho */
-  margin-top: auto; /* Empuja el footer al final */
-  height: auto; /* Para ajustarse mejor al contenido */
-  margin-top: 50px;
-}
-
-.footer-container {
-  display: flex;
-  justify-content: space-between; /* Asegura espacio entre las secciones */
-  flex-wrap: nowrap; /* No permitir que se envuelvan las secciones */
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.footer-section {
-  flex: 1;
-  min-width: 180px; /* Ajustamos el tamaño mínimo para evitar que colapse en pantallas pequeñas */
-  padding: 10px;
-}
-
-.footer-section h4 {
-  font-size: 18px;
-  margin-bottom: 15px;
-  text-transform: uppercase;
-}
-
-.footer-section ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.footer-section ul li {
-  margin-bottom: 10px;
-}
-
-.footer-section ul li a {
-  color: #cccccc;
-  text-decoration: none;
-}
-
-.footer-section ul li a:hover {
-  text-decoration: underline;
-}
-
-.footer-bottom {
-  font-size: 14px;
-}
-
-.footer-section a {
-  color: white;
-  text-decoration: none;
-  margin: 0 5px;
-}
-
-.footer-section a:hover {
-  color: #00000064; /* Cambia a gris fuerte */
-}
-
-
-.footer-small-text {
-  font-size: 12px; /* Ajusta este valor según el tamaño que prefieras */
-  color: #cccccc; /* Puedes ajustar el color si lo deseas */
-}
-
-
-
-/*
-    home.css: This website contains selectors only used in home.css
-
-    All pages share the styles on index.css but you should create 
-    one more css for each page that will contain the selected used 
-    on that page only (the ones not reused in other pages).
-*/
 /* Contenedor de la imagen de fondo */
-
-
 .container-background {
   height: 50px;
   background: linear-gradient(to left, #2c2c2c, #6a6a6a);
@@ -89,245 +9,209 @@ footer {
   box-shadow: none;
 }
 
-
-
 .image-header {
-    width: 100vw;
-    height: 600px; /* Tamaño de la imagen reducido */
-    background-image: url("https://i.ibb.co/vB5GRtW/vajilla.png");
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-  }
-  
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0, 0, 0, 0.4);
-  }
-  
-  
-  
-  /* Sección de scroll con cards de cocina */
-  .cuisine-scroll {
-    padding: 25px 20px;
-    background: linear-gradient(to left, #2c2c2c, #6a6a6a);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    text-align: center;
-    box-shadow: none;
-    padding-bottom: 75px;
+  width: 100vw;
+  height: 600px; /* Tamaño de la imagen */
+  background-image: url("https://i.ibb.co/vB5GRtW/vajilla.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
 }
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  padding: 0 20px;
+}
+
+.overlay h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: white;
+}
+
+.overlay p {
+  font-size: 1.25rem;
+  color: white;
+  max-width: 600px;
+}
+
+/* Sección de scroll con cards de cocina */
+.cuisine-scroll {
+  padding: 25px 20px;
+  background: linear-gradient(to left, #2c2c2c, #6a6a6a);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  text-align: center;
+  box-shadow: none;
+  padding-bottom: 50px;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 2rem;
+}
+
+.cuisine-scroll h2 {
+  color: white !important;
+}
+
+/* Scroll lateral de las cards */
+.scroll-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto; /* Habilitar scroll táctil */
+  gap: 20px;
+  padding: 10px 0;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch; /* Habilitar deslizamiento suave en móviles */
+  scrollbar-width: none; /* Ocultar barra de scroll en Firefox */
+}
+
+.scroll-container::-webkit-scrollbar {
+  display: none; /* Ocultar barra de scroll en Chrome, Safari y Edge */
+}
+
+.cuisine-card {
+  position: relative;
+  min-width: 250px;
+  height: 140px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cuisine-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cuisine-card span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 2;
+}
+
+.cuisine-card:hover {
+  transform: scale(1.05);
+}
+
+/* Botones de scroll */
+.scroll-btn {
+  background-color: rgba(0, 0, 0, 0.3);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 10px 20px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.scroll-btn.left {
+  left: 0;
+}
+
+.scroll-btn.right {
+  right: 0;
+}
+
+.scroll-btn:hover {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+/* --- Responsividad para pantallas pequeñas --- */
+@media (max-width: 768px) {
+  .scroll-btn {
+    display: none; /* Ocultar los botones de scroll en pantallas pequeñas */
+  }
+
+  .image-header {
+    height: 400px; /* Reducimos la altura de la imagen */
+  }
+
+  .overlay h1 {
+    font-size: 2rem;
+  }
+
+  .overlay p {
+    font-size: 1rem;
+  }
+
+  .cuisine-card {
+    min-width: 200px;
+    height: 120px;
+  }
 
   h2 {
-    margin-bottom: 20px;
-    font-size: 2rem;
-  }
-
-  .cuisine-scroll h2 {
-    color: white !important;
-}
-
-  /* Scroll lateral de las cards */
-  .scroll-wrapper {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-  
-  .scroll-container {
-    display: flex;
-    overflow-x: auto;
-    gap: 20px;
-    padding: 10px 0;
-    scroll-behavior: smooth;
-  }
-  
-  .cuisine-card {
-    position: relative; /* Para permitir posicionamiento absoluto del span */
-    min-width: 250px;
-    height: 140px;
-    border-radius: 10px;
-    overflow: hidden; /* Evitar que cualquier contenido extra se salga */
-    cursor: pointer;
-    transition: transform 0.2s ease;
-    display: flex; /* Añadimos flex para asegurarnos de que todo el contenido ocupe el mismo espacio */
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .cuisine-image {
-    width: 100%;
-    height: 100%; /* Asegura que la imagen rellene todo el espacio de la card */
-    object-fit: cover; /* La imagen cubrirá la card sin distorsionarse */
-  }
-  
-  .cuisine-card span {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: white; /* Color del texto */
     font-size: 1.5rem;
-    font-weight: bold;
-    background: rgba(0, 0, 0, 0.4); /* Fondo semitransparente para el texto */
-    z-index: 2; /* Aseguramos que el texto esté por encima de la imagen */
   }
-  
-  .cuisine-card:hover {
-    transform: scale(1.05);
-  }
-  
-  
-  /* Botones de scroll */
+
   .scroll-container {
-    display: flex;
-    overflow-x: hidden; /* Ocultamos la barra de scroll */
-    gap: 20px;
-    padding: 10px 0;
-    scroll-behavior: smooth;
+    gap: 10px;
+  }
 }
 
-
+@media (max-width: 480px) {
   .scroll-btn {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    border: none;
-    font-size: 2rem;
-    padding: 10px 20px;
-    cursor: pointer;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-  }
-  
-  .scroll-btn.left {
-    left: 0;
-  }
-  
-  .scroll-btn.right {
-    right: 0;
-  }
-  
-  .scroll-btn:hover {
-    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
   }
 
-/* //JUMBOTRON// */
-  .jumbotron-section {
-    position: relative;
-    width: 90%;
-    height: 950px;
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 20px;
+  .image-header {
+    height: 300px;
   }
-  
-  .jumbotron-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    position: relative;
-    z-index: 1; /* Asegura que la imagen esté debajo del overlay */
+
+  .overlay h1 {
+    font-size: 1.5rem;
   }
-  
-  .jumbotron-section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.4); /* Capa oscura sobre la imagen */
-    z-index: 2; /* Asegura que la capa esté sobre la imagen */
+
+  .overlay p {
+    font-size: 0.875rem;
   }
-  
-  .jumbotron-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    color: white;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    font-family: "Roboto", sans-serif;
-    width: 80%;
-    max-width: 800px;
-    z-index: 3; /* Asegura que el texto esté sobre la capa oscura */
+
+  .cuisine-card {
+    min-width: 150px;
+    height: 100px;
   }
-  
-  .jumbotron-title {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-  }
-  
-  .jumbotron-description {
+
+  h2 {
     font-size: 1.25rem;
-    margin-bottom: 2rem;
-  }
-  
-  .join-button {
-    display: inline-block;
-    padding: 0.75rem 2rem;
-    font-size: 1.25rem;
-    color: white;
-    background-color: #9e5454;
-    border: none;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
-  }
-  
-  .join-button:hover {
-    background-color: white;
-    color: #232323;
-  }
-  
-  /* Responsividad */
-  @media (max-width: 768px) {
-    .jumbotron-title {
-      font-size: 2.5rem;
-    }
-  
-    .jumbotron-description {
-      font-size: 1rem;
-    }
-  
-    .join-button {
-      font-size: 1rem;
-      padding: 0.5rem 1.5rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .jumbotron-title {
-      font-size: 2rem;
-    }
-  
-    .jumbotron-description {
-      font-size: 0.9rem;
-    }
-  
-    .join-button {
-      font-size: 0.9rem;
-      padding: 0.5rem 1rem;
-    }
   }
 
-
-
-  
+  .scroll-container {
+    gap: 5px;
+  }
+}
