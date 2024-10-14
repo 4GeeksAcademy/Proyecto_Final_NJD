@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import '/workspaces/Proyecto_Final_NJD/src/front/styles/aboutUs.css';
+import '../../styles/aboutUs.css';
 // import Ivan from "../../img/ivan.jpg";
 
 export const About = () => {

@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"; 
+import "../../styles/index.css"; 
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);

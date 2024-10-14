@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '/workspaces/Proyecto_Final_NJD/src/front/styles/privateView.css'; 
+import '../../styles/privateView.css'; 
 
 export const PrivateView = () => {
     const navigate = useNavigate();

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import '/workspaces/Proyecto_Final_NJD/src/front/styles/faq.css'; 
+import '../../styles/faq.css'; 
 
 export const FAQ = () => {
   const [searchTerm, setSearchTerm] = useState('');
