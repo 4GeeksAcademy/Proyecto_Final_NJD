@@ -132,8 +132,7 @@ export const LoginUsuario = ({ onLogin }) => {
                     const signupModal = new bootstrap.Modal(document.getElementById('signupModal'));
                     signupModal.show();
                 }}>No tienes cuenta? Regístrate</a>
-                <br />
-                <a href="#" onClick={() => navigate('/recuperacionContraseñaUsuario')}>¿Olvidaste la contraseña?</a>
+                
             </div>
         </form>
     );

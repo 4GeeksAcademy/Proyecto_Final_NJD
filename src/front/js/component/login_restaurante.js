@@ -134,8 +134,7 @@ export const LoginRestaurante = ({ onLogin }) => {
                     const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));
                     signupModal.show();
                 }}>No tienes cuenta? Regístrate</a>
-                <br />
-                <a href="#" onClick={() => navigate('/recuperacionContraseñaUsuario')}>¿Olvidaste la contraseña?</a>
+                
             </div>
         </form>
     );
