@@ -5,11 +5,11 @@ import { Context } from "../store/appContext";
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/privateView.css";
 
 export const RegistroCompletoRestaurante = () => {
-    const { store, actions } = useContext(Context); // Accede al store y acciones del flux
+    const { store, actions } = useContext(Context); 
     const navigate = useNavigate();
     const [modalVisible, setModalVisible] = useState(true);
-    const [showCategoryModal, setShowCategoryModal] = useState(false); // Estado para manejar el modal de categorías
-    const [selectedCategory, setSelectedCategory] = useState(null); // Guardar la categoría seleccionada
+    const [showCategoryModal, setShowCategoryModal] = useState(false); 
+    const [selectedCategory, setSelectedCategory] = useState(null); 
 
     const [formData, setFormData] = useState({
         direccion: "",
@@ -23,13 +23,12 @@ export const RegistroCompletoRestaurante = () => {
         categorias_id: null,
     });
 
-    // Llamamos a obtener las categorías en el useEffect al montar el componente
     useEffect(() => {
         if (!sessionStorage.getItem("token")) {
-            navigate("/"); // Redirigir si no hay sesión
+            navigate("/"); 
         }
 
-        actions.obtenerCategorias(); // Cargar las categorías
+        actions.obtenerCategorias(); 
 
         console.log("Categorías cargadas:", store.categorias);
     }, []);
@@ -39,7 +38,7 @@ export const RegistroCompletoRestaurante = () => {
     }
 
     const closeModal = () => {
-        setModalVisible(false); // Cambiar estado para ocultar el modal de bienvenida
+        setModalVisible(false); 
     };
 
     const handleChange = (e) => {
@@ -52,9 +51,9 @@ export const RegistroCompletoRestaurante = () => {
 
     const handleCategorySelect = (categoria) => {
         console.log("Categoría seleccionada:", categoria);
-        setSelectedCategory(categoria); // Guarda la categoría seleccionada
-        setFormData({ ...formData, categorias_id: categoria.id }); // Actualiza el formData con el id de la categoría
-        setShowCategoryModal(false); // Cierra el modal de selección de categorías
+        setSelectedCategory(categoria); 
+        setFormData({ ...formData, categorias_id: categoria.id }); 
+        setShowCategoryModal(false); 
     };
 
 
@@ -65,11 +64,10 @@ export const RegistroCompletoRestaurante = () => {
 
         console.log("Restaurante ID obtenido de sessionStorage:", restauranteId);
 
-        // Llama a la acción del flux para completar el registro del restaurante
         const result = await actions.completarRegistroRestaurante(restauranteId, formData);
 
         if (result.success) {
-            navigate(`/vistaPrivadaRestaurante/${restauranteId}`); //HABLAR CON DARIA ANTES DE CAMBIAR ESTO, ES IMPORTANTE!!!!!
+            navigate(`/vistaPrivadaRestaurante/${restauranteId}`);
         } else {
             Swal.fire({
                 title: "Error",
@@ -144,7 +142,6 @@ export const RegistroCompletoRestaurante = () => {
                     />
                   </div>
       
-                  {/* Horario de mañana */}
                   <div className="mb-3">
                     <label htmlFor="horario_mañana_inicio" className="form-label">Horario Mañana (Inicio)</label>
                     <input
@@ -169,7 +166,6 @@ export const RegistroCompletoRestaurante = () => {
                     />
                   </div>
       
-                  {/* Horario de tarde */}
                   <div className="mb-3">
                     <label htmlFor="horario_tarde_inicio" className="form-label">Horario Tarde (Inicio)</label>
                     <input
@@ -215,7 +211,7 @@ export const RegistroCompletoRestaurante = () => {
                       id="categoria"
                       name="categoria"
                       value={selectedCategory ? selectedCategory.nombre_de_categoria : ''}
-                      onClick={() => setShowCategoryModal(true)} // Abre el modal al hacer clic
+                      onClick={() => setShowCategoryModal(true)} 
                       placeholder="Seleccionar categoría"
                       readOnly
                       required
@@ -250,7 +246,7 @@ export const RegistroCompletoRestaurante = () => {
                       ))}
                     </ul>
                   </div>
-                  <div className="modal-footer justify-content-start">  {/* Alinéa el botón a la izquierda */}
+                  <div className="modal-footer justify-content-start">  
                     <button
                       type="button"
                       className="btn btn-primary"

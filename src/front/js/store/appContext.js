@@ -31,8 +31,9 @@ const injectContext = PassedComponent => {
 			 **/
 			//state.actions.getMessage(); // <---- calling this function from the flux.js actions
 
-
+			const user_id= sessionStorage.getItem("user_id")
 			state.actions.obtenerRestaurantes()
+			state.actions.obtenerFavoritosDelUsuario(user_id)
 
 		}, []);
 

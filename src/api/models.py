@@ -12,9 +12,9 @@ class Reserva(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('usuario.id'))
     fecha_reserva = db.Column(db.DateTime, nullable=False)
-    trona = db.Column(db.Integer, nullable=True, default=0)  # No obligatorio, valor por defecto 0
+    trona = db.Column(db.Integer, nullable=True, default=0)  
     adultos = db.Column(db.Integer, nullable=False)
-    niños = db.Column(db.Integer, nullable=True, default=0)  # No obligatorio, valor por defecto 0
+    niños = db.Column(db.Integer, nullable=True, default=0)  
     restaurante_id = db.Column(db.Integer, db.ForeignKey('restaurantes.id'))
     creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
@@ -38,8 +38,6 @@ class Reserva(db.Model):
             "modificada": self.modificada.isoformat()
         }
 
-
-
 class Usuario(db.Model):
     __tablename__ = 'usuario' 
     id = db.Column(db.Integer, primary_key=True)
@@ -57,11 +55,9 @@ class Usuario(db.Model):
     def __repr__(self):
         return f'<Usuario {self.email}>'
 
-    # Método para generar el hash de la contraseña
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
@@ -95,7 +91,6 @@ class Restaurantes(db.Model):
     image = db.Column(db.String(500), nullable=True)
     password_hash = db.Column(db.String(300), nullable=False)
 
-    # Relaciónes
     categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'), nullable=True)
     categoria_relacion = db.relationship('Categorias', backref='restaurantes')
     restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
@@ -106,11 +101,9 @@ class Restaurantes(db.Model):
     def __repr__(self):
         return f'<Restaurantes {self.nombre}>'
 
-    # Método para generar el hash de la contraseña
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    # Método para verificar si la contraseña proporcionada coincide con el hash almacenado
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 

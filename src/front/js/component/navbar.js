@@ -3,22 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css";
+import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"; 
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState(null);  // Almacenamos el userId
+    const [userId, setUserId] = useState(null);  
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
-    console.log(sessionStorage.getItem('user_id'))
-
 
     useEffect(() => {
         const handleStorageChange = () => {
             const token = sessionStorage.getItem("token");
             const storedUserName = sessionStorage.getItem("user_name");
-            const storedUserId = sessionStorage.getItem("user_id");  // Obtenemos el user_id de sessionStorage
+            const storedUserId = sessionStorage.getItem("user_id");  
             const storedRestaurantName = sessionStorage.getItem("restaurant_name");
 
             if (token && storedRestaurantName) {
@@ -29,23 +27,20 @@ export const Navbar = () => {
             else if (token && storedUserName && storedUserId) {
                 setIsRestaurant(false);
                 setUserName(storedUserName);
-                setUserId(storedUserId);  // Actualizamos el estado con el user_id
+                setUserId(storedUserId);  
                 setLoggedIn(true);
             } else {
                 setLoggedIn(false);
                 setUserName("");
-                setUserId(null);  // Limpiamos el user_id si no está logueado
+                setUserId(null);  
                 setIsRestaurant(false);
             }
         };
 
-        // Llamamos una vez al montarse el componente
         handleStorageChange();
 
-        // Añadir un listener para escuchar los cambios en sessionStorage
         window.addEventListener("storage", handleStorageChange);
 
-        // Limpiar el listener cuando el componente se desmonta
         return () => {
             window.removeEventListener("storage", handleStorageChange);
         };
@@ -56,7 +51,7 @@ export const Navbar = () => {
             sessionStorage.setItem("restaurant_name", userName);
         } else {
             sessionStorage.setItem("user_name", userName);
-            sessionStorage.setItem("user_id", userId);  // Guardamos también el user_id
+            sessionStorage.setItem("user_id", userId);  
         }
 
         setUserName(userName);
@@ -75,18 +70,24 @@ export const Navbar = () => {
 
         setLoggedIn(false);
         setUserName("");
-        setUserId(null);  // Limpiamos el user_id al hacer logout
+        setUserId(null);  
         setIsRestaurant(false);
 
         navigate("/");
     };
 
-    // Función para manejar la navegación al área privada del usuario
     const handlePrivateAreaNavigation = () => {
         const currentUserId = sessionStorage.getItem("user_id");
         console.log(currentUserId)
         if (currentUserId) {
             navigate(`/private/${currentUserId}`);
+        }
+    };
+
+    const handlePrivateAreaRestaurante = () => {
+        const restaurantId = sessionStorage.getItem("restaurant_id");
+        if (restaurantId) {
+            navigate(`/vistaPrivadaRestaurante/${restaurantId}`);
         }
     };
 
@@ -104,7 +105,14 @@ export const Navbar = () => {
                             <>
                                 {isRestaurant ? (
                                     <>
-                                        <span className="navbar-text">Area privada restaurante {userName}</span>
+                                        <span className="navbar-text">
+                                            <i
+                                                className="fa-solid fa-utensils"
+                                                style={{ cursor: "pointer", marginRight: "8px" }}
+                                                onClick={handlePrivateAreaRestaurante} 
+                                            ></i>
+                                            Area privada restaurante {userName}
+                                        </span>
                                         <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                             Cerrar Sesión
                                         </button>
@@ -115,7 +123,7 @@ export const Navbar = () => {
                                             <i
                                                 className="fa-solid fa-user"
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
-                                                onClick={handlePrivateAreaNavigation}  // Ahora correctamente referenciado
+                                                onClick={handlePrivateAreaNavigation}  
                                             ></i>
                                             Hola {userName}
                                         </span>
@@ -139,7 +147,6 @@ export const Navbar = () => {
                 </div>
             </nav>
 
-            {/* Modal LOGIN */}
             <div className="modal fade" id="loginModal" tabIndex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -148,13 +155,12 @@ export const Navbar = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <LoginUsuario onLogin={handleLogin} /> {/* Pasamos la función handleLogin */}
+                            <LoginUsuario onLogin={handleLogin} /> 
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* Modal SIGNUP */}
             <div className="modal fade" id="signupModal" tabIndex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
                 <div className="modal-dialog">
                     <div className="modal-content">
@@ -163,7 +169,7 @@ export const Navbar = () => {
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <SignupUsuario /> {/* Usamos el componente SignupUsuario */}
+                            <SignupUsuario /> 
                         </div>
                     </div>
                 </div>

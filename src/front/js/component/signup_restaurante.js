@@ -5,7 +5,7 @@ import { Context } from "../store/appContext";
 import "../../styles/index.css";
 
 export const SignupRestaurante = () => {
-    const { actions } = useContext(Context); // Acceder a las acciones del flux
+    const { actions } = useContext(Context); 
     const [formData, setFormData] = useState({
         restaurantName: "",
         email: "",
@@ -51,7 +51,7 @@ export const SignupRestaurante = () => {
             return;
         }
 
-        const result = await actions.signupRestaurante(formData); // Llama a la acción del flux
+        const result = await actions.signupRestaurante(formData); 
 
         if (result.success) {
             sessionStorage.setItem("signup_email", formData.email);

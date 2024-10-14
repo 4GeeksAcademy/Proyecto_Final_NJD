@@ -8,13 +8,12 @@ const getState = ({ getStore, getActions, setStore }) => {
             categorias: [],
             restaurantes_favoritos: [],
             restaurantDetails: {},
-
+            imagenes: [],
         },
 
         actions: {
 
-            //Modificar contraseña
-            // Agrega esta función a tus actions
+            // CAMBIAR CONTRASEÑA RESTAURANTE
             cambiarContraseña: async (data) => {
                 const token = sessionStorage.getItem('token');
                 try {
@@ -22,11 +21,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` // Incluye el token JWT en la cabecera
+                            'Authorization': `Bearer ${token}` 
                         },
                         body: JSON.stringify(data)
                     });
-                        console.log(response)
+                    console.log(response)
                     const result = await response.json();
                     if (response.ok) {
                         return { success: true, message: result.msg };
@@ -38,28 +37,51 @@ const getState = ({ getStore, getActions, setStore }) => {
                 }
             },
 
+            // CAMBIAR CONTRASEÑA USUARIO
+            cambiarContraseñaUser: async (data) => {
+                const token = sessionStorage.getItem('token');
+                try {
+                    const response = await fetch(process.env.BACKEND_URL + '/api/usuario/cambiar_contrasena', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}` 
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        return { success: true, message: result.msg };
+                    } else {
+                        return { success: false, message: result.msg };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+
             // CREAR RESERVA
             crearReserva: async function (data) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
                 const token = sessionStorage.getItem("token");
-            
-                // Asegúrate de que "niños" y "trona" no sean null, y envía 0 por defecto si no están presentes
+
                 const bodyData = {
                     ...data,
                     niños: data.niños || 0,
                     trona: data.trona || 0
                 };
-            
+
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` // JWT
+                            'Authorization': `Bearer ${token}` 
                         },
                         body: JSON.stringify(bodyData)
                     });
-            
+
                     if (response.ok) {
                         const result = await response.json();
                         alert("Reserva realizada con éxito");
@@ -71,7 +93,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     alert("Hubo un error al procesar la solicitud");
                 }
             },
-            
+
             // OBTENER RESERVAS
             obtenerReservas: async function (token, usuario_id) {
                 const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
@@ -80,13 +102,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` // JWT
+                            'Authorization': `Bearer ${token}` 
                         }
                     });
-            
+
                     if (response.ok) {
                         const result = await response.json();
-                        return result;  // Devolver el resultado para usarlo en el componente
+                        return result;  
                     } else {
                         const error = await response.json();
                         alert("Error: " + error.message);
@@ -97,7 +119,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return [];
                 }
             },
-            
+
             // ACTUALIZAR RESERVAS
             actualizarReserva: async function (reserva_id, data, token) {
                 const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;
@@ -106,7 +128,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` // JWT para autenticación
+                            'Authorization': `Bearer ${token}` 
                         },
                         body: JSON.stringify(data)
                     });
@@ -136,7 +158,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(url, {
                         method: 'DELETE',
                         headers: {
-                            'Authorization': `Bearer ${token}` // JWT 
+                            'Authorization': `Bearer ${token}` 
                         }
                     });
 
@@ -205,11 +227,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log(data.user_id)
 
                     if (response.ok) {
-                        sessionStorage.setItem('token', data.access_token);  // Guardar el token en sessionStorage
-                        sessionStorage.setItem('user_name', data.user_name);  // Guardar el nombre del usuario en sessionStorage
+                        sessionStorage.setItem('token', data.access_token);  
+                        sessionStorage.setItem('user_name', data.user_name);  
                         sessionStorage.setItem('user_id', '1')
                         localStorage.setItem('usuario', data.user_id)
-                        return { success: true, data: data };  // Devolver el resultado exitoso
+                        return { success: true, data: data };  
                     } else if (response.status === 404) {
                         return { success: false, error: 'Usuario no registrado' };
                     } else if (response.status === 401) {
@@ -264,10 +286,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                             "Authorization": `Bearer ${token}`
                         }
                     });
-            
+
                     if (response.ok) {
                         const data = await response.json();
-                        console.log("Datos obtenidos del usuario:", data);  // Para depurar
+                        console.log("Datos obtenidos del usuario:", data);  
                         return data;
                     } else {
                         const errorData = await response.json();
@@ -279,7 +301,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return null;
                 }
             },
-            
+
 
 
             eliminarUsuario: async (userId) => {
@@ -288,7 +310,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
                         method: "DELETE",
                         headers: {
-                            "Authorization": `Bearer ${token}` // Usamos el JWT para autenticación
+                            "Authorization": `Bearer ${token}` 
                         }
                     });
 
@@ -329,11 +351,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         throw new Error("Error al obtener la categoría");
                     }
                     const data = await response.json();
-                    console.log(`Datos de la categoría obtenidos: `, data); // Verificar que los datos se obtienen correctamente
-                    return data;  // Asegúrate de que está retornando los datos
+                    console.log(`Datos de la categoría obtenidos: `, data); 
+                    return data;  
                 } catch (error) {
                     console.error("Error al cargar la categoría", error);
-                    return null;  // Maneja el error
+                    return null;  
                 }
             },
 
@@ -368,7 +390,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         })
                     });
 
-                    const data = await response.json();  // Leer la respuesta del backend
+                    const data = await response.json();  
 
                     if (response.ok) {
                         sessionStorage.setItem('restaurant_name', data.restaurant_name);
@@ -392,7 +414,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify({
                             nombre: formData.restaurantName,
                             email: formData.email,
-                            password: formData.password, // Asegúrate de tener el campo "password" en el backend
+                            password: formData.password, 
                             telefono: formData.phone,
                         }),
                     });
@@ -451,6 +473,10 @@ const getState = ({ getStore, getActions, setStore }) => {
             modificarDatosRestaurante: async (restauranteId, formData) => {
                 const token = sessionStorage.getItem("token");
                 try {
+                    const formatearHora = (hora) => {
+                        return hora ? hora.slice(0, 5) : null;
+                    };
+
                     const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
                         method: "PUT",
                         headers: {
@@ -463,10 +489,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                             direccion: formData.direccion,
                             cubiertos: formData.cubiertos,
                             cantidad_mesas: formData.cantidad_mesas,
-                            horario_mañana_inicio: formData.horario_mañana_inicio,
-                            horario_mañana_fin: formData.horario_mañana_fin,
-                            horario_tarde_inicio: formData.horario_tarde_inicio,
-                            horario_tarde_fin: formData.horario_tarde_fin,
+                            horario_mañana_inicio: formatearHora(formData.horario_mañana_inicio),
+                            horario_mañana_fin: formatearHora(formData.horario_mañana_fin),
+                            horario_tarde_inicio: formatearHora(formData.horario_tarde_inicio),
+                            horario_tarde_fin: formatearHora(formData.horario_tarde_fin),
                             reservas_por_dia: formData.reservas_por_dia,
                             categorias_id: formData.categorias_id
                         })
@@ -474,7 +500,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     if (response.ok) {
                         const data = await response.json();
-                        sessionStorage.setItem('restaurant_name', formData.nombre )
+                        sessionStorage.setItem('restaurant_name', formData.nombre);
                         return { success: true, message: "Datos modificados con éxito", data: data };
                     } else {
                         const errorData = await response.json();
@@ -484,6 +510,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
+
 
 
             // OBTENER RESTAURANTES
@@ -519,31 +546,6 @@ const getState = ({ getStore, getActions, setStore }) => {
                     setStore({ valoraciones: data });
                 } catch (error) {
                     console.error("Error al cargar las valoraciones", error);
-                }
-            },
-
-
-            // FUNCIÓN PARA SUBIR IMAGEN A CLOUDINARY
-            subirImagenRestaurante: async function (file) {
-                try {
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); // Preset de Cloudinary, uso para front
-                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
-
-                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (response.ok) {
-                        const data = await response.json();
-                        return { success: true, url: data.secure_url };
-                    } else {
-                        return { success: false, message: "Error al subir la imagen" };
-                    }
-                } catch (error) {
-                    return { success: false, message: "Error de conexión" };
                 }
             },
 
@@ -585,7 +587,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
                     const data = await response.json();
-                    setStore({ favoritos: data });
+                    setStore({ restaurantes_favoritos: data.restaurantes_favoritos });
+                    return data
                 } catch (error) {
                     console.log(error);
                 }
@@ -593,23 +596,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // ELIMINAR FAV
 
-            eliminarFavorito: async (favorito_id, usuario_id) => {
+            eliminarFavorito: async (usuario_id, favorito_id) => {
                 try {
                     const token = sessionStorage.getItem('token');
                     const user_id = sessionStorage.getItem('user_id');
-            
+
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos/${favorito_id}`, {
                         method: 'DELETE',
                         headers: {
-                            "Content-Type": "application/json",
-                            "Authorization": `Bearer ${token}`,
+                            "Content-Type": "application/json"
                         },
                     });
-            
+
                     if (response.ok) {
+                        getActions().obtenerFavoritosDelUsuario(user_id)
                         const data = await response.json();
                         console.log("Favorito eliminado:", data);
-                        return true;  // Devuelve true si la eliminación fue exitosa
+                        return true;  
                     } else {
                         const errorData = await response.json();
                         console.error("Error eliminando favorito:", errorData);
@@ -618,6 +621,145 @@ const getState = ({ getStore, getActions, setStore }) => {
                 } catch (error) {
                     console.error("Error al eliminar favorito:", error);
                     return false;
+                }
+            },
+
+
+            // AGREGAR FAVORITOS DESDE EL BOTON
+
+            agregarFavorito: async (usuario_id, restaurante_id) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${sessionStorage.getItem("token")}`,
+                        },
+                        body: JSON.stringify({ restaurante_id: restaurante_id }),
+                    });
+
+                    if (response.ok) {
+                        const user_id = sessionStorage.getItem("user_id")
+                        getActions().obtenerFavoritosDelUsuario(user_id)
+                        const data = await response.json();
+                        return data;
+                    } else {
+                        console.error("Error al agregar favorito");
+                        return null;
+                    }
+                } catch (error) {
+                    console.error("Error en la solicitud", error);
+                    return null;
+                }
+            },
+
+            // SUBIR IMAGEN A CLOUDINARY Y ASOCIARLA AL RESTAURANTE
+            subirImagenRestaurante: async function (file, restauranteId) {
+                try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); 
+                    formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
+
+                    const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        const token = sessionStorage.getItem('token');
+                        const apiResponse = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ url_imagen: data.secure_url })
+                        });
+
+                        if (apiResponse.ok) {
+                            return { success: true, url: data.secure_url };
+                        } else {
+                            return { success: false, message: "Error al asociar la imagen con el restaurante" };
+                        }
+                    } else {
+                        return { success: false, message: "Error al subir la imagen a Cloudinary" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // OBTENER IMÁGENES DE UN RESTAURANTE POR SU ID (GET)
+            obtenerImagenesRestaurante: async function (restauranteId) {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagenes`, {
+                        method: 'GET'
+                    });
+                    if (response.ok) {
+                        const data = await response.json();
+                        setStore({ imagenes: data });
+                    } else {
+                        console.error("Error al obtener las imágenes del restaurante");
+                    }
+                } catch (error) {
+                    console.error("Error al conectar con el servidor", error);
+                }
+            },
+
+            // ACTUALIZAR IMAGEN DE UN RESTAURANTE (PUT)
+            actualizarImagenRestaurante: async function (restauranteId, nuevaImagenUrl) {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ url_imagen: nuevaImagenUrl })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        alert("Imagen actualizada con éxito");
+                        return { success: true, data: data };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al actualizar la imagen" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+
+
+
+            deleteImageRestaurante: async (restaurante_id, imageURL) => {
+                try {
+                    const response = await fetch(
+                        `${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,  
+                        {
+                            method: "DELETE",
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${sessionStorage.getItem("token")}`
+                            }
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error("Error eliminando la imagen");
+                    }
+
+                    const data = await response.json();
+                    return { success: true, data };
+                } catch (error) {
+                    console.error("Error al eliminar la imagen:", error);
+                    return { success: false, error };
                 }
             }
         }

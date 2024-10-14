@@ -1,0 +1,79 @@
+.vista-cloudinary {
+  padding: 20px;
+}
+
+/* Configuración de la grilla para las imágenes */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Grilla adaptable para imágenes */
+  gap: 20px; 
+  margin-top: 20px;
+}
+
+/* Estilo para cada card de imagen */
+.image-card {
+  background-color: #f8f9fa; 
+  border: 1px solid #ddd; 
+  padding: 15px; 
+  border-radius: 8px; 
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease; 
+}
+
+/* Efecto al pasar el ratón sobre la card */
+.image-card:hover {
+  transform: scale(1.05); 
+}
+
+/* Estilo para la imagen dentro de la card */
+.restaurant-private-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px; 
+}
+
+/* Card vacía para la imagen principal */
+.principal-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px; 
+  background-color: #e9ecef;
+  font-size: 18px;
+  color: #6c757d;
+  border: 2px dashed #6c757d; 
+  border-radius: 10px;
+}
+
+/* Estilo del botón de eliminar */
+.delete-image-button {
+  background-color: #6c757d; /* Color gris estilo Bootstrap */
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%; /* Para que el botón ocupe todo el ancho debajo de la imagen */
+  margin-top: 10px;
+}
+
+/* Efecto hover para el botón de eliminar */
+.delete-image-button:hover {
+  background-color: #5a6268;
+}
+
+/* Contenedor para la subida de imágenes */
+.restaurant-private-image-upload {
+  margin-top: 30px;
+  text-align: center;
+}
+
+/* Título de la página */
+.text-center {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 24px;
+  font-weight: bold;
+}

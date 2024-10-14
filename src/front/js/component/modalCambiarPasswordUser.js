@@ -37,8 +37,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
             newPassword: passwordData.newPassword
         };
 
-        // Aquí llamamos a la acción que has definido en el flux
-        const result = await actions.cambiarContraseña(data);
+        const result = await actions.cambiarContraseñaUser(data);
 
         if (result.success) {
             Swal.fire({
@@ -47,7 +46,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
                 icon: 'success',
                 confirmButtonText: 'Aceptar'
             });
-            onClose();  // Cerramos el modal tras el éxito
+            onClose();  
         } else {
             Swal.fire({
                 title: 'Error',
@@ -61,8 +60,8 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
     if (!isOpen) return null;
 
     return (
-        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true">
-            <div className="modal-dialog">
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1" aria-labelledby="modalPasswordLabel" aria-hidden="true" data-bs-backdrop="true" onClick={onClose}>
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}> 
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modalPasswordLabel">Cambiar contraseña</h5>
@@ -106,7 +105,9 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
                                     required
                                 />
                             </div>
-                            <button type="submit" className="btn btn-primary">Cambiar contraseña</button>
+                            <div className="modal-footer">
+                                <button type="submit" className="btn btn-primary">Cambiar contraseña</button>
+                            </div>
                         </form>
                     </div>
                 </div>

@@ -1,479 +1,347 @@
-import React, { useEffect, useState, useContext, useRef } from "react";
-import { Context } from "../store/appContext";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import UploadImageCloudinary from "../component/uploadImageCloudinary";
+import Swal from "sweetalert2";
+import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
-
+import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante'; 
 
 export const VistaPrivadaRestaurante = () => {
-  const { store, actions } = useContext(Context);
+  const { actions, store } = useContext(Context);
   const { restaurante_id } = useParams();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [formData, setFormData] = useState({});
-  const [restaurante, setRestaurante] = useState(store.restaurantDetails);
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [images, setImages] = useState([]); // Para almacenar múltiples imágenes
-  const carouselRef = useRef(null);
-  const [currentSlide, setCurrentSlide] = useState(0); // Estado para el carrusel
-  const [passwordData, setPasswordData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: ""
+
+  const goToCloudinary = () => {
+    navigate(`/vistaCloudinary/${restaurante_id}`);
+  };
+
+  const [formData, setFormData] = useState({
+    nombre: "",
+    telefono: "",
+    email: "",
+    cubiertos: "",
+    cantidad_mesas: "",
+    reservas_por_dia: "",
+    horario_mañana_inicio: "",
+    horario_mañana_fin: "",
+    horario_tarde_inicio: "",
+    horario_tarde_fin: "",
+    direccion: "", // Añadido el campo de dirección
   });
 
-  console.log(showPasswordModal);
+  const [modalData, setModalData] = useState({
+    field: "",
+    value: "",
+  });
+
+  const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+
+  const openModal = (field, currentValue) => {
+    if (field === "horario_mañana" || field === "horario_tarde") {
+      setModalData({
+        field: field,
+        value: {
+          inicio: currentValue.inicio || "",
+          fin: currentValue.fin || "",
+        },
+      });
+    } else {
+      setModalData({
+        field: field,
+        value: "",
+      });
+    }
+    const modal = new bootstrap.Modal(document.getElementById("editModal"));
+    modal.show();
+  };
+
+  const handleModalChange = (e, timeField) => {
+    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
+      setModalData({
+        ...modalData,
+        value: {
+          ...modalData.value,
+          [timeField]: e.target.value,
+        },
+      });
+    } else {
+      setModalData({
+        ...modalData,
+        value: e.target.value,
+      });
+    }
+  };
+
+  const handleModalSave = () => {
+    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
+      setFormData({
+        ...formData,
+        [modalData.field + "_inicio"]: modalData.value.inicio,
+        [modalData.field + "_fin"]: modalData.value.fin,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [modalData.field]: modalData.value,
+      });
+    }
+    const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+    modal.hide();
+  };
 
   useEffect(() => {
-    const fetchRestaurante = async () => {
-      try {
-        setLoading(true);
-        const restaurante_api = await actions.getRestaurante(restaurante_id);
-        setRestaurante(restaurante_api);
-        const initialImages = restaurante_api.image ? [restaurante_api.image] : [];
-        setImages([...initialImages]); // Inicializa el estado con la imagen de la base de datos
-
-        await actions.obtenerValoracionRestaurante(restaurante_id);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error al obtener los detalles del restaurante:", err);
-        setError("Hubo un error al cargar los datos del restaurante.");
-        setLoading(false);
+    const fetchRestauranteData = async () => {
+      const token = sessionStorage.getItem("token");
+      if (token) {
+        try {
+          const data = await actions.getRestaurante(restaurante_id);
+          setFormData({
+            nombre: data.nombre || "",
+            telefono: data.telefono || "",
+            email: data.email || "",
+            cubiertos: data.cubiertos || "",
+            cantidad_mesas: data.cantidad_mesas || "",
+            reservas_por_dia: data.reservas_por_dia || "",
+            horario_mañana_inicio: data.horario_mañana_inicio || "",
+            horario_mañana_fin: data.horario_mañana_fin || "",
+            horario_tarde_inicio: data.horario_tarde_inicio || "",
+            horario_tarde_fin: data.horario_tarde_fin || "",
+            direccion: data.direccion || "", // Incluye la dirección al obtener datos
+          });
+        } catch (error) {
+          console.error("Error al obtener datos del restaurante:", error);
+        }
       }
     };
+    fetchRestauranteData();
+  }, [restaurante_id]);
 
-    if (!sessionStorage.getItem("token")) {
-      navigate("/");
-    } else if (restaurante_id) {
-      fetchRestaurante();
-    }
-  }, []);
-
-  const valoraciones = store.valoraciones;
-
-  if (loading) {
-    return <div className="loading-message">Cargando los datos del restaurante...</div>;
-  }
-
-  if (error) {
-    return <div className="error-message">{error}</div>;
-  }
-
-  if (!restaurante) {
-    return <div className="error-message">No se encontraron los detalles del restaurante.</div>;
-  }
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
-  };
-
-  const handleNextSlide = () => {
-    if (currentSlide < images.length - 1) {
-      setCurrentSlide(currentSlide + 1);
-    }
-  };
-
-  const handlePrevSlide = () => {
-    if (currentSlide > 0) {
-      setCurrentSlide(currentSlide - 1);
-    }
-  };
-
-  // Función para eliminar la imagen
-  const handleDeleteImage = async (public_id) => {
-    try {
-      const response = await fetch(
-        `/api/restaurantes/${restaurante_id}/imagen`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-          body: JSON.stringify({ public_id }),
-        }
-      );
-
-      if (response.ok) {
-        // Eliminar la imagen localmente del estado después de eliminarla en el backend
-        setImages(images.filter((image) => image.public_id !== public_id));
-        alert("Imagen eliminada con éxito");
-      } else {
-        alert("Error al eliminar la imagen");
-      }
-    } catch (error) {
-      console.error("Error eliminando la imagen", error);
-    }
-  };
-
-
-  // Función callback que se pasa al componente UploadImageCloudinary
-  const handleImageUpload = (url) => {
-    const updatedImages = [...images, url]; // Agregar la nueva imagen al array de imágenes existentes
-    setImages(updatedImages);
-
-    // Actualizar formData para mantener consistencia con la subida
-    setFormData({
-      ...formData,
-      images: updatedImages,
-    });
-  };
-
-  const handlePasswordChange = (e) => {
-    const { name, value } = e.target;
-    setPasswordData({
-      ...passwordData,
-      [name]: value
-    });
-  };
-
-  const handleUpdateRestaurante = async () => {
-    try {
-      const response = await actions.modificarDatosRestaurante(restaurante_id, formData);
-
-      if (response.success) {
-        setFormData(response.data);
-        const restaurantesActualizados = store.restaurantes.map((rest) =>
-          rest.id === restaurante_id ? response.data : rest
-        );
-
-        setRestaurante({
-          ...restaurante,
-          ...formData
-        });
-
-        if (formData.nombre) {
-          sessionStorage.setItem("restaurant_name", formData.nombre);
-        }
-
-
-        console.log({
-          ...restaurante,
-          ...formData
-        });
-        alert("Datos del restaurante actualizados correctamente.");
-      } else {
-        alert("Error al actualizar los datos del restaurante.");
-      }
-    } catch (error) {
-      console.error("Error al actualizar el restaurante", error);
-    }
-  };
-
-  // Función para enviar la nueva contraseña
-  const handlePasswordSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Las contraseñas no coinciden");
-      return;
-    }
-
-    try {
-      const response = await actions.cambiarContraseña({
-        restaurante_id,
-        currentPassword: passwordData.currentPassword,
-        newPassword: passwordData.newPassword
+    const dataToSend = { ...formData };
+    const result = await actions.modificarDatosRestaurante(restaurante_id, dataToSend);
+    if (result.success) {
+      Swal.fire({
+        title: "Éxito",
+        text: "Datos actualizados con éxito.",
+        icon: "success",
+        confirmButtonText: "Aceptar",
       });
-
-      if (response.success) {
-        alert("Contraseña cambiada con éxito");
-        setShowPasswordModal(false);
-      } else {
-        alert(response.message || "Error al cambiar la contraseña");
-      }
-    } catch (error) {
-      console.error("Error al cambiar la contraseña", error);
-      alert("Error al cambiar la contraseña");
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "No se pudieron actualizar los datos. Inténtalo más tarde.",
+        icon: "error",
+        confirmButtonText: "Aceptar",
+      });
     }
+  };
+
+  const openPasswordModal = () => {
+    setPasswordModalOpen(true);
+  };
+
+  const closePasswordModal = () => {
+    setPasswordModalOpen(false);
   };
 
   return (
-    <div className="restaurant-private-container">
-      <h1 className="restaurant-private-title">{restaurante.nombre}</h1>
-      <p className="restaurant-private-info">
-        <strong>Dirección:</strong> {restaurante.direccion}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Nombre del restaurante:</strong> {restaurante.nombre}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Teléfono:</strong> {restaurante.telefono}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Cubiertos:</strong> {restaurante.cubiertos}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Cantidad de mesas:</strong> {restaurante.cantidad_mesas}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Reservas por día:</strong> {restaurante.reservas_por_dia}
-      </p>
-
-      <p className="restaurant-private-info">
-        <strong>Horario de mañana:</strong> {restaurante.horario_mañana_inicio} -{" "}
-        {restaurante.horario_mañana_fin}
-      </p>
-      <p className="restaurant-private-info">
-        <strong>Horario de tarde:</strong> {restaurante.horario_tarde_inicio} -{" "}
-        {restaurante.horario_tarde_fin}
-      </p>
-
-      <p className="restaurant-private-info">
-        <strong>Favoritos:</strong> {restaurante.favoritos_count || 0} usuarios han añadido este
-        restaurante a sus favoritos.
-      </p>
-
-      {/* Botón para cambiar la contraseña */}
-      <button
-        type="button"
-        className="btn btn-primary password-boton"
-        data-bs-toggle="modal"
-        data-bs-target="#recuperacion"
-      >
-        Cambiar contraseña
-      </button>
-
-      {/* Modal de cambio de contraseña */}
-      <div className="modal fade" id="recuperacion" tabIndex="-1" aria-hidden="true">
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Cambiar Contraseña</h5>
-              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <div className="area-privada">
+      <div className="area-privada-container">
+        <div className="area-header">
+          <h2 className="form-title">Bienvenido a tu área privada</h2>
+        </div>
+        <div className="area-body">
+          <form onSubmit={handleSubmit} className="row ancho">
+            <div className="col-md-6 mb-3">
+              <label htmlFor="nombre" className="form-label">Nombre del restaurante</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{formData.nombre}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("nombre", formData.nombre)}></i>
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="modal-body">
-              <form onSubmit={handlePasswordSubmit}>
-                <div className="mb-3">
-                  <label className="form-label">Contraseña actual:</label>
-                  <input
-                    type="password"
-                    name="currentPassword"
-                    className="form-control"
-                    value={passwordData.currentPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
+
+            <div className="col-md-6 mb-3">
+              <label htmlFor="telefono" className="form-label">Teléfono</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{formData.telefono}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("telefono", formData.telefono)}></i>
+                  </span>
                 </div>
-                <div className="mb-3">
-                  <label className="form-label">Nueva contraseña:</label>
-                  <input
-                    type="password"
-                    name="newPassword"
-                    className="form-control"
-                    value={passwordData.newPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                </div>
-                <div className="mb-3">
-                  <label className="form-label">Confirmar nueva contraseña:</label>
-                  <input
-                    type="password"
-                    name="confirmPassword"
-                    className="form-control"
-                    value={passwordData.confirmPassword}
-                    onChange={handlePasswordChange}
-                    required
-                  />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">
-                  Actualizar Contraseña
-                </button>
-              </form>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
 
+            <div className="col-md-6 mb-3">
+              <label htmlFor="email" className="form-label">Correo electrónico</label>
+              <div className="email-field input-content">
+                <span className="form-control-plaintext">{formData.email}</span>
+              </div>
+            </div>
 
+            <div className="col-md-6 mb-3">
+              <label htmlFor="cubiertos" className="form-label">Comensales</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{formData.cubiertos}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("cubiertos", formData.cubiertos)}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-      <div className="restaurant-private-form">
-        <h3 className="restaurant-private-form-title">Modifica los datos de tu restaurante:</h3>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="cantidad_mesas" className="form-label">Cantidad de Mesas</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{formData.cantidad_mesas}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("cantidad_mesas", formData.cantidad_mesas)}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Nombre */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="nombre">
-            Nombre del restaurante
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="nombre"
-            id="nombre"
-            defaultValue={restaurante.nombre}
-            onChange={handleInputChange}
-            placeholder="Nombre del restaurante"
-          />
-        </div>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="reservas_por_dia" className="form-label">Reservas por día</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{formData.reservas_por_dia}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('reservas_por_dia', formData.reservas_por_dia)}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Dirección */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="direccion">
-            Dirección
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="direccion"
-            id="direccion"
-            defaultValue={restaurante.direccion}
-            onChange={handleInputChange}
-            placeholder="Dirección"
-          />
-        </div>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="horario_mañana" className="form-label">Horario de Mañana</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{`${formData.horario_mañana_inicio} - ${formData.horario_mañana_fin}`}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_mañana', { inicio: formData.horario_mañana_inicio, fin: formData.horario_mañana_fin })}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Teléfono */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="telefono">
-            Teléfono
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="telefono"
-            id="telefono"
-            defaultValue={restaurante.telefono}
-            onChange={handleInputChange}
-            placeholder="Teléfono"
-          />
-        </div>
+            {/* Horarios: Tarde */}
+            <div className="col-md-6 mb-3">
+              <label htmlFor="horario_tarde" className="form-label">Horario de Tarde</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">{`${formData.horario_tarde_inicio} - ${formData.horario_tarde_fin}`}</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('horario_tarde', { inicio: formData.horario_tarde_inicio, fin: formData.horario_tarde_fin })}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Cubiertos */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="cubiertos">
-            Cubiertos
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="cubiertos"
-            id="cubiertos"
-            defaultValue={restaurante.cubiertos}
-            onChange={handleInputChange}
-            placeholder="Cubiertos"
-          />
-        </div>
+            {/* Dirección */}
+            <div className="col-md-12 mb-3">
+              <label htmlFor="direccion" className="form-label">Dirección</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">Introduzca dirección</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('direccion', formData.direccion)}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Cantidad de mesas */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="cantidad_mesas">
-            Cantidad de mesas
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="cantidad_mesas"
-            id="cantidad_mesas"
-            defaultValue={restaurante.cantidad_mesas}
-            onChange={handleInputChange}
-            placeholder="Cantidad de mesas"
-          />
-        </div>
+            <div className="col-md-6 mb-3">
+              <label htmlFor="password" className="form-label">Contraseña</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">●●●●●●●●</span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={openPasswordModal}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
 
-        {/* Reservas por día */}
-        <div className="mb-3">
-          <label className="form-label" htmlFor="reservas_por_dia">
-            Reservas por día
-          </label>
-          <input
-            className="form-control"
-            type="text"
-            name="reservas_por_dia"
-            id="reservas_por_dia"
-            defaultValue={restaurante.reservas_por_dia}
-            onChange={handleInputChange}
-            placeholder="Reservas por día"
-          />
-        </div>
-
-        <button className="btn btn-primary w-100" onClick={handleUpdateRestaurante}>
-          Guardar y actualizar
-        </button>
-
-
-
-
-
-
-        {/* Carrusel de imágenes */}
-        <div className="carousel-container">
-          <button
-            className="prev-slide"
-            onClick={handlePrevSlide}
-            disabled={currentSlide === 0} // Deshabilita si estamos en el primer slide
-          >
-            ◀
-          </button>
-          <div className="carousel-track">
-            <div
-              className="carousel-slide"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {images.map((image, index) => (
-                <img
-                  key={index}
-                  className="restaurant-private-image"
-                  src={image}
-                  alt={`Imagen ${index + 1} del restaurante`}
-                />
-              ))}
+            <div className="text-left mt-4 col-12 d-flex justify-content-between">
+              <button type="submit" className="btn btn-primary">Guardar Cambios</button>
               <button
-                className="delete-image-button"
-                onClick={() => handleDeleteImage(image.public_id)} // Llama a la función para eliminar la imagen
+                className="btn btn-secondary"
+                onClick={goToCloudinary} 
               >
-                X
+                Cargar Imágenes
               </button>
             </div>
-          </div>
-          <button
-            className="next-slide"
-            onClick={handleNextSlide}
-            disabled={currentSlide === images.length - 1} // Deshabilita si estamos en el último slide
-          >
-            ▶
-          </button>
+          </form>
         </div>
 
+        <ModalCambiarPasswordRestaurante
+          isOpen={isPasswordModalOpen}
+          onClose={closePasswordModal}
+        />
 
-
-
-
-
-
-
-
-
-
-        {/* Componente UploadImageCloudinary */}
-        <div className="restaurant-private-image-upload">
-          <label className="restaurant-private-label" htmlFor="image"></label>
-          <UploadImageCloudinary onImageUpload={handleImageUpload} />
-        </div>
-
-
-      </div>
-
-      <div className="restaurant-private-reviews">
-        <h3 className="restaurant-private-reviews-title">Valoraciones</h3>
-        {valoraciones && valoraciones.length > 0 ? (
-          valoraciones.map((valoracion) => (
-            <div key={valoracion.id} className="restaurant-private-review">
-              <p>
-                <strong>Puntuación:</strong> {valoracion.puntuacion}
-              </p>
-              <p>
-                <strong>Comentario:</strong> {valoracion.comentario}
-              </p>
+        <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="editModalLabel">
+                  Editar {modalData.field === "nombre" ? "Nombre del Restaurante" :
+                    modalData.field === "telefono" ? "Teléfono" :
+                      modalData.field === "cubiertos" ? "Comensales" :
+                        modalData.field === "cantidad_mesas" ? "Cantidad de Mesas" :
+                          modalData.field === "reservas_por_dia" ? "Reservas por Día" :
+                            modalData.field === "horario_mañana" ? "Horario de Mañana" :
+                              modalData.field === "horario_tarde" ? "Horario de Tarde" :
+                                "Dirección"}
+                </h5>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                {modalData.field === "horario_mañana" || modalData.field === "horario_tarde" ? (
+                  <div>
+                    <label htmlFor="inicio">Hora Inicio</label>
+                    <input
+                      type="time"
+                      className="form-control mb-3"
+                      value={modalData.value.inicio}
+                      onChange={(e) => handleModalChange(e, "inicio")}
+                    />
+                    <label htmlFor="fin">Hora Fin</label>
+                    <input
+                      type="time"
+                      className="form-control"
+                      value={modalData.value.fin}
+                      onChange={(e) => handleModalChange(e, "fin")}
+                    />
+                  </div>
+                ) : (
+                  <input
+                    type="text"
+                    className="form-control"
+                    value={modalData.value}
+                    onChange={handleModalChange}
+                    placeholder={`Introduzca nuevo ${modalData.field === "nombre" ? "nombre" :
+                      modalData.field === "telefono" ? "teléfono" :
+                        modalData.field === "cubiertos" ? "comensales" :
+                          modalData.field === "cantidad_mesas" ? "cantidad de mesas" :
+                            modalData.field === "reservas_por_dia" ? "reservas por día" :
+                              modalData.field === "direccion" ? "dirección" : "valor"}`}
+                  />
+                )}
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Aceptar</button>
+              </div>
             </div>
-          ))
-        ) : (
-          <p className="restaurant-private-no-reviews">No hay valoraciones para este restaurante.</p>
-        )}
+          </div>
+        </div>
       </div>
     </div>
   );

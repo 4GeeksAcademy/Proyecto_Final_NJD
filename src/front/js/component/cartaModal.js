@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-// import UploadImageCloudinary from "./components/UploadImageCloudinary";
 
-// / Componente CartaModal
+//Componente CartaModal
 const CartaModal = ({ isOpen, onClose, restaurantImage }) => {
   if (!isOpen) return null;
 
-  // Maneja el clic en el fondo del modal
-  const handleBackdropClickCarta = (e) => {
-    // Si el clic se realiza en el fondo del modal o en la clase del modal, cierra el modal
+// Maneja el clic en el fondo del modal
+const handleBackdropClickCarta = (e) => {
     if (e.target.classList.contains("carta-modal-backdrop") || e.target.classList.contains("modal-content-carta")) {
       onClose();
     }
