@@ -41,16 +41,6 @@ console.log(favoritos)
                                         <div className="card">
                                             <div className="card-body">
                                                 <strong>Restaurante:</strong> {favorito.nombre} <br />
-                                                <button
-                                                    className="btn btn-secondary mt-2"
-                                                    onClick={async () => {
-                                                        const user_id = sessionStorage.getItem('user_id');
-                                                        const success = await actions.eliminarFavorito(favorito.restaurante_id, user_id);
-                                                        if (success) eliminarFavEnLista(favorito.id);
-                                                    }}
-                                                >
-                                                    Eliminar favorito
-                                                </button>
                                             </div>
                                         </div>
                                     </div>
