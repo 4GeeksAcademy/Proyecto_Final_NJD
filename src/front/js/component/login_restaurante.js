@@ -133,7 +133,7 @@ export const LoginRestaurante = ({ onLogin }) => {
                 <a href="#" onClick={() => {
                     const signupModal = new bootstrap.Modal(document.getElementById('registerModalRestaurante'));
                     signupModal.show();
-                }}>No tienes cuenta? Regístrate</a>
+                }}>¿No tienes cuenta? Regístrate</a>
                 
             </div>
         </form>
