@@ -1,54 +1,3 @@
-/* Navbar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: linear-gradient(to right, #090909, #b3b3b3); 
-  padding: 0.5rem 1.5rem;
-  color: #fff;
-  box-shadow: none; 
-  font-family: 'Poppins', sans-serif;
-  position: fixed;
-  width: 100%;
-  top: 0;
-  z-index: 1000;
-}
-
-.navbar-brand {
-  display: flex;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #f1c40f; 
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.navbar-brand img {
-  height: 3.5rem; 
-  width: auto;
-  
-}
-
-.nav-links {
-  display: flex;
-  gap: 15px; 
-}
-
-.nav-links a {
-  color: #fff;
-  text-decoration: none;
-  padding: 0.3rem 1rem; 
-  font-size: 1rem; 
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.nav-links a:hover {
-  color: #00000064;
- 
-}
-
 
 /* Modal */
 
@@ -74,18 +23,26 @@
   letter-spacing: 1px;
 }
 
+
+/*  BOTON DE CERRA MODAL ARRIBA DCHA X */
+
 .btn-close {
   position: absolute;
   right: 1rem;
   top: 1rem;
   background: transparent;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.5rem; /* Tamaño inicial de la X */
+  color: #fff; /* Color de la X */
+  transition: all 0.3s ease; /* Transición suave para los cambios */
 }
 
 .btn-close:hover {
-  opacity: 0.7;
+  font-size: 1.8rem; /* Aumentar el tamaño al pasar el cursor */
+  color: #ccc; /* Cambiar el color al pasar el cursor */
+  opacity: 0.7; /* Mantener el efecto de opacidad */
 }
+
 
 .modal-body {
   padding: 2.5rem;
@@ -215,17 +172,22 @@
 
 /* Estilo del botón de cerrar (X) */
 .btn-close-modal-carta {
-  background: none;
+  background: transparent;
   border: none;
-  font-size: 25px;
-  color: #f1c40f;
-  cursor: pointer;
+  font-size: 1.5rem; /* Tamaño inicial de la X */
+  color: #000; /* Color negro para la X */
+  cursor: pointer; /* Mostrar cursor de puntero */
+  transition: all 0.3s ease; /* Transición suave */
 }
 
 /* Efecto hover del botón de cerrar (X) */
 .btn-close-modal-carta:hover {
-  color: red;
+  font-size: 1.8rem; /* Aumentar el tamaño al pasar el cursor */
+  color: #000; /* Mantener el color negro al pasar el cursor */
 }
+
+
+
 
 /* Estilo del cuerpo del modal */
 .modal-body-carta {
@@ -251,26 +213,7 @@
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /*Vista privada*/
-
-
 
 .minimal-background {
   background-image: url('https://estaticos-cdn.prensaiberica.es/clip/700f62b7-be91-4bdb-8a48-e83b1f34a448_16-9-discover-aspect-ratio_default_0.jpg');
@@ -465,7 +408,6 @@
 
 
 /* Modal general */
-/* Modal general */
 .user-modal .modal-content {
   background-color: #ffffff;
   border-radius: 10px;
@@ -493,19 +435,21 @@
   font-weight: bold;
 }
 
+/* Estilo para el botón de cerrar (X) */
 .user-modal .modal-header .close {
-  font-size: 1.4rem;
-  color: #f0f0f0;
+  font-size: 2rem; /* Tamaño grande por defecto */
+  color: #fff; /* Blanco */
   border: none;
   background: none;
   cursor: pointer;
   padding: 0;
+  transition: all 0.3s ease; /* Transición suave para hover */
 }
 
 .user-modal .modal-header .close:hover {
-  color: #ffc107; /* Color dorado al hacer hover */
+  font-size: 2.5rem;
+  color: #ccc; /* Un poco más claro al pasar el cursor */
 }
-
 /* Cuerpo del modal */
 .user-modal .modal-body {
   padding: 20px;
@@ -586,8 +530,8 @@
   width: 100%;
 }
 
-.user-modal .btn-dark:hover {
+/* .user-modal .btn-dark:hover {
   background-color: #000000;
   border-color: #333;
-}
+} */
 

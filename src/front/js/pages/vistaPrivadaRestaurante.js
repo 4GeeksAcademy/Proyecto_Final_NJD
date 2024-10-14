@@ -25,7 +25,7 @@ export const VistaPrivadaRestaurante = () => {
     horario_mañana_fin: "",
     horario_tarde_inicio: "",
     horario_tarde_fin: "",
-    direccion: "", // Añadido el campo de dirección
+    direccion: "",
   });
 
   const [modalData, setModalData] = useState({

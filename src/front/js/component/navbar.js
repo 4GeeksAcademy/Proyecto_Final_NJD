@@ -4,6 +4,8 @@ import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
 import "/workspaces/Proyecto_Final_NJD/src/front/styles/index.css"; 
+import '../../styles/navbar.css';
+
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -152,7 +154,7 @@ export const Navbar = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div className="modal-body">
                             <LoginUsuario onLogin={handleLogin} /> 
@@ -166,7 +168,7 @@ export const Navbar = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="signupModalLabel">Registro</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div className="modal-body">
                             <SignupUsuario /> 

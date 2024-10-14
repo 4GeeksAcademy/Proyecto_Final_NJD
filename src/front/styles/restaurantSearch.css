@@ -1,185 +1,110 @@
-.restaurant-search-container {
-  max-width: 1200px;
-  margin: 80px auto;
-  padding: 50px;
-  background-color: #f7f7f7; 
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  font-family: 'Helvetica Neue', sans-serif; 
-}
-
-.search-bar {
+/* Aseguramos que el contenedor principal esté centrado y con el ancho correcto */
+.area-privada-container {
   width: 100%;
-  padding: 15px 20px;
-  border-radius: 30px;
-  border: 1px solid #ddd; 
-  margin-bottom: 30px;
-  font-size: 18px;
-  color: #555;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
-  transition: all 0.3s;
-}
-
-.search-bar:focus {
-  border-color: #aaa; 
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.restaurant-cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px; 
-  justify-content: center; 
-}
-
-.restaurant-card {
-  background-color: #fff; 
-  border-radius: 12px; 
+  max-width: 1200px; /* Limita el ancho máximo en pantallas grandes */
+  margin: 0 auto; /* Centra el contenedor */
   padding: 20px;
-  max-width: 350px; 
-  flex: 1 1 300px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
-  transition: transform 0.3s, box-shadow 0.3s;
-  overflow: hidden; 
+  min-width: 320px; /* Asegura que el contenedor no sea más estrecho que 320px */
+  box-sizing: border-box; /* Asegura que el padding no se agregue al ancho total */
+  transition: padding 0.3s ease; /* Suaviza la transición al ajustar el padding */
 }
 
-.restaurant-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15); 
+/* Ajustes de padding y margin según el tamaño de pantalla */
+@media (max-width: 1200px) {
+  .area-privada-container {
+    padding: 15px;
+  }
 }
 
+@media (max-width: 768px) {
+  .area-privada-container {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .area-privada-container {
+    padding: 5px;
+    margin: 0 5px; /* Reduce margen lateral para pantallas pequeñas */
+    max-width: 100%; /* Asegura que ocupe todo el ancho */
+  }
+}
+
+/* Estilo para el contenedor de tarjetas */
+.restaurant-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Limita el tamaño mínimo de las tarjetas */
+  gap: 20px; /* Espacio entre las tarjetas */
+  justify-content: center; /* Centra el contenido */
+  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  box-sizing: border-box;
+}
+
+/* Estilo para cada tarjeta */
+.restaurant-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 450px; /* Asegura que todas las tarjetas tengan la misma altura mínima */
+  box-sizing: border-box;
+}
+
+/* Imagen dentro de la tarjeta */
 .restaurant-image {
-  width: 100%; 
-  height: 200px; 
-  border-radius: 12px;
-  object-fit: cover; 
-  margin-bottom: 15px;
-  transition: opacity 0.3s;
+  width: 100%;
+  height: 200px; /* Fija la altura de la imagen */
+  object-fit: cover; /* Asegura que la imagen mantenga su proporción */
+  border-radius: 8px;
 }
 
-.restaurant-card:hover .restaurant-image {
-  opacity: 0.9;
-}
-
-.restaurant-info h3 {
-  font-size: 24px; 
-  margin: 0;
-  margin-bottom: 10px;
-  color: #333; 
-  font-weight: 600;
-}
-
-.restaurant-info p {
-  margin: 5px 0;
-  color: #777; 
-  font-size: 16px;
-}
-
-.restaurant-info strong {
-  color: #555;
-}
-
-.favorite-button {
-  background: none; 
-  border: 1px solid #ddd; 
-  border-radius: 25px;
-  padding: 8px 16px;
-  color: #333; 
-  font-size: 14px;
-  cursor: pointer;
+/* Información del restaurante */
+.restaurant-info {
+  text-align: left;
   margin-top: 10px;
-  transition: all 0.3s;
+  flex-grow: 1; /* Permite que esta sección ocupe todo el espacio disponible */
 }
 
-.favorite-button:hover {
-  background-color: #f0f0f0; 
-  border-color: #bbb; 
+/* Botón de favorito */
+.favorite-button {
+  background-color: #333;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .favorite-button.favorited {
-  background-color: #ff6347; 
-  color: #fff;
-  border-color: #ff6347; 
-}
-
-.favorite-button.favorited:hover {
   background-color: #e74c3c;
-  border-color: #e74c3c; 
 }
 
-.other-cuisine-section {
-  text-align: center;
-  margin-top: 40px;
+/* Ajustes responsivos */
+@media (max-width: 1200px) {
+  .restaurant-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Disminuye el tamaño de las columnas en pantallas medianas */
+  }
 }
 
-.scroll-to-home-btn {
-  padding: 10px 20px;
-  background-color: #333;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.scroll-to-home-btn:hover {
-  background-color: #555;
-}
-
-/* Responsive adjustments for medium screens */
 @media (max-width: 768px) {
   .restaurant-cards-container {
-      gap: 20px;
-      flex-direction: column;
-      align-items: center;
-  }
-
-  .restaurant-card {
-      max-width: 100%;
-      flex: 1 1 auto;
-  }
-
-  .restaurant-info h3 {
-      font-size: 22px;
-  }
-
-  .restaurant-info p {
-      font-size: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajusta el tamaño de las columnas en pantallas más pequeñas */
   }
 }
 
-/* Responsive adjustments for small screens */
 @media (max-width: 480px) {
   .restaurant-cards-container {
-      flex-direction: column;
-      gap: 15px;
+    grid-template-columns: 1fr; /* Las tarjetas ocupan todo el ancho en pantallas muy pequeñas */
   }
-
   .restaurant-card {
-      max-width: 100%;
-      flex: 1 1 auto;
-      padding: 15px;
-  }
-
-  .restaurant-info h3 {
-      font-size: 20px;
-  }
-
-  .restaurant-info p {
-      font-size: 14px;
-  }
-
-  .restaurant-image {
-      height: auto;
-      width: 100%;
-  }
-
-  .favorite-button {
-      width: 100%;
-  }
-
-  .scroll-to-home-btn {
-      width: 100%;
+    max-width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en móviles */
   }
 }

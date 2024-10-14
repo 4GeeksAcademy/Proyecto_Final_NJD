@@ -189,7 +189,11 @@ export const AreaPrivadaUsuario = () => {
                     </div>
                 </div>
 
-                <ModalVerMisReservas isOpen={isModalReservasOpen} onClose={() => setModalReservasOpen(false)} />
+                {/* Modales */}
+                <ModalVerMisReservas 
+                    isOpen={isModalReservasOpen} 
+                    onClose={() => setModalReservasOpen(false)}
+                />
 
                 <ModalCambiarPasswordUser
                     isOpen={isPasswordModalOpen}
@@ -222,10 +226,10 @@ export const AreaPrivadaUsuario = () => {
                     </div>
                 </div>
 
-               
-
-
-                <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
+                <ModalVerMisFavoritos 
+                    isOpen={isFavoritosOpen} 
+                    onClose={() => setFavoritosOpen(false)} 
+                />
             </div>
         </div>
     );
