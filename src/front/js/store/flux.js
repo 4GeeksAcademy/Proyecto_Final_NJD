@@ -476,6 +476,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const formatearHora = (hora) => {
                         return hora ? hora.slice(0, 5) : null;
                     };
+                    console.log(formData)
 
                     const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
                         method: "PUT",
@@ -494,7 +495,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                             horario_tarde_inicio: formatearHora(formData.horario_tarde_inicio),
                             horario_tarde_fin: formatearHora(formData.horario_tarde_fin),
                             reservas_por_dia: formData.reservas_por_dia,
-                            categorias_id: formData.categorias_id
+                            categorias_id: formData.categorias_id,
+                            telefono: formData.telefono
                         })
                     });
 

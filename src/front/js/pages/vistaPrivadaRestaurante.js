@@ -249,7 +249,7 @@ export const VistaPrivadaRestaurante = () => {
               <label htmlFor="direccion" className="form-label">Dirección</label>
               <div className="input-group">
                 <div className="input-content">
-                  <span className="form-control-plaintext">Introduzca dirección</span>
+                  <span className="form-control-plaintext">{formData.direccion}</span>
                   <span className="input-group-text icon-wrapper">
                     <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('direccion', formData.direccion)}></i>
                   </span>
