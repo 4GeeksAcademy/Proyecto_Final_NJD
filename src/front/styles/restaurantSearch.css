@@ -1,13 +1,30 @@
-/* Aseguramos que el contenedor principal esté centrado y con el ancho correcto */
+/* Aseguramos que el box-sizing esté configurado correctamente */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Contenedor externo para ajustar el fondo y márgenes generales */
+.area-privada {
+  width: 100%;
+  min-width: 100vw;
+  padding: 20px;
+  background: linear-gradient(to right, #090909, #b3b3b3);
+}
+
+/* Contenedor principal centrado */
 .area-privada-container {
   width: 100%;
-  max-width: 1200px; /* Limita el ancho máximo en pantallas grandes */
-  margin: 0 auto; /* Centra el contenedor */
+  max-width: 1200px;
+  margin: 40px auto;
   padding: 20px;
-  min-width: 320px; /* Asegura que el contenedor no sea más estrecho que 320px */
-  box-sizing: border-box; /* Asegura que el padding no se agregue al ancho total */
-  transition: padding 0.3s ease; /* Suaviza la transición al ajustar el padding */
+  min-width: 320px;
+  transition: padding 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
+
 
 /* Ajustes de padding y margin según el tamaño de pantalla */
 @media (max-width: 1200px) {
@@ -19,24 +36,28 @@
 @media (max-width: 768px) {
   .area-privada-container {
     padding: 10px;
+    margin-left: 10px;  /* Añade un pequeño margen para ajustar */
+    margin-right: 10px; /* Añade un pequeño margen para ajustar */
   }
 }
 
 @media (max-width: 480px) {
   .area-privada-container {
     padding: 5px;
-    margin: 0 5px; /* Reduce margen lateral para pantallas pequeñas */
-    max-width: 100%; /* Asegura que ocupe todo el ancho */
+    margin: 0 5px;
+    max-width: 100%;
+    margin-left: auto;  /* Vuelve a centrar en pantallas muy pequeñas */
+    margin-right: auto; /* Vuelve a centrar en pantallas muy pequeñas */
   }
 }
 
-/* Estilo para el contenedor de tarjetas */
+/* Contenedor de tarjetas */
 .restaurant-cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Limita el tamaño mínimo de las tarjetas */
-  gap: 20px; /* Espacio entre las tarjetas */
-  justify-content: center; /* Centra el contenido */
-  width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
   box-sizing: border-box;
 }
 
@@ -50,15 +71,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 450px; /* Asegura que todas las tarjetas tengan la misma altura mínima */
+  min-height: 450px;
   box-sizing: border-box;
 }
 
 /* Imagen dentro de la tarjeta */
 .restaurant-image {
   width: 100%;
-  height: 200px; /* Fija la altura de la imagen */
-  object-fit: cover; /* Asegura que la imagen mantenga su proporción */
+  height: 200px;
+  object-fit: cover;
   border-radius: 8px;
 }
 
@@ -66,7 +87,7 @@
 .restaurant-info {
   text-align: left;
   margin-top: 10px;
-  flex-grow: 1; /* Permite que esta sección ocupe todo el espacio disponible */
+  flex-grow: 1;
 }
 
 /* Botón de favorito */
@@ -90,21 +111,26 @@
 /* Ajustes responsivos */
 @media (max-width: 1200px) {
   .restaurant-cards-container {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Disminuye el tamaño de las columnas en pantallas medianas */
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .restaurant-cards-container {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Ajusta el tamaño de las columnas en pantallas más pequeñas */
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 }
 
 @media (max-width: 480px) {
   .restaurant-cards-container {
-    grid-template-columns: 1fr; /* Las tarjetas ocupan todo el ancho en pantallas muy pequeñas */
+    grid-template-columns: 1fr;
   }
   .restaurant-card {
-    max-width: 100%; /* Asegura que las tarjetas ocupen todo el ancho en móviles */
+    max-width: 100%;
   }
+}
+
+/* Ocultar el desbordamiento horizontal */
+html, body {
+  overflow-x: hidden;
 }
