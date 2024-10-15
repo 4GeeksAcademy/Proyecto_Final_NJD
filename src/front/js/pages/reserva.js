@@ -63,14 +63,34 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     })
                 })
                     .then(response => response.json())
-                    .then(data => {
+                    .then(async data => {
                         if (data.message) {
-                            Swal.fire({
+                            await Swal.fire({
                                 title: "Correo enviado",
                                 text: "Correo de confirmación enviado correctamente.",
                                 icon: "success",
                                 confirmButtonText: "Aceptar"
                             });
+
+                            // Mostrar mensaje de éxito
+                            Swal.fire({
+                                title: 'Reserva realizada con éxito',
+                                icon: 'success',
+                                confirmButtonText: 'Volver a la página principal',
+                                showCancelButton: true,
+                                cancelButtonText: 'Área privada'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    navigate('/');
+                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                    const currentUserId = sessionStorage.getItem("user_id");
+                                    if (currentUserId) {
+                                        navigate(`/private/${currentUserId}`);
+                                    }
+                                }
+                            });
+
+
                         } else {
                             console.log("Hubo un problema enviando el correo.", data);
                         }
@@ -78,25 +98,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     .catch(error => {
                         console.error("Error enviando el correo: ", error);
                     });
-
-                // Mostrar mensaje de éxito
-                Swal.fire({
-                    title: 'Reserva realizada con éxito',
-                    text: 'Recibirá un email de confirmación.',
-                    icon: 'success',
-                    confirmButtonText: 'Volver a la página principal',
-                    showCancelButton: true,
-                    cancelButtonText: 'Área privada'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigate('/');
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        const currentUserId = sessionStorage.getItem("user_id");
-                        if (currentUserId) {
-                            navigate(`/private/${currentUserId}`);
-                        }
-                    }
-                });
 
                 onClose();
             } else {

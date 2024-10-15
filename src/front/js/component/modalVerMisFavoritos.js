@@ -93,13 +93,6 @@ export const ModalVerMisFavoritos = ({ isOpen, onClose }) => {
                                             <div className="card-body">
                                                 <strong>Restaurante:</strong> {favorito.nombre}
                                             </div>
-                                            <div>
-                                                <i
-                                                    className={`fa ${updatedFavorites.some(fav => fav.id === favorito.id) ? 'fa-heart text-danger' : 'fa-heart-o'}`}
-                                                    style={{ cursor: 'pointer' }}
-                                                    onClick={() => toggleFavorite(favorito.id)}
-                                                ></i>
-                                            </div>
                                         </div>
                                     </div>
                                 ))}

@@ -89,7 +89,7 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
                             'Tu reserva ha sido eliminada con éxito.',
                             'success'
                         );
-                        actualizarReservaEnLista(reserva.id);  
+                        actualizarReservaEnLista(null,reserva.id);  
                         onClose();  
                     } else {
                         Swal.fire(

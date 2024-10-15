@@ -300,7 +300,7 @@ export const VistaPrivadaRestaurante = () => {
                               modalData.field === "horario_tarde" ? "Horario de Tarde" :
                                 "Dirección"}
                 </h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
               </div>
               <div className="modal-body">
                 {modalData.field === "horario_mañana" || modalData.field === "horario_tarde" ? (

@@ -6,14 +6,19 @@
     justify-content: center;
 }
   
-/* Aseguramos que el layout sea responsive */
 .restaurant-detail-layout {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
+    background-color: #f7f7f7;
+    margin-top: 40px;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
+
   
 .restaurant-card {
     flex: 1;
