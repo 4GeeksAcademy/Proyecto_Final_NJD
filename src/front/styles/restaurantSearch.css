@@ -1,16 +1,9 @@
-/* Aseguramos que el box-sizing esté configurado correctamente */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
 /* Contenedor externo para ajustar el fondo y márgenes generales */
 .area-privada {
   width: 100%;
   min-width: 100vw;
   padding: 20px;
-  background: linear-gradient(to right, #090909, #b3b3b3);
+  background: linear-gradient(to left, #090909, #b3b3b3);
 }
 
 /* Contenedor principal centrado */
@@ -18,24 +11,23 @@
   width: 100%;
   max-width: 1200px;
   margin: 40px auto;
-  padding: 20px;
+  padding: 0px;
   min-width: 320px;
   transition: padding 0.3s ease;
   display: flex;
   flex-direction: column;
 }
 
-
 /* Ajustes de padding y margin según el tamaño de pantalla */
 @media (max-width: 1200px) {
   .area-privada-container {
-    padding: 15px;
+    padding: 0px;
   }
 }
 
 @media (max-width: 768px) {
   .area-privada-container {
-    padding: 10px;
+    padding: 0px;
     margin-left: 10px;  /* Añade un pequeño margen para ajustar */
     margin-right: 10px; /* Añade un pequeño margen para ajustar */
   }
@@ -43,7 +35,7 @@
 
 @media (max-width: 480px) {
   .area-privada-container {
-    padding: 5px;
+    padding: 0px;
     margin: 0 5px;
     max-width: 100%;
     margin-left: auto;  /* Vuelve a centrar en pantallas muy pequeñas */
@@ -58,7 +50,6 @@
   gap: 20px;
   justify-content: center;
   width: 100%;
-  box-sizing: border-box;
 }
 
 /* Estilo para cada tarjeta */
@@ -133,4 +124,63 @@
 /* Ocultar el desbordamiento horizontal */
 html, body {
   overflow-x: hidden;
+}
+
+/* Sección de "¿Prefieres otro tipo de comida?" */
+.other-cuisine-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin: 40px 0; 
+}
+
+.other-cuisine-section h4 {
+  margin-bottom: 20px; 
+  font-size: 1.5rem;
+  color: #2c2c2c;
+}
+
+.scroll-to-home-btn {
+  background-color: #333;
+  color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.scroll-to-home-btn:hover {
+  background-color: #555; 
+  color: white;
+}
+
+/* Ajustes responsivos para la sección "¿Prefieres otro tipo de comida?" */
+@media (max-width: 768px) {
+  .other-cuisine-section h4 {
+    font-size: 1.25rem;
+  }
+
+  .scroll-to-home-btn {
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .other-cuisine-section {
+    margin: 20px 0;
+  }
+
+  .other-cuisine-section h4 {
+    font-size: 1rem;
+  }
+
+  .scroll-to-home-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
+  }
 }

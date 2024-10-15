@@ -72,21 +72,40 @@ export const VistaPrivadaRestaurante = () => {
   };
 
   const handleModalSave = () => {
-    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
-      setFormData({
-        ...formData,
-        [modalData.field + "_inicio"]: modalData.value.inicio,
-        [modalData.field + "_fin"]: modalData.value.fin,
-      });
-    } else {
-      setFormData({
-        ...formData,
-        [modalData.field]: modalData.value,
-      });
+    // Verificar si el valor está vacío (para campos de texto)
+    if (modalData.field !== "horario_mañana" && modalData.field !== "horario_tarde" && modalData.value.trim() === "") {
+        const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+        modal.hide();
+        return;
     }
+
+    // Verificar si los campos de horario están vacíos
+    if ((modalData.field === "horario_mañana" || modalData.field === "horario_tarde") &&
+        (modalData.value.inicio.trim() === "" || modalData.value.fin.trim() === "")) {
+        const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+        modal.hide();
+        return;
+    }
+
+    // Actualización de los horarios o de otros campos
+    if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
+        setFormData({
+            ...formData,
+            [modalData.field + "_inicio"]: modalData.value.inicio,
+            [modalData.field + "_fin"]: modalData.value.fin,
+        });
+    } else {
+        setFormData({
+            ...formData,
+            [modalData.field]: modalData.value,
+        });
+    }
+
+    // Cerrar el modal
     const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
     modal.hide();
-  };
+};
+
 
   useEffect(() => {
     const fetchRestauranteData = async () => {
@@ -120,6 +139,8 @@ export const VistaPrivadaRestaurante = () => {
     const dataToSend = { ...formData };
     const result = await actions.modificarDatosRestaurante(restaurante_id, dataToSend);
     if (result.success) {
+      sessionStorage.setItem("user_name", formData.nombre);
+
       Swal.fire({
         title: "Éxito",
         text: "Datos actualizados con éxito.",
@@ -300,7 +321,7 @@ export const VistaPrivadaRestaurante = () => {
                               modalData.field === "horario_tarde" ? "Horario de Tarde" :
                                 "Dirección"}
                 </h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div className="modal-body">
                 {modalData.field === "horario_mañana" || modalData.field === "horario_tarde" ? (

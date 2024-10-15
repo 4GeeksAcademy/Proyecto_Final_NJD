@@ -1,33 +1,36 @@
 footer {
-  background: linear-gradient(to right, #090909, #b3b3b3); /* Degradado elegante */
-  color: white;
-  padding: 40px 20px; /* Ajustado para pantallas pequeñas */
+  background: linear-gradient(to right, #090909, #b3b3b3); 
+  padding: 40px 20px;
   text-align: center;
-  width: 100%; /* Asegura que el footer ocupe todo el ancho */
-  margin-top: auto; /* Empuja el footer al final */
-  height: auto; /* Para ajustarse mejor al contenido */
-  margin-top: 50px;
+  width: 100%;
+  margin-top: auto; 
+  height: auto; 
 }
 
 .footer-container {
   display: flex;
-  justify-content: space-between; /* Asegura espacio entre las secciones */
-  flex-wrap: wrap; /* Permitir que las secciones se envuelvan en pantallas pequeñas */
-  max-width: 1200px;
+  justify-content: space-between; 
+  flex-wrap: wrap; 
   margin: 0 auto;
 }
 
 .footer-section {
   flex: 1;
-  min-width: 180px; /* Ajustamos el tamaño mínimo para evitar que colapse en pantallas pequeñas */
+  min-width: 180px; 
   padding: 10px;
-  text-align: left; /* Alinear el texto a la izquierda en pantallas grandes */
+  text-align: left; 
+}
+
+.footer-section ul li{
+  color: #cccccc;
+
 }
 
 .footer-section h4 {
   font-size: 18px;
   margin-bottom: 15px;
   text-transform: uppercase;
+  color: whitesmoke
 }
 
 .footer-section ul {
@@ -40,7 +43,7 @@ footer {
 }
 
 .footer-section ul li a {
-  color: #cccccc;
+  color: #cccccc;  
   text-decoration: none;
 }
 
@@ -53,18 +56,18 @@ footer {
 }
 
 .footer-section a {
-  color: white;
+  color: #cccccc;
   text-decoration: none;
-  margin: 0 5px;
+  margin: 0 0px;
 }
 
 .footer-section a:hover {
-  color: #00000064; /* Cambia a gris fuerte */
+  color:#cccccc;
 }
 
 .footer-small-text {
-  font-size: 12px; /* Ajusta este valor según el tamaño que prefieras */
-  color: #cccccc; /* Puedes ajustar el color si lo deseas */
+  font-size: 12px; 
+  color: #cccccc;
 }
 
 /* Responsividad para pantallas pequeñas */
@@ -88,6 +91,7 @@ footer {
   }
 
   .footer-section ul li {
-    margin-bottom: 5px; /* Reducir el espacio entre elementos de la lista */
+    margin-bottom: 5px; 
+    
   }
 }

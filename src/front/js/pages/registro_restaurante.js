@@ -27,10 +27,7 @@ export const RegistroCompletoRestaurante = () => {
         if (!sessionStorage.getItem("token")) {
             navigate("/"); 
         }
-
         actions.obtenerCategorias(); 
-
-        console.log("Categorías cargadas:", store.categorias);
     }, []);
 
     if (!sessionStorage.getItem("token")) {

@@ -30,7 +30,8 @@
   position: absolute;
   right: 1rem;
   top: 1rem;
-  background: transparent;
+  background: transp
+  nt;
   border: none;
   font-size: 1.5rem; /* Tamaño inicial de la X */
   color: #fff; /* Color de la X */
@@ -530,8 +531,8 @@
   width: 100%;
 }
 
-/* .user-modal .btn-dark:hover {
+.user-modal .btn-dark:hover {
   background-color: #000000;
   border-color: #333;
-} */
+}
 

@@ -45,13 +45,25 @@ export const AreaPrivadaUsuario = () => {
     };
 
     const handleModalSave = () => {
+        // Verificar si el valor está vacío
+        if (modalData.value.trim() === "") {
+            // No actualizamos el campo si el input está vacío
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+            modal.hide();
+            return;
+        }
+    
+        // Si se ha introducido un valor, actualizar el campo
         setFormData({
             ...formData,
             [modalData.field]: modalData.value
         });
+    
+        // Cerrar el modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
         modal.hide();
     };
+    
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -84,6 +96,7 @@ export const AreaPrivadaUsuario = () => {
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
             sessionStorage.setItem("user_name", formData.firstName);
+            
             Swal.fire({
                 title: 'Éxito',
                 text: 'Datos actualizados con éxito.',

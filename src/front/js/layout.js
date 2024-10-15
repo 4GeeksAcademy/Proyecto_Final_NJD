@@ -24,7 +24,6 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
-        <div style={{ background: 'linear-gradient(to left, #2c2c2c, #6a6a6a)' }}>
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Navbar />
@@ -48,7 +47,6 @@ const Layout = () => {
                     <Footer />
                 </ScrollToTop>
             </BrowserRouter>
-        </div>
     );
 };
 

@@ -141,7 +141,7 @@ export const Home = () => {
 								to: "/restaurantes/12",
 								src: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRPJrK5FhZSciwBzr33zCT6IlttQe8D6XpoVB7sge1tfNIxRNLTPiX7ZP3jPlZfQjR1VN4&usqp=CAU",
 								alt: "Comida Latinoamérica",
-								label: "Latinoamericana",
+								label: "Latina",
 							},
 							{
 								to: "/restaurantes/13",
