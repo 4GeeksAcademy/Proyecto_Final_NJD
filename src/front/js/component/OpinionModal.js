@@ -20,11 +20,11 @@ const OpinionModal = ({ isOpen, onClose, opinions, currentIndex, nextOpinion, pr
             <p>"{opinion.comment}"</p>
           </div>
           <div className="modal-footer d-flex justify-content-between">
-            <button className="btn modal-button-close" onClick={onClose}>Cerrar</button>
+            <button className="btn btn-secondary" onClick={onClose}>Cerrar</button>
 
             <div className="d-flex gap-2">
-              <button className="btn modal-button-nav" onClick={prevOpinion}>Anterior</button>
-              <button className="btn modal-button-nav" onClick={nextOpinion}>Siguiente</button>
+              <button className="btn btn-secondary" onClick={prevOpinion}>Anterior</button>
+              <button className="btn btn-secondary" onClick={nextOpinion}>Siguiente</button>
             </div>
           </div>
         </div>
