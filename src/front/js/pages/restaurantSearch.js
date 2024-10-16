@@ -1,18 +1,18 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2"; 
+import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
-import "../../styles/vistaPrivadaUsuario.css"; 
+import "../../styles/vistaPrivadaUsuario.css";
 import "../../styles/restaurantSearch.css"
 
 export const RestaurantSearch = () => {
-    const { categoria_id } = useParams(); 
+    const { categoria_id } = useParams();
     const { store, actions } = useContext(Context);
     const [searchQuery, setSearchQuery] = useState("");
     const [favorites, setFavorites] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
     const navigate = useNavigate();
-    const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible"; 
+    const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible";
 
     useEffect(() => {
         actions.obtenerRestaurantesPorCategoria(categoria_id);
@@ -38,18 +38,18 @@ export const RestaurantSearch = () => {
         : [];
 
     const handleOtherCuisineClick = () => {
-        navigate("/home");  
+        navigate("/home");
         setTimeout(() => {
             const scrollTarget = document.getElementById("cuisine-scroll");
             if (scrollTarget) {
                 scrollTarget.scrollIntoView({ behavior: 'smooth' });
             }
-        }, 500);  
+        }, 500);
     };
 
     const toggleFavorite = (restaurant) => {
         const user_id = sessionStorage.getItem('user_id');
-        
+
         if (!user_id) {
             Swal.fire({
                 title: "Registro requerido",
@@ -61,10 +61,10 @@ export const RestaurantSearch = () => {
             }).then((result) => {
                 if (result.isConfirmed) {
                     const signupModal = new bootstrap.Modal(document.getElementById("signupModal"));
-                    signupModal.show(); 
-                } 
+                    signupModal.show();
+                }
             });
-            return; 
+            return;
         }
 
         const isFavorite = store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id);
@@ -90,13 +90,13 @@ export const RestaurantSearch = () => {
                 </div>
 
                 <div className="area-body">
-                    <h4 className="titulo">Busca aquí tu restaurante de comida {nombreCategoria}</h4>
+                    <h4 className="titulo">Busca aquí tu restaurante de comida {nombreCategoria}:</h4>
                     <input
                         type="text"
                         className="search-bar form-control mb-3"
                         placeholder="Introduce el restaurante..."
                         value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)} 
+                        onChange={e => setSearchQuery(e.target.value)}
                     />
 
                     <div className="restaurant-cards-container">
@@ -105,7 +105,7 @@ export const RestaurantSearch = () => {
                                 <div className="restaurant-card" key={restaurant.id}>
                                     <Link to={`/restaurant/detail/${restaurant.id}`}>
                                         <img
-                                            src={restaurant.image || imagenPorDefecto}  
+                                            src={restaurant.image || imagenPorDefecto}
                                             alt={restaurant.nombre}
                                             className="restaurant-image"
                                         />
@@ -115,15 +115,18 @@ export const RestaurantSearch = () => {
                                             <h3>{restaurant.nombre}</h3>
                                         </Link>
                                         <p>{restaurant.direccion}</p>
-                                        <p><strong>Valoración:</strong> {restaurant.rating || 'No disponible'} ⭐</p>
-                                        <p><strong>Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
+                                        <p><strong>⭐ Valoración:</strong> {restaurant.rating || 'No disponible'} </p>
+                                        <p><strong>💰 Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
                                     </div>
-                                    <button
-                                        className={`favorite-button ${store.restaurantes_favoritos.includes(restaurant) ? 'favorited' : ''}`}
-                                        onClick={() => toggleFavorite(restaurant)}
-                                    >
-                                        {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
-                                    </button>
+                                    <div className="favorite-button-container">
+                                        <button
+                                            className={`favorite-button ${store.restaurantes_favoritos.includes(restaurant) ? 'favorited' : ''}`}
+                                            onClick={() => toggleFavorite(restaurant)}
+                                        >
+                                            {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
+                                        </button>
+                                    </div>
+
                                 </div>
                             ))
                         ) : (
