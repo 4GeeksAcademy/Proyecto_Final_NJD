@@ -1,78 +1,96 @@
 .d-flex {
-    margin-top: 80px;
-    width: 100%;
-    
-  } 
+  margin-top: 80px;
+  width: 100%;
+}
 
-  .background-img {
-    position: absolute;
-    padding: 0;
-    margin: 0;
-    width: 90%;
-    height: 90%;
-    z-index: 0;
-    border-radius: 20px;
-    opacity: 0.4;
-  }
-  
-  .custom-container {
-    justify-content:center ;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 40px 0; 
-    width: 100%;  
-    max-width: 500px; 
-    position: relative;
-    animation: slideInContainer 2s ease forwards;
-    background: linear-gradient(to right, #d3d3d3, #696969); 
-    border: 2px solid transparent; 
-    z-index: 1;
+.background-img {
+  position: fixed; /* Cambiado a fixed para que la imagen permanezca de fondo */
+  top: 0;
+  left: 0;
+  width: 100%; /* Asegura que la imagen cubra todo el ancho */
+  height: 100%; /* Asegura que la imagen cubra toda la altura */
+  z-index: -1; /* Manda la imagen al fondo */
+  border-radius: 0; /* Elimina el borde redondeado para que ocupe toda la pantalla */
+  opacity: 0.3; /* Transparencia ajustada */
+  object-fit: cover; /* Asegura que la imagen mantenga proporción */
+}
+
+.custom-container {
+  justify-content: center;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin: 40px 0;
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  animation: slideInContainer 2s ease forwards;
+  background: linear-gradient(to right, #d3d3d3, #696969);
+  border: 2px solid transparent;
+  z-index: 1; /* Coloca el contenedor por encima de la imagen de fondo */
 }
 
 .custom-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    border-radius: 10px; 
-    background: linear-gradient(to right, #d3d3d3, #777); 
-    z-index: -1; 
-    filter: blur(5px); 
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 10px;
+  background: linear-gradient(to right, #d3d3d3, #777);
+  z-index: -1;
+  filter: blur(5px);
 }
-  
-  
+
+.custom-img {
+  width: 115px;
+  height: 115px;
+  position: absolute;
+  top: -30px;
+  left: 20px;
+  border-radius: 50%;
+  animation: slideInImage 2s ease forwards;
+  box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.5);
+  border: 5px solid #333;
+}
+
+.custom-title {
+  font-size: 30px;
+  margin: 30px 0 10px 0;
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  margin-left: 50px;
+}
+
+.custom-text {
+  color: #333;
+  margin-top: 10px;
+  font-size: 18px;
+  padding: 10px 0;
+  text-align: justify;
+}
+
+@media (max-width: 576px) {
+  .custom-container {
+    max-width: 90%;
+  }
+
   .custom-img {
-    width: 115px;
-    height: 115px;
-    position: absolute;
-    top: -30px;
-    left: 20px;
-    border-radius: 50%;
-    animation: slideInImage 2s ease forwards;
-    animation-delay: 0s; 
-    box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.5);
-    border: 5px solid #333;
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 10px;
   }
-  
+
   .custom-title {
-    font-size: 30px;
-    margin: 30px 0 10px 0;
-    color: white;
-    font-weight: 600;
-    text-align: center;
-    margin-left: 50px;
+    font-size: 20px;
   }
-  
+
   .custom-text {
-    color: #333;
-    margin-top: 10px;
-    font-size: 18px;
-    padding: 10px 0;
-    text-align: justify;
+    font-size: 16px;
   }
   
  
@@ -116,4 +134,7 @@
       transform: translateX(0); 
     }
   }
-  
+  to {
+    transform: translateX(0);
+  }
+}

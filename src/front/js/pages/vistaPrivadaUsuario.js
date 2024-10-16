@@ -6,6 +6,8 @@ import { ModalVerMisReservas } from '../component/modalVerMisReservas';
 import "../../styles/vistaPrivadaUsuario.css";
 import { ModalVerMisFavoritos } from "../component/modalVerMisFavoritos";
 import { ModalCambiarPasswordUser } from '../component/modalCambiarPasswordUser';
+import ModalEliminarUsuario from '../component/modalEliminarUsuario';
+
 
 export const AreaPrivadaUsuario = () => {
     const { actions, store } = useContext(Context);
@@ -45,13 +47,25 @@ export const AreaPrivadaUsuario = () => {
     };
 
     const handleModalSave = () => {
+        // Verificar si el valor está vacío
+        if (modalData.value.trim() === "") {
+            // No actualizamos el campo si el input está vacío
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
+            modal.hide();
+            return;
+        }
+    
+        // Si se ha introducido un valor, actualizar el campo
         setFormData({
             ...formData,
             [modalData.field]: modalData.value
         });
+    
+        // Cerrar el modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
         modal.hide();
     };
+    
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -84,6 +98,7 @@ export const AreaPrivadaUsuario = () => {
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
             sessionStorage.setItem("user_name", formData.firstName);
+            
             Swal.fire({
                 title: 'Éxito',
                 text: 'Datos actualizados con éxito.',
@@ -107,6 +122,9 @@ export const AreaPrivadaUsuario = () => {
     const closePasswordModal = () => {
         setPasswordModalOpen(false);
     };
+
+    const [isEliminarUsuarioOpen, setEliminarUsuarioOpen] = useState(false);
+
 
     return (
         <div className="area-privada">
@@ -175,7 +193,7 @@ export const AreaPrivadaUsuario = () => {
                         </div>
                     </form>
 
-                    <div className="row mt-5 justify-content-center">
+                    <div className="row button-row">
                         <div className="col-md-3 mb-2">
                             <button className="btn btn-secondary w-100" onClick={() => setModalReservasOpen(true)}>
                                 Ver mis reservas
@@ -186,10 +204,28 @@ export const AreaPrivadaUsuario = () => {
                                 Ver mis favoritos
                             </button>
                         </div>
+                        <div className="col-md-3 mb-2">
+                            <button className="btn btn-danger w-100" onClick={() => setEliminarUsuarioOpen(true)}>
+                                Eliminar cuenta
+                            </button>
+                        </div>
                     </div>
+
                 </div>
 
-                <ModalVerMisReservas isOpen={isModalReservasOpen} onClose={() => setModalReservasOpen(false)} />
+                {/* Modales */}
+                <ModalVerMisReservas 
+                    isOpen={isModalReservasOpen} 
+                    onClose={() => setModalReservasOpen(false)}
+                />
+
+                <ModalEliminarUsuario
+                    isOpen={isEliminarUsuarioOpen}
+                    onClose={() => setEliminarUsuarioOpen(false)}
+                    userId={user_id}  // Pasamos el ID del usuario actual
+                    eliminarUsuario={actions.eliminarUsuario}  // Llamamos a la función eliminarUsuario desde el flux
+                />
+
 
                 <ModalCambiarPasswordUser
                     isOpen={isPasswordModalOpen}
@@ -203,7 +239,7 @@ export const AreaPrivadaUsuario = () => {
                                 <h5 className="modal-title" id="editModalLabel">
                                     Editar {modalData.field === "firstName" ? "Nombre" : modalData.field === "lastName" ? "Apellidos" : "Teléfono"}
                                 </h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                             </div>
                             <div className="modal-body">
                                 <input
@@ -222,10 +258,10 @@ export const AreaPrivadaUsuario = () => {
                     </div>
                 </div>
 
-               
-
-
-                <ModalVerMisFavoritos isOpen={isFavoritosOpen} onClose={() => setFavoritosOpen(false)} />
+                <ModalVerMisFavoritos 
+                    isOpen={isFavoritosOpen} 
+                    onClose={() => setFavoritosOpen(false)} 
+                />
             </div>
         </div>
     );

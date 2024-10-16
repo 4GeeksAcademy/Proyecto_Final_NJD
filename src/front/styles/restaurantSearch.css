@@ -1,185 +1,186 @@
-.restaurant-search-container {
-  max-width: 1200px;
-  margin: 80px auto;
-  padding: 50px;
-  background-color: #f7f7f7; 
-  border-radius: 16px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-  font-family: 'Helvetica Neue', sans-serif; 
-}
-
-.search-bar {
+/* Contenedor externo para ajustar el fondo y márgenes generales */
+.area-privada {
   width: 100%;
-  padding: 15px 20px;
-  border-radius: 30px;
-  border: 1px solid #ddd; 
-  margin-bottom: 30px;
-  font-size: 18px;
-  color: #555;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
-  transition: all 0.3s;
-}
-
-.search-bar:focus {
-  border-color: #aaa; 
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-}
-
-.restaurant-cards-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 30px; 
-  justify-content: center; 
-}
-
-.restaurant-card {
-  background-color: #fff; 
-  border-radius: 12px; 
+  min-width: 100vw;
   padding: 20px;
-  max-width: 350px; 
-  flex: 1 1 300px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
-  transition: transform 0.3s, box-shadow 0.3s;
-  overflow: hidden; 
+  background: linear-gradient(to left, #090909, #b3b3b3);
 }
 
-.restaurant-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15); 
+/* Contenedor principal centrado */
+.area-privada-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0px;
+  min-width: 320px;
+  transition: padding 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
+/* Ajustes de padding y margin según el tamaño de pantalla */
+@media (max-width: 1200px) {
+  .area-privada-container {
+    padding: 0px;
+  }
+}
+
+@media (max-width: 768px) {
+  .area-privada-container {
+    padding: 0px;
+    margin-left: 10px;  /* Añade un pequeño margen para ajustar */
+    margin-right: 10px; /* Añade un pequeño margen para ajustar */
+  }
+}
+
+@media (max-width: 480px) {
+  .area-privada-container {
+    padding: 0px;
+    margin: 0 5px;
+    max-width: 100%;
+    margin-left: auto;  /* Vuelve a centrar en pantallas muy pequeñas */
+    margin-right: auto; /* Vuelve a centrar en pantallas muy pequeñas */
+  }
+}
+
+/* Contenedor de tarjetas */
+.restaurant-cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+}
+
+/* Estilo para cada tarjeta */
+.restaurant-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 450px;
+  box-sizing: border-box;
+}
+
+/* Imagen dentro de la tarjeta */
 .restaurant-image {
-  width: 100%; 
-  height: 200px; 
-  border-radius: 12px;
-  object-fit: cover; 
-  margin-bottom: 15px;
-  transition: opacity 0.3s;
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
-.restaurant-card:hover .restaurant-image {
-  opacity: 0.9;
-}
-
-.restaurant-info h3 {
-  font-size: 24px; 
-  margin: 0;
-  margin-bottom: 10px;
-  color: #333; 
-  font-weight: 600;
-}
-
-.restaurant-info p {
-  margin: 5px 0;
-  color: #777; 
-  font-size: 16px;
-}
-
-.restaurant-info strong {
-  color: #555;
-}
-
-.favorite-button {
-  background: none; 
-  border: 1px solid #ddd; 
-  border-radius: 25px;
-  padding: 8px 16px;
-  color: #333; 
-  font-size: 14px;
-  cursor: pointer;
+/* Información del restaurante */
+.restaurant-info {
+  text-align: left;
   margin-top: 10px;
-  transition: all 0.3s;
+  flex-grow: 1;
 }
 
-.favorite-button:hover {
-  background-color: #f0f0f0; 
-  border-color: #bbb; 
+/* Botón de favorito */
+.favorite-button {
+  background-color: #333;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .favorite-button.favorited {
-  background-color: #ff6347; 
-  color: #fff;
-  border-color: #ff6347; 
-}
-
-.favorite-button.favorited:hover {
   background-color: #e74c3c;
-  border-color: #e74c3c; 
 }
 
+/* Ajustes responsivos */
+@media (max-width: 1200px) {
+  .restaurant-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .restaurant-cards-container {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .restaurant-cards-container {
+    grid-template-columns: 1fr;
+  }
+  .restaurant-card {
+    max-width: 100%;
+  }
+}
+
+/* Ocultar el desbordamiento horizontal */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Sección de "¿Prefieres otro tipo de comida?" */
 .other-cuisine-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  margin-top: 40px;
+  margin: 40px 0; 
+}
+
+.other-cuisine-section h4 {
+  margin-bottom: 20px; 
+  font-size: 1.5rem;
+  color: #2c2c2c;
 }
 
 .scroll-to-home-btn {
-  padding: 10px 20px;
   background-color: #333;
   color: white;
+  font-size: 1rem;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
+  transition: background-color 0.3s ease;
 }
 
 .scroll-to-home-btn:hover {
-  background-color: #555;
+  background-color: #555; 
+  color: white;
 }
 
-/* Responsive adjustments for medium screens */
+/* Ajustes responsivos para la sección "¿Prefieres otro tipo de comida?" */
 @media (max-width: 768px) {
-  .restaurant-cards-container {
-      gap: 20px;
-      flex-direction: column;
-      align-items: center;
-  }
-
-  .restaurant-card {
-      max-width: 100%;
-      flex: 1 1 auto;
-  }
-
-  .restaurant-info h3 {
-      font-size: 22px;
-  }
-
-  .restaurant-info p {
-      font-size: 14px;
-  }
-}
-
-/* Responsive adjustments for small screens */
-@media (max-width: 480px) {
-  .restaurant-cards-container {
-      flex-direction: column;
-      gap: 15px;
-  }
-
-  .restaurant-card {
-      max-width: 100%;
-      flex: 1 1 auto;
-      padding: 15px;
-  }
-
-  .restaurant-info h3 {
-      font-size: 20px;
-  }
-
-  .restaurant-info p {
-      font-size: 14px;
-  }
-
-  .restaurant-image {
-      height: auto;
-      width: 100%;
-  }
-
-  .favorite-button {
-      width: 100%;
+  .other-cuisine-section h4 {
+    font-size: 1.25rem;
   }
 
   .scroll-to-home-btn {
-      width: 100%;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .other-cuisine-section {
+    margin: 20px 0;
+  }
+
+  .other-cuisine-section h4 {
+    font-size: 1rem;
+  }
+
+  .scroll-to-home-btn {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
 }

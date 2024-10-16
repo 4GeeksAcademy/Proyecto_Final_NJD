@@ -14,8 +14,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         restaurante_id: restaurante_id,
         email: '',
         restaurant_name: ''
-        
-
     });
     const navigate = useNavigate();
 
@@ -24,20 +22,17 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         const fetchUserData = async () => {
             if (userId) {
                 const userData = await actions.obtenerDatosUsuario(userId);
-
-            setFormData((prevState) => ({
-                ...prevState,
-                nombre: userData.nombres || '',
-                apellido: userData.apellidos || '',
-                telefono: userData.telefono || '',
-                email: userData.email || '',
-
-            }));
+                setFormData((prevState) => ({
+                    ...prevState,
+                    nombre: userData.nombres || '',
+                    apellido: userData.apellidos || '',
+                    telefono: userData.telefono || '',
+                    email: userData.email || '',
+                }));
             }
         };
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
-        
     }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
@@ -52,9 +47,9 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 body: JSON.stringify(formData)
             });
 
-
             if (response.ok) {
-                const data = await response.json()
+                const data = await response.json();
+                // Enviar correo de confirmación
                 fetch(`${process.env.BACKEND_URL}/send-mail`, {
                     method: 'POST',
                     headers: {
@@ -62,16 +57,40 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     },
                     body: JSON.stringify({
                         email: formData.email,
-                        restaurant_name: data.reserva.restaurant_name, 
+                        restaurant_name: data.reserva.restaurant_name,
                         reservation_date: formData.fecha_reserva,
                         reservation_time: formData.hora
-
                     })
                 })
                     .then(response => response.json())
-                    .then(data => {
+                    .then(async data => {
                         if (data.message) {
-                            alert("Correo de confirmación enviado correctamente.");
+                            await Swal.fire({
+                                title: "Correo enviado",
+                                text: "Correo de confirmación enviado correctamente.",
+                                icon: "success",
+                                confirmButtonText: "Aceptar"
+                            });
+
+                            // Mostrar mensaje de éxito
+                            Swal.fire({
+                                title: 'Reserva realizada con éxito',
+                                icon: 'success',
+                                confirmButtonText: 'Volver a la página principal',
+                                showCancelButton: true,
+                                cancelButtonText: 'Área privada'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    navigate('/');
+                                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                                    const currentUserId = sessionStorage.getItem("user_id");
+                                    if (currentUserId) {
+                                        navigate(`/private/${currentUserId}`);
+                                    }
+                                }
+                            });
+
+
                         } else {
                             console.log("Hubo un problema enviando el correo.", data);
                         }
@@ -79,23 +98,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     .catch(error => {
                         console.error("Error enviando el correo: ", error);
                     });
-                Swal.fire({
-                    title: 'Reserva realizada con éxito',
-                    text: 'Recibirá un email de confirmación.',
-                    icon: 'success',
-                    confirmButtonText: 'Volver a la página principal',
-                    showCancelButton: true,
-                    cancelButtonText: 'Área privada'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        navigate('/');
-                    } else if (result.dismiss === Swal.DismissReason.cancel) {
-                        const currentUserId = sessionStorage.getItem("user_id");
-                        if (currentUserId) {
-                            navigate(`/private/${currentUserId}`);
-                        }
-                    }
-                });
 
                 onClose();
             } else {
@@ -121,11 +123,23 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleBackdropClick = (e) => {
+        if (e.target.classList.contains("modal-backdrop") || e.target.classList.contains("modal")) {
+            onClose();
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
-        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="reservationModalLabel" aria-hidden="true">
-            <div className="modal-dialog">
+        <div className="modal fade show"
+            style={{ display: "block" }}
+            tabIndex="-1"
+            aria-labelledby="reservationModalLabel"
+            aria-hidden="true"
+            onClick={handleBackdropClick} // Detectar clic fuera del modal para cerrarlo
+        >
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}> {/* Evitar que el modal mismo cierre al hacer clic dentro */}
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="reservationModalLabel">RESERVA</h5>

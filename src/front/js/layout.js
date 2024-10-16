@@ -24,31 +24,29 @@ const Layout = () => {
     if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
 
     return (
-        <div style={{ background: 'linear-gradient(to left, #2c2c2c, #6a6a6a)' }}>
-            <BrowserRouter basename={basename}>
-                <ScrollToTop>
-                    <Navbar />
-                    <Routes>
-                        <Route element={<Home />} path="/" />
-                        <Route element={<Home />} path="/home" />
-                        <Route element={<Demo />} path="/demo" />
-                        <Route element={<Single />} path="/single/:theid" />
-                        <Route element={<RestaurantSearch />} path="/restaurantes/:categoria_id" />
-                        <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
-                        <Route element={<AreaPrivadaUsuario />} path="/private/:user_id" />
-                        <Route element={<PrivateView />} path="/private" />
-                        <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
-                        <Route element={<PrivateView />} path="/private" />
-                        <Route element={<FAQ />} path="/faq" />
-                        <Route element={<About />} path="/about" />
-                        <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante/:restaurante_id" />
-                        <Route element={<VistaCloudinary />} path="/vistaCloudinary/:restaurante_id" />
-                        <Route element={<h1>Not found!</h1>} path="*" />
-                    </Routes>
-                    <Footer />
-                </ScrollToTop>
-            </BrowserRouter>
-        </div>
+        <BrowserRouter basename={basename}>
+            <ScrollToTop> {/* ScrollToTop envolviendo las rutas */}
+                <Navbar />
+                <Routes>
+                    <Route element={<Home />} path="/" />
+                    <Route element={<Home />} path="/home" />
+                    <Route element={<Demo />} path="/demo" />
+                    <Route element={<Single />} path="/single/:theid" />
+                    <Route element={<RestaurantSearch />} path="/restaurantes/:categoria_id" />
+                    <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
+                    <Route element={<AreaPrivadaUsuario />} path="/private/:user_id" />
+                    <Route element={<PrivateView />} path="/private" />
+                    <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
+                    <Route element={<PrivateView />} path="/private" />
+                    <Route element={<FAQ />} path="/faq" />
+                    <Route element={<About />} path="/about" />
+                    <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante/:restaurante_id" />
+                    <Route element={<VistaCloudinary />} path="/vistaCloudinary/:restaurante_id" />
+                    <Route element={<h1>Not found!</h1>} path="*" />
+                </Routes>
+                <Footer />
+            </ScrollToTop>
+        </BrowserRouter>
     );
 };
 
