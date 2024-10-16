@@ -30,11 +30,8 @@
   position: absolute;
   right: 1rem;
   top: 1rem;
-  background: transp
-  nt;
   border: none;
   font-size: 1.5rem; /* Tamaño inicial de la X */
-  color: #fff; /* Color de la X */
   transition: all 0.3s ease; /* Transición suave para los cambios */
 }
 
@@ -137,6 +134,7 @@
 
 /* Estilo del diálogo del modal */
 .modal-dialog-carta {
+  position: relative;
   max-width: 1200px;
   margin: 150px auto;
   transition: all 1s ease-in-out; /* Transición suave al abrir */
@@ -208,10 +206,6 @@
   box-shadow: 0px 5px 20px rgba(0, 0, 0, 0.4);
 }
 
-/* Efecto hover en la imagen */
-.modal-img-carta:hover {
-  transform: scale(2); 
-}
 
 
 /*Vista privada*/

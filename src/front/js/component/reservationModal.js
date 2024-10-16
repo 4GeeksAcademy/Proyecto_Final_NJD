@@ -22,7 +22,7 @@ const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="reservationModalLabel">RESERVA</h5>
-              <button type="button" className="btn-close-modal-booking" onClick={onClose} aria-label="Close">
+              <button type="button" className="btn-close-modal-booking btn-close-white" onClick={onClose} aria-label="Close">
                 &times;
               </button>
             </div>

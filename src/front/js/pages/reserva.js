@@ -143,7 +143,7 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="reservationModalLabel">RESERVA</h5>
-                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+                        <button type="button" className="btn-close btn-close-white" onClick={onClose} aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>

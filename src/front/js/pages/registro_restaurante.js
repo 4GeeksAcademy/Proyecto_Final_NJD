@@ -227,7 +227,7 @@ export const RegistroCompletoRestaurante = () => {
                 <div className="modal-content">
                   <div className="modal-header">
                     <h5 className="modal-title">Seleccionar Categoría</h5>
-                    <button type="button" className="btn-close" onClick={() => setShowCategoryModal(false)}></button>
+                    <button type="button" className="btn-close btn-close-white" onClick={() => setShowCategoryModal(false)}></button>
                   </div>
                   <div className="modal-body">
                     <ul className="list-group">
