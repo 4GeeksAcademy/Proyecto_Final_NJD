@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import '../../styles/aboutUs.css';
-// import Ivan from "../../img/ivan.jpg";
 
 export const About = () => {
     useEffect(() => {

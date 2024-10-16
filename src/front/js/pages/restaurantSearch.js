@@ -94,7 +94,7 @@ export const RestaurantSearch = () => {
                     <input
                         type="text"
                         className="search-bar form-control mb-3"
-                        placeholder="Introduce el nombre del restaurante que estás buscando..."
+                        placeholder="Introduce el restaurante..."
                         value={searchQuery}
                         onChange={e => setSearchQuery(e.target.value)}
                     />

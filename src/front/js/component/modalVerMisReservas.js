@@ -35,12 +35,25 @@ export const ModalVerMisReservas = ({ isOpen, onClose }) => {
         setReservaSeleccionada(reserva);
     };
 
+    const handleBackdropClick = (e) => {
+        if (e.target.classList.contains('modal')) {
+            onClose();
+        }
+    };
+
     if (!isOpen) return null;
 
     return (
         <>
-            <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="reservasModalLabel" aria-hidden="true">
-                <div className="modal-dialog modal-lg">  
+            <div 
+                className="modal fade show" 
+                style={{ display: "block" }} 
+                tabIndex="-1" 
+                aria-labelledby="reservasModalLabel" 
+                aria-hidden="true"
+                onClick={handleBackdropClick}  // Detecta el clic en el fondo
+            >
+                <div className="modal-dialog modal-lg" onClick={(e) => e.stopPropagation()}>  {/* Evita que el clic en el contenido cierre el modal */}
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="reservasModalLabel">Tus reservas</h5>

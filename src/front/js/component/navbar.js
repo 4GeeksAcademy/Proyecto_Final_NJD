@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
+import '../../styles/navbar.css';
 import "../../styles/index.css"; 
 
 export const Navbar = () => {

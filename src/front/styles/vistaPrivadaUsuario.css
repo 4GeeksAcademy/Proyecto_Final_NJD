@@ -1,3 +1,29 @@
+/* Ajustamos los botones en una fila */
+.button-row {
+    display: flex;
+    justify-content: space-around; /* Espacio igual entre botones */
+    align-items: center;
+    margin-top: 20px; /* Separación con el formulario */
+}
+
+.button-row .btn {
+    flex: 1; /* Los botones ocuparán el mismo espacio */
+    margin: 0 10px; /* Espacio entre los botones */
+}
+
+.btn-danger {
+    background-color: #6c757d; /* Mismo color que btn-secondary */
+    border: none;
+    padding: 10px 20px;
+    color: white;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background-color: #5a6268; /* Color más oscuro al hacer hover */
+}
+
+/* Otros estilos que ya tienes */
 .area-privada {
     padding: 80px;
 }
@@ -6,7 +32,7 @@
     max-width: 1200px;
     margin: 50px auto;
     background-color: white;
-    border-radius: 10px;
+    border-radius: 19px;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
@@ -32,7 +58,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #ddd; /* Línea suave debajo */
+    border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
 }
 
@@ -49,7 +75,6 @@
     color: #333;
     padding-right: 10px;
 }
-
 
 .ancho {
     width: 100% !important;
@@ -69,7 +94,7 @@
 }
 
 .email-field {
-    border-bottom: 1px solid #ddd; /* Añadimos la línea gris aquí también */
+    border-bottom: 1px solid #ddd;
     padding-bottom: 8px;
 }
 
@@ -109,17 +134,7 @@
     text-align: left;
 }
 
-.modal-header {
-    border-bottom: 1px solid #dee2e6;
-}
-
-.modal-footer {
-    border-top: 1px solid #dee2e6;
-    display: flex;
-    justify-content: space-between;
-}
-
-/* Aseguramos el diseño responsivo */
+/* Responsividad para el formulario */
 @media (max-width: 768px) {
     .input-group {
         flex-direction: column;
