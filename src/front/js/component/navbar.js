@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom"; 
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
 import '../../styles/navbar.css';
 import "../../styles/index.css"; 
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
@@ -12,6 +13,9 @@ export const Navbar = () => {
     const [userId, setUserId] = useState(null);  
     const [isRestaurant, setIsRestaurant] = useState(false);
     const navigate = useNavigate(); 
+    const {store} = useContext(Context)
+
+
 
     useEffect(() => {
         const handleStorageChange = () => {
@@ -112,7 +116,7 @@ export const Navbar = () => {
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
                                                 onClick={handlePrivateAreaRestaurante} 
                                             ></i>
-                                            Area privada restaurante {userName}
+                                            Area privada restaurante {store.restoName}
                                         </span>
                                         <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                             Cerrar Sesión
@@ -126,7 +130,7 @@ export const Navbar = () => {
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
                                                 onClick={handlePrivateAreaNavigation}  
                                             ></i>
-                                            Hola {userName}
+                                            Hola {store.userName}
                                         </span>
                                         <button className="btn btn-secondary ml-2" onClick={handleLogout}>
                                             Cerrar Sesión

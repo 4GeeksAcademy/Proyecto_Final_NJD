@@ -1,14 +1,20 @@
 //API EMAIL
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { Context } from '../store/appContext';
+
 
 const ReservaForm = () => {
     const [email, setEmail] = useState('');
     const [restaurantName, setRestaurantName] = useState('');
     const [reservationDate, setReservationDate] = useState('');
     const [reservationTime, setReservationTime] = useState('');
+    const { actions } = useContext(Context)
 
     const handleSubmit = (e) => {
         e.preventDefault();
+
+        actions.actualizarNombreResto(restaurantName)
+
 
         const reservaData = {
             email,
@@ -24,17 +30,17 @@ const ReservaForm = () => {
             },
             body: JSON.stringify(reservaData)
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message) {
-                alert("Correo de confirmación enviado correctamente.");
-            } else {
-                alert("Hubo un problema enviando el correo.");
-            }
-        })
-        .catch(error => {
-            console.error("Error enviando el correo: ", error);
-        });
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert("Correo de confirmación enviado correctamente.");
+                } else {
+                    alert("Hubo un problema enviando el correo.");
+                }
+            })
+            .catch(error => {
+                console.error("Error enviando el correo: ", error);
+            });
     };
 
     return (

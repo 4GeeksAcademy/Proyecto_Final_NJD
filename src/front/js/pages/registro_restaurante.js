@@ -55,25 +55,42 @@ export const RegistroCompletoRestaurante = () => {
 
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const restauranteId = sessionStorage.getItem("restaurant_id");
-
-        console.log("Restaurante ID obtenido de sessionStorage:", restauranteId);
-
-        const result = await actions.completarRegistroRestaurante(restauranteId, formData);
-
-        if (result.success) {
-            navigate(`/vistaPrivadaRestaurante/${restauranteId}`);
-        } else {
-            Swal.fire({
-                title: "Error",
-                text: result.message || "Error al completar el registro",
-                icon: "error",
-                confirmButtonText: "Aceptar",
-            });
-        }
-    };
+      e.preventDefault();
+  
+      // Verificación manual de que todos los campos están completos
+      if (!formData.direccion || !formData.cubiertos || !formData.cantidad_mesas || 
+          !formData.horario_mañana_inicio || !formData.horario_mañana_fin || 
+          !formData.horario_tarde_inicio || !formData.horario_tarde_fin || 
+          !formData.reservas_por_dia || !formData.categorias_id) {
+          Swal.fire({
+              title: "Error",
+              text: "Por favor, completa todos los campos antes de continuar.",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+          });
+          return; // Detener el envío si falta algún campo
+      }
+  
+      const restauranteId = sessionStorage.getItem("restaurant_id");
+  
+      console.log("Restaurante ID obtenido de sessionStorage:", restauranteId);
+  
+      const result = await actions.completarRegistroRestaurante(restauranteId, formData);
+  
+      if (result.success) {
+          window.scrollTo(0, 0); // Hacer scroll hacia arriba
+          navigate(`/vistaPrivadaRestaurante/${restauranteId}`);
+      } else {
+          Swal.fire({
+              title: "Error",
+              text: result.message || "Error al completar el registro",
+              icon: "error",
+              confirmButtonText: "Aceptar",
+          });
+      }
+  };
+  
+  
 
     return (
         <div className="private-view minimal-background">

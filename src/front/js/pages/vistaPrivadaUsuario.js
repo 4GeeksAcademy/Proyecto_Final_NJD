@@ -98,7 +98,8 @@ export const AreaPrivadaUsuario = () => {
         const result = await actions.modificarUsuario(user_id, dataToSend);
         if (result.success) {
             sessionStorage.setItem("user_name", formData.firstName);
-            
+            actions.actualizarNombreUsuario(formData.firstName)
+
             Swal.fire({
                 title: 'Éxito',
                 text: 'Datos actualizados con éxito.',

@@ -6,29 +6,43 @@ const ModalEliminarUsuario = ({ isOpen, onClose, userId, eliminarUsuario }) => {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleDelete = async () => {
-        setIsLoading(true);
-        const result = await eliminarUsuario(userId);
-        
-        if (result.success) {
-            Swal.fire({
-                title: "Usuario eliminado",
-                text: "El usuario ha sido eliminado con éxito.",
-                icon: "success",
-                confirmButtonText: "Aceptar"
-            }).then(() => {
-                onClose();
-                sessionStorage.removeItem("token");  // Eliminamos la sesión si es el usuario activo
-                window.location.href = "/";  // Redirigir a la página de inicio
-            });
-        } else {
-            Swal.fire({
-                title: "Error",
-                text: result.message,
-                icon: "error",
-                confirmButtonText: "Aceptar"
-            });
-        }
-        setIsLoading(false);
+        // Muestra SweetAlert para confirmar la eliminación
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: "No podrás revertir esta acción",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                setIsLoading(true);
+                const result = await eliminarUsuario(userId);
+                
+                if (result.success) {
+                    Swal.fire({
+                        title: "Usuario eliminado",
+                        text: "El usuario ha sido eliminado con éxito.",
+                        icon: "success",
+                        confirmButtonText: "Aceptar"
+                    }).then(() => {
+                        onClose();
+                        sessionStorage.removeItem("token");  // Eliminamos la sesión si es el usuario activo
+                        window.location.href = "/";  // Redirigir a la página de inicio
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Error",
+                        text: result.message,
+                        icon: "error",
+                        confirmButtonText: "Aceptar"
+                    });
+                }
+                setIsLoading(false);
+            }
+        });
     };
 
     return (

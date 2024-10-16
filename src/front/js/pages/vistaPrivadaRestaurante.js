@@ -142,6 +142,7 @@ export const VistaPrivadaRestaurante = () => {
     const result = await actions.modificarDatosRestaurante(restaurante_id, dataToSend);
     if (result.success) {
       sessionStorage.setItem("user_name", formData.nombre);
+      actions.actualizarNombreResto(formData.nombre)
 
       Swal.fire({
         title: "Éxito",
@@ -168,44 +169,30 @@ export const VistaPrivadaRestaurante = () => {
   };
 
   const handleEliminarRestaurante = async () => {
-    // Muestra la alerta de confirmación antes de eliminar
-    Swal.fire({
-      title: '¿Estás seguro?',
-      text: "No podrás revertir esta acción",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Sí, eliminar',
-      cancelButtonText: 'Cancelar'
-    }).then(async (result) => {
-      if (result.isConfirmed) {
-        // Aquí hacemos la eliminación solo si se confirma
-        const result = await actions.eliminarRestaurante(restaurante_id);
-        if (result.success) {
-          // Limpiar sessionStorage
-          sessionStorage.removeItem('restaurant_name');
-          sessionStorage.removeItem('restaurant_id');
+    const result = await actions.eliminarRestaurante(restaurante_id);
+    if (result.success) {
+        // Limpiar sessionStorage
+        sessionStorage.removeItem('restaurant_name');
+        sessionStorage.removeItem('restaurant_id');
 
-          Swal.fire({
+        Swal.fire({
             title: "Eliminado",
             text: "El restaurante ha sido eliminado con éxito.",
             icon: "success",
             confirmButtonText: "Aceptar"
-          }).then(() => {
+        }).then(() => {
             navigate("/home");
-          });
-        } else {
-          Swal.fire({
+        });
+    } else {
+        Swal.fire({
             title: "Error",
             text: result.message || "Error al eliminar el restaurante.",
             icon: "error",
             confirmButtonText: "Aceptar"
-          });
-        }
-      }
-    });
-  };
+        });
+    }
+};
+
 
   return (
     <div className="area-privada">

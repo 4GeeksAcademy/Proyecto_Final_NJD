@@ -9,7 +9,8 @@ const getState = ({ getStore, getActions, setStore }) => {
             restaurantes_favoritos: [],
             restaurantDetails: {},
             imagenes: [],
-            userName: sessionStorage.getItem('user_name')
+            userName: sessionStorage.getItem('user_name'),
+            restoName: sessionStorage.getItem('restaurant_name')
         },
 
         actions: {
@@ -17,10 +18,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
             actualizarNombreUsuario: (nombre)=> {
-                const store= getStore()
                 setStore({userName: nombre})
 
             },
+            
+            actualizarNombreResto: (nombre) => {
+                setStore({ restoName: nombre })
+            },
+
 
             // CAMBIAR CONTRASEÑA RESTAURANTE
             cambiarContraseña: async (data) => {
