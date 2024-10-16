@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
 import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante';
-import ModalEliminarRestaurante from '../component/modalEliminarRestaurante'; // Importamos el modal para eliminar restaurante
+import ModalEliminarRestaurante from '../component/modalEliminarRestaurante';
 
 export const VistaPrivadaRestaurante = () => {
   const { actions, store } = useContext(Context);
@@ -76,37 +76,37 @@ export const VistaPrivadaRestaurante = () => {
   const handleModalSave = () => {
     // Verificar si el valor está vacío (para campos de texto)
     if (modalData.field !== "horario_mañana" && modalData.field !== "horario_tarde" && modalData.value.trim() === "") {
-        const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
-        modal.hide();
-        return;
+      const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+      modal.hide();
+      return;
     }
 
     // Verificar si los campos de horario están vacíos
     if ((modalData.field === "horario_mañana" || modalData.field === "horario_tarde") &&
-        (modalData.value.inicio.trim() === "" || modalData.value.fin.trim() === "")) {
-        const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
-        modal.hide();
-        return;
+      (modalData.value.inicio.trim() === "" || modalData.value.fin.trim() === "")) {
+      const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
+      modal.hide();
+      return;
     }
 
     // Actualización de los horarios o de otros campos
     if (modalData.field === "horario_mañana" || modalData.field === "horario_tarde") {
-        setFormData({
-            ...formData,
-            [modalData.field + "_inicio"]: modalData.value.inicio,
-            [modalData.field + "_fin"]: modalData.value.fin,
-        });
+      setFormData({
+        ...formData,
+        [modalData.field + "_inicio"]: modalData.value.inicio,
+        [modalData.field + "_fin"]: modalData.value.fin,
+      });
     } else {
-        setFormData({
-            ...formData,
-            [modalData.field]: modalData.value,
-        });
+      setFormData({
+        ...formData,
+        [modalData.field]: modalData.value,
+      });
     }
 
     // Cerrar el modal
     const modal = bootstrap.Modal.getInstance(document.getElementById("editModal"));
     modal.hide();
-};
+  };
 
 
   useEffect(() => {
@@ -351,6 +351,40 @@ export const VistaPrivadaRestaurante = () => {
           onClose={() => setEliminarRestauranteOpen(false)}
           handleEliminarRestaurante={handleEliminarRestaurante}
         />
+
+        <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title" id="editModalLabel">
+                  Editar {modalData.field === "nombre" ? "Nombre del Restaurante" :
+                    modalData.field === "telefono" ? "Teléfono" :
+                      modalData.field === "cubiertos" ? "Comensales" :
+                        modalData.field === "cantidad_mesas" ? "Cantidad de Mesas" :
+                          modalData.field === "reservas_por_dia" ? "Reservas por Día" :
+                            modalData.field === "horario_mañana" ? "Horario de Mañana" :
+                              modalData.field === "horario_tarde" ? "Horario de Tarde" :
+                                "Dirección"}
+                </h5>
+                <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div className="modal-body">
+                <input
+                  type="text"
+                  className="form-control"
+                  value={modalData.value}
+                  onChange={handleModalChange}
+                  placeholder={modalData.field === "firstName" ? "Introduzca nuevo nombre" : modalData.field === "lastName" ? "Introduzca nuevos apellidos" : "Introduzca nuevo teléfono"}
+                />
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Aceptar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
