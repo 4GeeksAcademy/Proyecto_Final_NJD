@@ -67,11 +67,7 @@ export const Footer = () => {
                     <div className="footer-section">
                         <h4>Contáctanos</h4>
                         <ul>
-                            <li>
-                                <a href="https://www.facebook.com/profile.php?id=61567234019628&mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer">Facebook</a> |
-                                <a href="https://www.instagram.com/hoynococino.ceo/profilecard/?igsh=MW1qcm1vNnh6aTA0eA==" target="_blank" rel="noopener noreferrer">Instagram</a> |
-                                <a href="https://x.com/hoynococino_ceo" target="_blank" rel="noopener noreferrer">Twitter</a>
-                            </li>
+                            
                             <li>Email: hoynococino.ceo@gmail.com</li>
                             <li>Teléfono: +123 456 789</li>
                         </ul>

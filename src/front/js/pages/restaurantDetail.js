@@ -205,40 +205,16 @@ export const RestaurantDetail = () => {
                     </div>
                 </div>
 
-                <div className="restaurant-search-container">
-                    <div className="restaurant-detail-layout">
-                        <div className="restaurant-card">
-                            <img
-                                src={restaurant.image}
-                                alt={restaurant.name}
-                                className="restaurant-image"
-                            />
-                            <div className="restaurant-info">
-                                <h3>{restaurant.name}</h3>
-                                <p>{restaurant.address}</p>
-                                <p><strong>⭐ Valoración:</strong> {restaurant.rating} </p>
-                                <p><strong>💰 Rango de Precios:</strong> {restaurant.priceRange}</p>
-                            </div>
-                        </div>
-
-                        <div className="restaurant-description-container">
-                            <div className="restaurant-description">
-                                <h2>¿Todavía no nos conoces?</h2>
-                                <p>
-                                    <strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad,
-                                    especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo.
-                                    El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez,
-                                    que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto
-                                    para disfrutar de una comida íntima o una reunión con amigos.
-                                </p>
-                            </div>
-
-                            <div className="restaurant-buttons">
-                                <button onClick={openModal} className="action-button">RESERVA AHORA</button>
-                                <button onClick={CartaOpenModal} className="action-button">VER NUESTRA CARTA</button>
-                                <button onClick={openOpinionModal} className="action-button">VER OPINIONES</button>
-                            </div>
-                        </div>
+                <div className="restaurant-description-container">
+                    <div className="restaurant-description">
+                        <h2>¿Todavía no nos conoces?</h2>
+                        <p>
+                            <strong>{restaurant.name}</strong> es un acogedor restaurante ubicado en el corazón de la ciudad,
+                            especializado en cocina <strong>{restaurant.tipo}</strong> con un toque contemporáneo.
+                            El ambiente es cálido y relajado, con una decoración rústica y moderna a la vez,
+                            que mezcla tonos de madera natural y luces tenues, creando un espacio perfecto
+                            para disfrutar de una comida íntima o una reunión con amigos.
+                        </p>
                     </div>
 
                     <div className="restaurant-buttons">

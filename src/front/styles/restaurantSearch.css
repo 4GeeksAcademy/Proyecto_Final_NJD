@@ -75,7 +75,7 @@
   justify-content: space-between;
   min-height: 450px;
   box-sizing: border-box;
-  background: linear-gradient(to left, #090909, #b3b3b3);
+  /*background: linear-gradient(to left, #090909, #b3b3b3);*/
 }
 
 /* Imagen dentro de la tarjeta */
