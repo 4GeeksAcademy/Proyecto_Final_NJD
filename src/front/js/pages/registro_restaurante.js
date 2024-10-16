@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
-import "/workspaces/Proyecto_Final_NJD/src/front/styles/privateView.css";
+import "../../styles/privateView.css";
 
 export const RegistroCompletoRestaurante = () => {
     const { store, actions } = useContext(Context); 

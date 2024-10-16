@@ -93,12 +93,6 @@ const VistaCloudinary = () => {
                 src={image || "ruta/a/imagen_no_disponible.jpg"}
                 alt={`Imagen ${index + 1} del restaurante`}
               />
-              <button
-                className="btn btn-secondary delete-image-button mt-3"
-                onClick={() => handleDeleteImage(image)}
-              >
-                Eliminar Imagen
-              </button>
             </div>
           ))
         )}

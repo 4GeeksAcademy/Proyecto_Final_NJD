@@ -124,7 +124,7 @@ export const VistaPrivadaRestaurante = () => {
             horario_mañana_fin: data.horario_mañana_fin || "",
             horario_tarde_inicio: data.horario_tarde_inicio || "",
             horario_tarde_fin: data.horario_tarde_fin || "",
-            direccion: data.direccion || "", // Incluye la dirección al obtener datos
+            direccion: data.direccion || "",
           });
         } catch (error) {
           console.error("Error al obtener datos del restaurante:", error);
@@ -270,7 +270,7 @@ export const VistaPrivadaRestaurante = () => {
               <label htmlFor="direccion" className="form-label">Dirección</label>
               <div className="input-group">
                 <div className="input-content">
-                  <span className="form-control-plaintext">Introduzca dirección</span>
+                  <span className="form-control-plaintext">{formData.direccion}</span>
                   <span className="input-group-text icon-wrapper">
                     <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('direccion', formData.direccion)}></i>
                   </span>

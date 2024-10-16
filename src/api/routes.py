@@ -362,6 +362,7 @@ def update_restaurante(restaurante_id):
     restaurante.direccion = body.get('direccion', restaurante.direccion)
     restaurante.cubiertos = body.get('cubiertos', restaurante.cubiertos)
     restaurante.cantidad_mesas = body.get('cantidad_mesas', restaurante.cantidad_mesas)
+    restaurante.telefono = body.get('telefono', restaurante.telefono)
 
     # Validar y actualizar los horarios
     try:
