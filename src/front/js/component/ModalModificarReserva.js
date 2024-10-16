@@ -13,6 +13,12 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
         restaurante_id: reserva.restaurante_id
     });
 
+    const handleBackdropClick = (e) => {
+        if (e.target.classList.contains('modal')) {
+            onClose();
+        }
+    };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -83,7 +89,7 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
                             'Tu reserva ha sido eliminada con éxito.',
                             'success'
                         );
-                        actualizarReservaEnLista(reserva.id);  
+                        actualizarReservaEnLista(null,reserva.id);  
                         onClose();  
                     } else {
                         Swal.fire(
@@ -106,12 +112,19 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
     if (!isOpen) return null;
 
     return (
-        <div className="modal fade show" style={{ display: "block" }} tabIndex="-1" aria-labelledby="modifyReservationModalLabel" aria-hidden="true">
-            <div className="modal-dialog">
+        <div 
+            className="modal fade show" 
+            style={{ display: "block" }} 
+            tabIndex="-1" 
+            aria-labelledby="modifyReservationModalLabel" 
+            aria-hidden="true"
+            onClick={handleBackdropClick}  // Detecta el clic en el fondo
+        >
+            <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>  {/* Evita que el clic en el contenido cierre el modal */}
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modifyReservationModalLabel">Modificar Reserva</h5>
-                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close">x</button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>

@@ -11,7 +11,7 @@ const OpinionModal = ({ isOpen, onClose, opinions, currentIndex, nextOpinion, pr
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Opiniones de nuestros comensales</h5>
-            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}></button>
+            <button type="button" className="btn-close" aria-label="Close" onClick={onClose}>x</button>
           </div>
           <div className="modal-body text-center">
             <img src={opinion.photo} alt={opinion.name} className="opinion-photo mb-3" />

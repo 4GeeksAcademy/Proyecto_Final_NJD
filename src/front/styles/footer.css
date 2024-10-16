@@ -1,0 +1,97 @@
+footer {
+  background: linear-gradient(to right, #090909, #b3b3b3); 
+  padding: 40px 20px;
+  text-align: center;
+  width: 100%;
+  margin-top: auto; 
+  height: auto; 
+}
+
+.footer-container {
+  display: flex;
+  justify-content: space-between; 
+  flex-wrap: wrap; 
+  margin: 0 auto;
+}
+
+.footer-section {
+  flex: 1;
+  min-width: 180px; 
+  padding: 10px;
+  text-align: left; 
+}
+
+.footer-section ul li{
+  color: #cccccc;
+
+}
+
+.footer-section h4 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  color: whitesmoke
+}
+
+.footer-section ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  color: #cccccc;  
+  text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+  text-decoration: underline;
+}
+
+.footer-bottom {
+  font-size: 14px;
+}
+
+.footer-section a {
+  color: #cccccc;
+  text-decoration: none;
+  margin: 0 0px;
+}
+
+.footer-section a:hover {
+  color:#cccccc;
+}
+
+.footer-small-text {
+  font-size: 12px; 
+  color: #cccccc;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+  .footer-container {
+    flex-direction: column; /* Apilar las secciones en una columna */
+    text-align: center; /* Centrar el texto para pantallas pequeñas */
+  }
+
+  .footer-section {
+    min-width: 100%; /* Hacer que las secciones ocupen el 100% del ancho en móviles */
+    padding: 20px 0; /* Ajustar el padding para más espacio entre secciones */
+  }
+
+  .footer-bottom {
+    font-size: 12px; /* Reducir el tamaño del texto en pantallas pequeñas */
+  }
+
+  .footer-section ul {
+    padding: 0; /* Eliminar el padding en listas */
+  }
+
+  .footer-section ul li {
+    margin-bottom: 5px; 
+    
+  }
+}

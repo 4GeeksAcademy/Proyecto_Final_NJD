@@ -65,7 +65,7 @@ export const ModalCambiarPasswordUser = ({ isOpen, onClose }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modalPasswordLabel">Cambiar contraseña</h5>
-                        <button type="button" className="btn-close" onClick={onClose}></button>
+                        <button type="button" className="btn-close" onClick={onClose}>x</button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>

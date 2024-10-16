@@ -64,7 +64,7 @@ const ModalCambiarPasswordRestaurante = ({ isOpen, onClose }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title">Cambiar Contraseña</h5>
-            <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
+            <button type="button" className="btn-close" onClick={onClose} aria-label="Close">x</button>
           </div>
           <div className="modal-body">
             <form onSubmit={handleSubmit}>

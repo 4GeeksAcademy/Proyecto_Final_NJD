@@ -5,7 +5,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import "../../styles/index.css";
 
 export const Footer = () => {
-    const [userName, setUserName] = useState(""); 
+    const [userName, setUserName] = useState("");
 
     const handleLogin = (name) => {
         setUserName(name);
@@ -33,7 +33,7 @@ export const Footer = () => {
                             <li>
                                 <Link to="about">Sobre nosotros</Link>
                             </li>
-    
+
                         </ul>
                     </div>
 
@@ -54,21 +54,21 @@ export const Footer = () => {
                     </div>
 
                     <div className="footer-section">
-                        <h4>Contáctanos</h4>
+                        <h4>Nuestras redes</h4>
                         <ul>
-                            <li>Email: hoynococino.ceo@gmail.com</li>
-                            <li>Teléfono: +123 456 789</li>
+                            <li>
+                                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a><br />
+                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a><br />
+                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+                            </li>
                         </ul>
                     </div>
 
                     <div className="footer-section">
-                        <h4>Nuestras redes</h4>
+                        <h4>Contáctanos</h4>
                         <ul>
-                            <li>
-                                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a> |
-                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a> |
-                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
-                            </li>
+                            <li>Email: hoynococino.ceo@gmail.com</li>
+                            <li>Teléfono: +123 456 789</li>
                         </ul>
                     </div>
                 </div>
@@ -82,10 +82,10 @@ export const Footer = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="loginRestaurantModalLabel">Iniciar Sesión Restaurante</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div className="modal-body">
-                            <LoginRestaurante onLogin={handleLogin} /> 
+                            <LoginRestaurante onLogin={handleLogin} />
                         </div>
                     </div>
                 </div>
@@ -96,10 +96,10 @@ export const Footer = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="registerModalRestauranteLabel">Registro Restaurante</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
                         </div>
                         <div className="modal-body">
-                            <SignupRestaurante /> 
+                            <SignupRestaurante />
                         </div>
                     </div>
                 </div>
