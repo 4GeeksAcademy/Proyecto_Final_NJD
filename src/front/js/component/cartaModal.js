@@ -26,7 +26,7 @@ const handleBackdropClickCarta = (e) => {
         <div className="modal-content-carta">
           <div className="modal-header-carta">
             <h5 className="modal-title-carta" id="CartaModalLabel">¿Qué te apetece comer hoy?</h5>
-            <button type="button" className="btn-close-modal-carta" onClick={onClose} aria-label="Close">x
+            <button type="button" className="btn-close-modal-carta" onClick={onClose} aria-label="Close">
             </button>
           </div>
           <div className="modal-body-carta">

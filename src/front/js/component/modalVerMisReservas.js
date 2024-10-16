@@ -57,7 +57,7 @@ export const ModalVerMisReservas = ({ isOpen, onClose }) => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="reservasModalLabel">Tus reservas</h5>
-                            <button type="button" className="btn-close" onClick={onClose} aria-label="Close">x</button>
+                            <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             {reservas && reservas.length > 0 ? (
