@@ -3,7 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
-import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante'; 
+import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante';
+import ModalEliminarRestaurante from '../component/modalEliminarRestaurante'; // Importamos el modal para eliminar restaurante
 
 export const VistaPrivadaRestaurante = () => {
   const { actions, store } = useContext(Context);
@@ -34,6 +35,7 @@ export const VistaPrivadaRestaurante = () => {
   });
 
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+  const [isEliminarRestauranteOpen, setEliminarRestauranteOpen] = useState(false); // Estado para el modal de eliminación
 
   const openModal = (field, currentValue) => {
     if (field === "horario_mañana" || field === "horario_tarde") {
@@ -47,7 +49,7 @@ export const VistaPrivadaRestaurante = () => {
     } else {
       setModalData({
         field: field,
-        value: "",
+        value: currentValue,
       });
     }
     const modal = new bootstrap.Modal(document.getElementById("editModal"));
@@ -165,6 +167,46 @@ export const VistaPrivadaRestaurante = () => {
     setPasswordModalOpen(false);
   };
 
+  const handleEliminarRestaurante = async () => {
+    // Muestra la alerta de confirmación antes de eliminar
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: "No podrás revertir esta acción",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        // Aquí hacemos la eliminación solo si se confirma
+        const result = await actions.eliminarRestaurante(restaurante_id);
+        if (result.success) {
+          // Limpiar sessionStorage
+          sessionStorage.removeItem('restaurant_name');
+          sessionStorage.removeItem('restaurant_id');
+
+          Swal.fire({
+            title: "Eliminado",
+            text: "El restaurante ha sido eliminado con éxito.",
+            icon: "success",
+            confirmButtonText: "Aceptar"
+          }).then(() => {
+            navigate("/home");
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: result.message || "Error al eliminar el restaurante.",
+            icon: "error",
+            confirmButtonText: "Aceptar"
+          });
+        }
+      }
+    });
+  };
+
   return (
     <div className="area-privada">
       <div className="area-privada-container">
@@ -185,6 +227,7 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
+            {/* Otros campos */}
             <div className="col-md-6 mb-3">
               <label htmlFor="telefono" className="form-label">Teléfono</label>
               <div className="input-group">
@@ -234,7 +277,7 @@ export const VistaPrivadaRestaurante = () => {
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.reservas_por_dia}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('reservas_por_dia', formData.reservas_por_dia)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("reservas_por_dia", formData.reservas_por_dia)}></i>
                   </span>
                 </div>
               </div>
@@ -252,7 +295,6 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Horarios: Tarde */}
             <div className="col-md-6 mb-3">
               <label htmlFor="horario_tarde" className="form-label">Horario de Tarde</label>
               <div className="input-group">
@@ -265,14 +307,13 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
-            {/* Dirección */}
             <div className="col-md-12 mb-3">
               <label htmlFor="direccion" className="form-label">Dirección</label>
               <div className="input-group">
                 <div className="input-content">
                   <span className="form-control-plaintext">{formData.direccion}</span>
                   <span className="input-group-text icon-wrapper">
-                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal('direccion', formData.direccion)}></i>
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={() => openModal("direccion", formData.direccion)}></i>
                   </span>
                 </div>
               </div>
@@ -292,78 +333,26 @@ export const VistaPrivadaRestaurante = () => {
 
             <div className="text-left mt-4 col-12 d-flex justify-content-between">
               <button type="submit" className="btn btn-primary">Guardar Cambios</button>
-              <button
-                className="btn btn-secondary"
-                onClick={goToCloudinary} 
-              >
-                Cargar Imágenes
-              </button>
+              <button type="button" className="btn btn-secondary" onClick={goToCloudinary}>Cargar Imágenes</button>
+              <button type="button" className="btn btn-danger" onClick={() => setEliminarRestauranteOpen(true)}>Eliminar Restaurante</button>
             </div>
           </form>
         </div>
 
+        {/* Modal Cambiar Contraseña */}
         <ModalCambiarPasswordRestaurante
           isOpen={isPasswordModalOpen}
           onClose={closePasswordModal}
         />
 
-        <div className="modal fade" id="editModal" tabIndex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title" id="editModalLabel">
-                  Editar {modalData.field === "nombre" ? "Nombre del Restaurante" :
-                    modalData.field === "telefono" ? "Teléfono" :
-                      modalData.field === "cubiertos" ? "Comensales" :
-                        modalData.field === "cantidad_mesas" ? "Cantidad de Mesas" :
-                          modalData.field === "reservas_por_dia" ? "Reservas por Día" :
-                            modalData.field === "horario_mañana" ? "Horario de Mañana" :
-                              modalData.field === "horario_tarde" ? "Horario de Tarde" :
-                                "Dirección"}
-                </h5>
-                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div className="modal-body">
-                {modalData.field === "horario_mañana" || modalData.field === "horario_tarde" ? (
-                  <div>
-                    <label htmlFor="inicio">Hora Inicio</label>
-                    <input
-                      type="time"
-                      className="form-control mb-3"
-                      value={modalData.value.inicio}
-                      onChange={(e) => handleModalChange(e, "inicio")}
-                    />
-                    <label htmlFor="fin">Hora Fin</label>
-                    <input
-                      type="time"
-                      className="form-control"
-                      value={modalData.value.fin}
-                      onChange={(e) => handleModalChange(e, "fin")}
-                    />
-                  </div>
-                ) : (
-                  <input
-                    type="text"
-                    className="form-control"
-                    value={modalData.value}
-                    onChange={handleModalChange}
-                    placeholder={`Introduzca nuevo ${modalData.field === "nombre" ? "nombre" :
-                      modalData.field === "telefono" ? "teléfono" :
-                        modalData.field === "cubiertos" ? "comensales" :
-                          modalData.field === "cantidad_mesas" ? "cantidad de mesas" :
-                            modalData.field === "reservas_por_dia" ? "reservas por día" :
-                              modalData.field === "direccion" ? "dirección" : "valor"}`}
-                  />
-                )}
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" className="btn btn-primary" onClick={handleModalSave}>Aceptar</button>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Modal para Eliminar Restaurante */}
+        <ModalEliminarRestaurante
+          isOpen={isEliminarRestauranteOpen}
+          onClose={() => setEliminarRestauranteOpen(false)}
+          handleEliminarRestaurante={handleEliminarRestaurante}
+        />
       </div>
     </div>
   );
 };
+

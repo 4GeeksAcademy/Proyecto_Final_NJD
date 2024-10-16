@@ -124,7 +124,7 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title" id="modifyReservationModalLabel">Modificar Reserva</h5>
-                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close">x</button>
+                        <button type="button" className="btn-close" onClick={onClose} aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <form onSubmit={handleSubmit}>

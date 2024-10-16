@@ -82,7 +82,7 @@ export const Footer = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="loginRestaurantModalLabel">Iniciar Sesión Restaurante</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <LoginRestaurante onLogin={handleLogin} />
@@ -96,7 +96,7 @@ export const Footer = () => {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h5 className="modal-title" id="registerModalRestauranteLabel">Registro Restaurante</h5>
-                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                            <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
                             <SignupRestaurante />

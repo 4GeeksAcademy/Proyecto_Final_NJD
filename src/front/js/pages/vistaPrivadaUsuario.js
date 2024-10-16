@@ -6,6 +6,8 @@ import { ModalVerMisReservas } from '../component/modalVerMisReservas';
 import "../../styles/vistaPrivadaUsuario.css";
 import { ModalVerMisFavoritos } from "../component/modalVerMisFavoritos";
 import { ModalCambiarPasswordUser } from '../component/modalCambiarPasswordUser';
+import ModalEliminarUsuario from '../component/modalEliminarUsuario';
+
 
 export const AreaPrivadaUsuario = () => {
     const { actions, store } = useContext(Context);
@@ -121,6 +123,9 @@ export const AreaPrivadaUsuario = () => {
         setPasswordModalOpen(false);
     };
 
+    const [isEliminarUsuarioOpen, setEliminarUsuarioOpen] = useState(false);
+
+
     return (
         <div className="area-privada">
             <div className="area-privada-container">
@@ -188,7 +193,7 @@ export const AreaPrivadaUsuario = () => {
                         </div>
                     </form>
 
-                    <div className="row mt-5 justify-content-center">
+                    <div className="row button-row">
                         <div className="col-md-3 mb-2">
                             <button className="btn btn-secondary w-100" onClick={() => setModalReservasOpen(true)}>
                                 Ver mis reservas
@@ -199,7 +204,13 @@ export const AreaPrivadaUsuario = () => {
                                 Ver mis favoritos
                             </button>
                         </div>
+                        <div className="col-md-3 mb-2">
+                            <button className="btn btn-danger w-100" onClick={() => setEliminarUsuarioOpen(true)}>
+                                Eliminar cuenta
+                            </button>
+                        </div>
                     </div>
+
                 </div>
 
                 {/* Modales */}
@@ -207,6 +218,14 @@ export const AreaPrivadaUsuario = () => {
                     isOpen={isModalReservasOpen} 
                     onClose={() => setModalReservasOpen(false)}
                 />
+
+                <ModalEliminarUsuario
+                    isOpen={isEliminarUsuarioOpen}
+                    onClose={() => setEliminarUsuarioOpen(false)}
+                    userId={user_id}  // Pasamos el ID del usuario actual
+                    eliminarUsuario={actions.eliminarUsuario}  // Llamamos a la función eliminarUsuario desde el flux
+                />
+
 
                 <ModalCambiarPasswordUser
                     isOpen={isPasswordModalOpen}

@@ -570,6 +570,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log(error);
                 }
             },
+            
             // ELIMINAR RESTAURANTE
             eliminarRestaurante: async (restauranteId) => {
                 const token = sessionStorage.getItem("token");
