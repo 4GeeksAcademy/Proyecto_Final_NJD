@@ -4,7 +4,7 @@
     align-items: center;
     justify-content: flex-start;
     padding: 20px;
-    margin-top: 100px; 
+    margin-top: 100px;
 }
 
 .tex-faq {
@@ -12,8 +12,8 @@
     font-size: 50px;
     font-weight: bold;
     margin-bottom: 20px;
+    text-align: center;
 }
-
 
 .container-faq {
     width: 60%;
@@ -28,12 +28,19 @@
 
 .search-bar-faq {
     width: 90%;
-    padding: 20px;
+    padding: 15px 25px 15px 25px;
     border: 2px solid #777;
     border-radius: 50px;
-    font-size: 20px;
+    font-size: 18px;
     margin-bottom: 20px;
     transition: border 0.3s ease;
+    box-sizing: border-box;
+}
+
+.search-bar-faq::placeholder {
+    opacity: 0.7;
+    font-size: 18px;
+    transition: opacity 0.3s ease;
 }
 
 
@@ -42,15 +49,16 @@
     text-align: left;
     border-radius: 8px;
     border: 2px solid #777;
+    margin-bottom: 10px;
+    overflow: hidden;
+    width: 100%;
 }
-
 
 .faq-question {
     font-size: 20px;
     color: #333;
     cursor: pointer;
     padding: 20px;
-    border-bottom: 1px solid #333;
     transition: color 0.3s ease;
 }
 
@@ -60,15 +68,75 @@
 
 .faq-answer {
     padding: 10px;
-    margin-top: 10px;
     background-color: white;
     line-height: 2;
     color: #333; 
     font-size: 16px;
+    border-bottom: 1px solid #333;
+}
+
+.faq-container.active {
+    border-bottom: 1px solid #333;
 }
 
 .no-results-faq {
     color: #888;
     font-size: 16px;
     padding: 20px;
+}
+
+@media (max-width: 1200px) {
+    .container-faq {
+        width: 100%;
+        padding: 20px;
+        margin: 20px auto 0;
+    }
+
+    .search-bar-faq {
+        width: 100%;
+        font-size: 16px;
+        padding: 15px 20px;
+        padding-left: 25px; 
+    }
+
+    .tex-faq {
+        font-size: 35px;
+    }
+
+    .faq-question {
+        font-size: 18px;
+        padding: 15px;
+    }
+
+    .faq-answer {
+        font-size: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container-faq {
+        width: 50%;
+        padding: 10px;
+        margin: 10px auto 0;
+    }
+
+    .search-bar-faq {
+        font-size: 14px;
+        padding: 5px 5px;
+        padding-left: 5px; 
+    }
+
+    .tex-faq {
+        font-size: 16px;
+    }
+
+    .faq-question {
+        font-size: 16px;
+        padding: 10px;
+    }
+
+    .faq-answer {
+        font-size: 14px;
+        padding: 8px;
+    }
 }

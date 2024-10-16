@@ -21,14 +21,13 @@
     border-radius: 10px;
     box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 40px 0; /* Más separación vertical */
-    width: 100%;  /* Se ajusta en pantallas pequeñas */
-    max-width: 500px; /* Ancho máximo del contenedor */
+    margin: 40px 0; 
+    width: 100%;  
+    max-width: 500px; 
     position: relative;
-    /* Animación del contenedor que entra de derecha a izquierda */
     animation: slideInContainer 2s ease forwards;
-    background: linear-gradient(to right, #d3d3d3, #696969); /* Degradado de gris claro a gris oscuro */
-    border: 2px solid transparent; /* Borde transparente */
+    background: linear-gradient(to right, #d3d3d3, #696969); 
+    border: 2px solid transparent; 
     z-index: 1;
 }
 
@@ -39,13 +38,13 @@
     left: 0;
     right: 0;
     bottom: 0;
-    border-radius: 10px; /* Asegura que el borde siga la forma del contenedor */
-    background: linear-gradient(to right, #d3d3d3, #777); /* Degradado de gris claro a gris oscuro */
-    z-index: -1; /* Envuelve el contenedor */
-    filter: blur(5px); /* Borra un poco el fondo */
+    border-radius: 10px; 
+    background: linear-gradient(to right, #d3d3d3, #777); 
+    z-index: -1; 
+    filter: blur(5px); 
 }
   
-  /* Animación para la imagen */
+  
   .custom-img {
     width: 115px;
     height: 115px;
@@ -53,9 +52,8 @@
     top: -30px;
     left: 20px;
     border-radius: 50%;
-    /* Animación de la imagen que entra de izquierda a derecha */
     animation: slideInImage 2s ease forwards;
-    animation-delay: 0s; /* Sin retardo para que ambas entren al mismo tiempo */
+    animation-delay: 0s; 
     box-shadow: 10px 0px 15px rgba(0, 0, 0, 0.5);
     border: 5px solid #333;
   }
@@ -77,10 +75,10 @@
     text-align: justify;
   }
   
-  /* Media query para pantallas pequeñas */
+ 
   @media (max-width: 576px) {
     .custom-container {
-      max-width: 90%; /* Para pantallas más pequeñas */
+      max-width: 90%; 
     }
   
     .custom-img {
@@ -99,23 +97,23 @@
     }
   }
   
-  /* Animación para que el contenedor entre de derecha a izquierda */
+  
   @keyframes slideInContainer {
     from {
-      transform: translateX(100%); /* Empieza desde fuera de la pantalla a la derecha */
+      transform: translateX(100%); 
     }
     to {
-      transform: translateX(0); /* Termina en su posición original */
+      transform: translateX(0); 
     }
   }
   
-  /* Animación para que la imagen entre de izquierda a derecha */
+  
   @keyframes slideInImage {
     from {
-      transform: translateX(-800%); /* Empieza desde fuera de la pantalla a la izquierda */
+      transform: translateX(-800%); 
     }
     to {
-      transform: translateX(0); /* Termina en su posición original */
+      transform: translateX(0); 
     }
   }
   
