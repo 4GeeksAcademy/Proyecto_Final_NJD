@@ -37,7 +37,7 @@ const ModalEliminarUsuario = ({ isOpen, onClose, userId, eliminarUsuario }) => {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Eliminar usuario</h5>
-                        <button type="button" className="btn-close" onClick={onClose}></button>
+                        <button type="button" className="btn-close btn-close-white" onClick={onClose}></button>
                     </div>
                     <div className="modal-body">
                         <p>¿Estás seguro de que deseas eliminar tu cuenta? Esta acción no se puede deshacer.</p>

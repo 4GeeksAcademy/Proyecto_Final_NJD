@@ -239,7 +239,7 @@ export const AreaPrivadaUsuario = () => {
                                 <h5 className="modal-title" id="editModalLabel">
                                     Editar {modalData.field === "firstName" ? "Nombre" : modalData.field === "lastName" ? "Apellidos" : "Teléfono"}
                                 </h5>
-                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close">x</button>
+                                <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close">x</button>
                             </div>
                             <div className="modal-body">
                                 <input
