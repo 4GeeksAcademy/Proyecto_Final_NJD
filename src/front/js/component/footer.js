@@ -65,9 +65,9 @@ export const Footer = () => {
                         <h4>Nuestras redes</h4>
                         <ul>
                             <li>
-                                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">Facebook</a> |
-                                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a> |
-                                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">Twitter</a>
+                                <a href="https://www.facebook.com/profile.php?id=61567234019628&mibextid=LQQJ4d" target="_blank" rel="noopener noreferrer">Facebook</a> |
+                                <a href="https://www.instagram.com/hoynococino.ceo/profilecard/?igsh=MW1qcm1vNnh6aTA0eA==" target="_blank" rel="noopener noreferrer">Instagram</a> |
+                                <a href="https://x.com/hoynococino_ceo" target="_blank" rel="noopener noreferrer">Twitter</a>
                             </li>
                         </ul>
                     </div>

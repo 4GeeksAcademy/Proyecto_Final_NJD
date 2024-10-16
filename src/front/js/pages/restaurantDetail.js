@@ -202,8 +202,8 @@ export const RestaurantDetail = () => {
                             <div className="restaurant-info">
                                 <h3>{restaurant.name}</h3>
                                 <p>{restaurant.address}</p>
-                                <p><strong>Valoración:</strong> {restaurant.rating} ⭐</p>
-                                <p><strong>Rango de Precios:</strong> {restaurant.priceRange}</p>
+                                <p><strong>⭐ Valoración:</strong> {restaurant.rating} </p>
+                                <p><strong>💰 Rango de Precios:</strong> {restaurant.priceRange}</p>
                             </div>
                         </div>
 
