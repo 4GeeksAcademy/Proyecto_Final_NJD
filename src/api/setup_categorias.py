@@ -7,7 +7,7 @@ def cargar_categorias_iniciales():
             categorias_por_defecto = [
                 "Italiana", "Argentina", "Mexicana", "Mediterránea", "China", 
                 "Japonesa", "India", "Americana", "Tailandesa", "Arabe", 
-                "Internacional", "Latinoamericana", "Saludable"
+                "Internacional", "Latina", "Saludable"
             ]
             for nombre in categorias_por_defecto:
                 nueva_categoria = Categorias(nombre_de_categoria=nombre)
