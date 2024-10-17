@@ -5,6 +5,8 @@ import { Context } from "../store/appContext";
 import "../../styles/vistaPrivadaRestaurante.css";
 import ModalCambiarPasswordRestaurante from '../component/modalCambiarPasswordRestaurante';
 import ModalEliminarRestaurante from '../component/modalEliminarRestaurante';
+import ModalDescripciones from '../component/modalDescripciones';
+
 
 export const VistaPrivadaRestaurante = () => {
   const { actions, store } = useContext(Context);
@@ -36,6 +38,7 @@ export const VistaPrivadaRestaurante = () => {
 
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [isEliminarRestauranteOpen, setEliminarRestauranteOpen] = useState(false); // Estado para el modal de eliminación
+  const [isDescripcionModalOpen, setDescripcionModalOpen] = useState(false);
 
   const openModal = (field, currentValue) => {
     if (field === "horario_mañana" || field === "horario_tarde") {
@@ -108,6 +111,15 @@ export const VistaPrivadaRestaurante = () => {
     modal.hide();
   };
 
+  const openDescripcionModal = () => {
+    setDescripcionModalOpen(true);
+  };
+
+  const closeDescripcionModal = () => {
+    setDescripcionModalOpen(false);
+  };
+
+
 
   useEffect(() => {
     const fetchRestauranteData = async () => {
@@ -127,6 +139,7 @@ export const VistaPrivadaRestaurante = () => {
             horario_tarde_inicio: data.horario_tarde_inicio || "",
             horario_tarde_fin: data.horario_tarde_fin || "",
             direccion: data.direccion || "",
+            descripcion: data.descripcion || ""
           });
         } catch (error) {
           console.error("Error al obtener datos del restaurante:", error);
@@ -171,27 +184,27 @@ export const VistaPrivadaRestaurante = () => {
   const handleEliminarRestaurante = async () => {
     const result = await actions.eliminarRestaurante(restaurante_id);
     if (result.success) {
-        // Limpiar sessionStorage
-        sessionStorage.removeItem('restaurant_name');
-        sessionStorage.removeItem('restaurant_id');
+      // Limpiar sessionStorage
+      sessionStorage.removeItem('restaurant_name');
+      sessionStorage.removeItem('restaurant_id');
 
-        Swal.fire({
-            title: "Eliminado",
-            text: "El restaurante ha sido eliminado con éxito.",
-            icon: "success",
-            confirmButtonText: "Aceptar"
-        }).then(() => {
-            navigate("/home");
-        });
+      Swal.fire({
+        title: "Eliminado",
+        text: "El restaurante ha sido eliminado con éxito.",
+        icon: "success",
+        confirmButtonText: "Aceptar"
+      }).then(() => {
+        navigate("/home");
+      });
     } else {
-        Swal.fire({
-            title: "Error",
-            text: result.message || "Error al eliminar el restaurante.",
-            icon: "error",
-            confirmButtonText: "Aceptar"
-        });
+      Swal.fire({
+        title: "Error",
+        text: result.message || "Error al eliminar el restaurante.",
+        icon: "error",
+        confirmButtonText: "Aceptar"
+      });
     }
-};
+  };
 
 
   return (
@@ -318,6 +331,21 @@ export const VistaPrivadaRestaurante = () => {
               </div>
             </div>
 
+            <div className="col-md-6 mb-3">
+              <label htmlFor="descripcion" className="form-label">Descripción</label>
+              <div className="input-group">
+                <div className="input-content">
+                  <span className="form-control-plaintext">
+                    {formData.descripcion ? "La descripción está completa" : "No hay descripción"}
+                  </span>
+                  <span className="input-group-text icon-wrapper">
+                    <i className="fa-solid fa-pen-to-square small-icon" onClick={openDescripcionModal}></i>
+                  </span>
+                </div>
+              </div>
+            </div>
+
+
             <div className="text-left mt-4 col-12 d-flex justify-content-between">
               <button type="submit" className="btn btn-primary">Guardar Cambios</button>
               <button type="button" className="btn btn-secondary" onClick={goToCloudinary}>Cargar Imágenes</button>
@@ -331,6 +359,14 @@ export const VistaPrivadaRestaurante = () => {
           isOpen={isPasswordModalOpen}
           onClose={closePasswordModal}
         />
+
+        {/* Modal para editar Descripción */}
+        <ModalDescripciones
+          isOpen={isDescripcionModalOpen}
+          onClose={closeDescripcionModal}
+          restauranteId={restaurante_id}
+        />
+
 
         {/* Modal para Eliminar Restaurante */}
         <ModalEliminarRestaurante

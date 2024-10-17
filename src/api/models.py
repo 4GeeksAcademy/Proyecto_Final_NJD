@@ -89,6 +89,7 @@ class Restaurantes(db.Model):
     reservas_por_dia = db.Column(db.Integer)
     registro_completo = db.Column(db.Boolean, default=False)
     image = db.Column(db.String(500), nullable=True)
+    descripcion = db.Column(db.Text, nullable=True)  
     password_hash = db.Column(db.String(300), nullable=False)
 
     categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'), nullable=True)
@@ -96,7 +97,6 @@ class Restaurantes(db.Model):
     restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
     restaurantes_res = db.relationship('Reserva', backref='restaurantes')
     restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
-
 
     def __repr__(self):
         return f'<Restaurantes {self.nombre}>'
@@ -123,7 +123,8 @@ class Restaurantes(db.Model):
             "reservas_por_dia": self.reservas_por_dia,
             "categorias_id": self.categorias_id,
             "restaurantes_mesa": list(map(lambda x: x.serialize(), self.restaurantes_mesa)),
-            "image": self.image
+            "image": self.image,
+            "descripcion": self.descripcion  # Añadimos la descripción a la serialización
         }
 
 

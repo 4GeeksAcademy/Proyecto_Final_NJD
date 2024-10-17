@@ -10,18 +10,19 @@ const getState = ({ getStore, getActions, setStore }) => {
             restaurantDetails: {},
             imagenes: [],
             userName: sessionStorage.getItem('user_name'),
-            restoName: sessionStorage.getItem('restaurant_name')
+            restoName: sessionStorage.getItem('restaurant_name'),
+            descripcionRestaurante: ""
         },
 
         actions: {
 
 
 
-            actualizarNombreUsuario: (nombre)=> {
-                setStore({userName: nombre})
+            actualizarNombreUsuario: (nombre) => {
+                setStore({ userName: nombre })
 
             },
-            
+
             actualizarNombreResto: (nombre) => {
                 setStore({ restoName: nombre })
             },
@@ -35,7 +36,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify(data)
                     });
@@ -59,7 +60,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify(data)
                     });
@@ -91,7 +92,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify(bodyData)
                     });
@@ -116,13 +117,13 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         }
                     });
 
                     if (response.ok) {
                         const result = await response.json();
-                        return result;  
+                        return result;
                     } else {
                         const error = await response.json();
                         alert("Error: " + error.message);
@@ -142,7 +143,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         },
                         body: JSON.stringify(data)
                     });
@@ -172,7 +173,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(url, {
                         method: 'DELETE',
                         headers: {
-                            'Authorization': `Bearer ${token}` 
+                            'Authorization': `Bearer ${token}`
                         }
                     });
 
@@ -241,11 +242,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log(data.user_id)
 
                     if (response.ok) {
-                        sessionStorage.setItem('token', data.access_token);  
-                        sessionStorage.setItem('user_name', data.user_name);  
+                        sessionStorage.setItem('token', data.access_token);
+                        sessionStorage.setItem('user_name', data.user_name);
                         sessionStorage.setItem('user_id', '1')
                         localStorage.setItem('usuario', data.user_id)
-                        return { success: true, data: data };  
+                        return { success: true, data: data };
                     } else if (response.status === 404) {
                         return { success: false, error: 'Usuario no registrado' };
                     } else if (response.status === 401) {
@@ -303,7 +304,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
                     if (response.ok) {
                         const data = await response.json();
-                        console.log("Datos obtenidos del usuario:", data);  
+                        console.log("Datos obtenidos del usuario:", data);
                         return data;
                     } else {
                         const errorData = await response.json();
@@ -324,7 +325,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
                         method: "DELETE",
                         headers: {
-                            "Authorization": `Bearer ${token}` 
+                            "Authorization": `Bearer ${token}`
                         }
                     });
 
@@ -365,11 +366,11 @@ const getState = ({ getStore, getActions, setStore }) => {
                         throw new Error("Error al obtener la categoría");
                     }
                     const data = await response.json();
-                    console.log(`Datos de la categoría obtenidos: `, data); 
-                    return data;  
+                    console.log(`Datos de la categoría obtenidos: `, data);
+                    return data;
                 } catch (error) {
                     console.error("Error al cargar la categoría", error);
-                    return null;  
+                    return null;
                 }
             },
 
@@ -404,7 +405,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         })
                     });
 
-                    const data = await response.json();  
+                    const data = await response.json();
 
                     if (response.ok) {
                         sessionStorage.setItem('restaurant_name', data.restaurant_name);
@@ -428,7 +429,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         body: JSON.stringify({
                             nombre: formData.restaurantName,
                             email: formData.email,
-                            password: formData.password, 
+                            password: formData.password,
                             telefono: formData.phone,
                         }),
                     });
@@ -575,7 +576,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log(error);
                 }
             },
-            
+
             // ELIMINAR RESTAURANTE
             eliminarRestaurante: async (restauranteId) => {
                 const token = sessionStorage.getItem("token");
@@ -629,7 +630,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         getActions().obtenerFavoritosDelUsuario(user_id)
                         const data = await response.json();
                         console.log("Favorito eliminado:", data);
-                        return true;  
+                        return true;
                     } else {
                         const errorData = await response.json();
                         console.error("Error eliminando favorito:", errorData);
@@ -675,7 +676,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const formData = new FormData();
                     formData.append("file", file);
-                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET); 
+                    formData.append("upload_preset", process.env.REACT_APP_CLOUDINARY_PRESET);
                     formData.append("cloud_name", process.env.REACT_APP_CLOUDINARY_CLOUD_NAME);
 
                     const response = await fetch(`https://api.cloudinary.com/v1_1/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload`, {
@@ -758,7 +759,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             deleteImageRestaurante: async (restaurante_id, imageURL) => {
                 try {
                     const response = await fetch(
-                        `${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,  
+                        `${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,
                         {
                             method: "DELETE",
                             headers: {
@@ -778,9 +779,58 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.error("Error al eliminar la imagen:", error);
                     return { success: false, error };
                 }
-            }
+            },
+
+            // OBTENER DESCRIPCIÓN DEL RESTAURANTE
+            obtenerDescripcionRestaurante: async (restauranteId) => {
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/descripcion`, {
+                        method: "GET"
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, descripcion: data.descripcion };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al obtener la descripción" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
+            // ACTUALIZAR DESCRIPCIÓN DEL RESTAURANTE
+            actualizarDescripcionRestaurante: async (restauranteId, descripcion) => {
+                const token = sessionStorage.getItem("token");
+                try {
+                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/descripcion`, {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ descripcion })
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return { success: true, message: "Descripción actualizada con éxito", data: data };
+                    } else {
+                        const errorData = await response.json();
+                        return { success: false, message: errorData.msg || "Error al actualizar la descripción" };
+                    }
+                } catch (error) {
+                    return { success: false, message: "Error de conexión" };
+                }
+            },
+
         }
     };
 };
+
+
+
+
 
 export default getState;

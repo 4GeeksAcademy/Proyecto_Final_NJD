@@ -860,3 +860,34 @@ def cambiar_contrasena_usuario():
     db.session.commit()
 
     return jsonify({"msg": "Contraseña actualizada con éxito"}), 200
+
+
+# METER DESCRIPCION
+@api.route('/restaurantes/<int:restaurante_id>/descripcion', methods=['PUT'])
+@jwt_required()
+def update_descripcion_restaurante(restaurante_id):
+    body = request.get_json()
+    descripcion = body.get('descripcion', '')
+
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    restaurante.descripcion = descripcion  # Actualizamos la descripción
+
+    db.session.commit()
+
+    return jsonify({'msg': 'Descripción actualizada con éxito', 'descripcion': restaurante.descripcion}), 200
+
+
+# OBTENER DESCRIPCION
+
+@api.route('/restaurantes/<int:restaurante_id>/descripcion', methods=['GET'])
+def get_descripcion_restaurante(restaurante_id):
+    restaurante = Restaurantes.query.get(restaurante_id)
+
+    if not restaurante:
+        return jsonify({'msg': 'Restaurante no encontrado'}), 404
+
+    return jsonify({'descripcion': restaurante.descripcion}), 200
