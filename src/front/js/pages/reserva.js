@@ -46,7 +46,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 },
                 body: JSON.stringify(formData)
             });
-
             if (response.ok) {
                 const data = await response.json();
                 // Enviar correo de confirmación
@@ -71,7 +70,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                                 icon: "success",
                                 confirmButtonText: "Aceptar"
                             });
-
                             // Mostrar mensaje de éxito
                             Swal.fire({
                                 title: 'Reserva realizada con éxito',
@@ -89,8 +87,6 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                                     }
                                 }
                             });
-
-
                         } else {
                             console.log("Hubo un problema enviando el correo.", data);
                         }
@@ -98,15 +94,25 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     .catch(error => {
                         console.error("Error enviando el correo: ", error);
                     });
-
                 onClose();
             } else {
-                Swal.fire({
-                    title: 'Error',
-                    text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
-                    icon: 'error',
-                    confirmButtonText: 'Aceptar'
-                });
+                const errorData = await response.json();
+                // Verificar si el error es por el horario
+                if (errorData.error && errorData.error.includes('fuera del horario permitido')) {
+                    Swal.fire({
+                        title: 'Error en la reserva',
+                        text: 'La reserva está fuera del horario permitido. Por favor, selecciona un horario válido.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                }
             }
         } catch (error) {
             Swal.fire({
@@ -118,7 +124,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         }
     };
 
-    const handleChange = (e) => {
+
+        const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };

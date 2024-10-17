@@ -7,6 +7,8 @@ import { Context } from "../store/appContext";
 import { Reserva } from "./reserva";
 import "../../styles/vistaDetails.css";
 
+
+
 export const RestaurantDetail = () => {
     const { id } = useParams();
     const { store, actions } = useContext(Context);
@@ -20,6 +22,15 @@ export const RestaurantDetail = () => {
     const [isOpinionModalOpen, setIsOpinionModalOpen] = useState(false);
     const [categoryName, setCategoryName] = useState("No especificado");
 
+
+    const handleBackdropClick = (e) => {
+        if (e.target.classList.contains("modal")) {
+            closeModal();
+            closeOpinionModal();
+            CartaCloseModal();
+        }
+    };
+    
     const openModal = () => {
         const token = sessionStorage.getItem("token");
         if (token) {
@@ -240,25 +251,25 @@ export const RestaurantDetail = () => {
                 </div>
             </div>
 
-            <Reserva
-                isOpen={isModalOpen}
-                onClose={closeModal}
-                restaurante_id={id}
-            />
-
-            <CartaModal
-                isOpen={isCartaModalOpen}
-                onClose={CartaCloseModal}
-            />
-
-            <OpinionModal
-                isOpen={isOpinionModalOpen}
-                onClose={closeOpinionModal}
-                opinions={restaurant.opinions || opinions}
-                currentIndex={currentIndex}
-                nextOpinion={nextOpinion}
-                prevOpinion={prevOpinion}
-            />
+            <div onClick={handleBackdropClick}>
+                <Reserva
+                    isOpen={isModalOpen}
+                    onClose={closeModal}
+                    restaurante_id={id}
+                />
+                <CartaModal
+                    isOpen={isCartaModalOpen}
+                    onClose={CartaCloseModal}
+                />
+                <OpinionModal
+                    isOpen={isOpinionModalOpen}
+                    onClose={closeOpinionModal}
+                    opinions={restaurant.opinions || opinions}
+                    currentIndex={currentIndex}
+                    nextOpinion={nextOpinion}
+                    prevOpinion={prevOpinion}
+                />
+            </div>
         </div>
     );
 };

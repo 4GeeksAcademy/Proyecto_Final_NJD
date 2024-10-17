@@ -21,7 +21,7 @@ export const About = () => {
 
             <div className="custom-container position-relative text-center">
                 <img
-                    src="https://ebootcamp.net/wp-content/uploads/2021/11/4Geeks-Academy.jpeg"
+                    src="https://lh3.googleusercontent.com/a/ACg8ocLXtklcDZgeA6hnn84CqCiVPaCN1QVvvV5LfuErH07GfjYLEhsf=s360-c-no"
                     alt="Foto"
                     className="rounded-circle custom-img"
                 />

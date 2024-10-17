@@ -48,7 +48,8 @@ export const LoginUsuario = ({ onLogin }) => {
 
         if (result.success) {
             sessionStorage.setItem('token', result.data.access_token);  
-            sessionStorage.setItem('user_name', result.data.user_name); 
+            sessionStorage.setItem('user_name', result.data.user_name);
+            actions.actualizarNombreUsuario(result.data.user_name)
             
             onLogin(result.data.user_name,result.data.user_id);
 
