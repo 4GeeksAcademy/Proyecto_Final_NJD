@@ -78,6 +78,13 @@ export const RestaurantDetail = () => {
             comment: "Me encantaron las tapas, aunque la espera fue un poco larga.",
             photo: "https://randomuser.me/api/portraits/women/1.jpg",
         },
+        {
+            id: 3,
+            name: "Juan López",
+            rating: 5,
+            comment: "Un lugar acogedor con un ambiente perfecto para una cena romántica.",
+            photo: "https://randomuser.me/api/portraits/men/2.jpg",
+        },
     ];
 
     const nextOpinion = () => {
