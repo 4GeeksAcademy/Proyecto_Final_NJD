@@ -55,13 +55,11 @@ export const AreaPrivadaUsuario = () => {
             return;
         }
     
-        // Si se ha introducido un valor, actualizar el campo
         setFormData({
             ...formData,
             [modalData.field]: modalData.value
         });
     
-        // Cerrar el modal
         const modal = bootstrap.Modal.getInstance(document.getElementById('editModal'));
         modal.hide();
     };
