@@ -2,7 +2,8 @@ import React, { useRef } from "react";
 import "../../styles/home.css";
 import "../../styles/jumbotron.css";
 import "../../styles/footer.css";
-import { Link } from "react-router-dom"; 
+import { Link } from "react-router-dom";
+import optimaVajilla from "../../img/optimaVajilla.jpg";
 
 
 export const Home = () => {
@@ -55,7 +56,12 @@ export const Home = () => {
 	return (
 		<div>
 			<div className="container-background"></div>
-			<div className="image-header">
+			<div
+				className="image-header"
+				style={{
+					backgroundImage: `url(${optimaVajilla})`,
+				}}
+			>
 				<div className="overlay">
 					<h1 className="text-white">¡Bienvenido a Hoy No Cocino!</h1>
 					<p className="text-white">Encuentra los mejores restaurantes y realiza tus reservas de forma rápida y sencilla.</p>
