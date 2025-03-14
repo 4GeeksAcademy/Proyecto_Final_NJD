@@ -4,7 +4,7 @@ set -o errexit
 
 # Actualizar herramientas antes de instalar cualquier otra cosa
 pip install --upgrade pip setuptools wheel
-pip install Cython==0.29.24 build
+pip install Cython==0.29.36 build
 
 # Instalar dependencias del proyecto
 npm install

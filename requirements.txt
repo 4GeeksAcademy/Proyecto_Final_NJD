@@ -5,7 +5,9 @@ Cython==0.29.36
 pip>=25.0.1
 setuptools>=70.0.0
 wheel
-build  # Para evitar errores en la construcción
+build
+
+# Para evitar errores en la construcción
 
 # Dependencias del proyecto
 alembic==1.5.4
@@ -27,7 +29,7 @@ psycopg2-binary==2.8.6
 python-dateutil==2.8.1
 python-dotenv==0.15.0
 python-editor==1.0.4
-pyyaml==5.4.1
+pyyaml==5.4.1 --global-option=--without-libyaml
 six==1.15.0
 sqlalchemy==1.3.23
 urllib3==1.26.3
