@@ -1,9 +1,10 @@
 -i https://pypi.org/simple
 
-# Actualizar herramientas clave antes de instalar otros paquetes
+# Primero, actualizar herramientas clave antes de instalar otros paquetes
 pip>=25.0.1
-setuptools>=68.0.0
-Cython==0.29.36
+setuptools>=70.0.0  # Última versión estable
+wheel  
+Cython==0.29.36 
 
 # Dependencias del proyecto
 alembic==1.5.4
