@@ -1,4 +1,3 @@
-cat > render_build.sh << EOF
 #!/usr/bin/env bash
 # exit on error
 set -o errexit
@@ -15,5 +14,5 @@ npm install
 npm run build
 
 # Instalar el resto de dependencias
-pip install -r requirements.txt
-EOF
+grep -v "pyyaml" requirements.txt > requirements_without_yaml.txt
+pip install -r requirements_without_yaml.txt
