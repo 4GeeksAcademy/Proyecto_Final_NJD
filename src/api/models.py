@@ -19,7 +19,7 @@ class Reserva(db.Model):
     creada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     modificada = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
 
-    restaurante = db.relationship('Restaurantes', backref='reservas')
+    restaurante = db.relationship('Restaurantes', back_populates='restaurantes_res')
 
     def __repr__(self):
         return f'<Reserva {self.id}>'
@@ -95,7 +95,7 @@ class Restaurantes(db.Model):
     categorias_id = db.Column(db.Integer, db.ForeignKey('categorias.id'), nullable=True)
     categoria_relacion = db.relationship('Categorias', backref='restaurantes')
     restaurantes_fav = db.relationship('Restaurantes_Favoritos', backref='restaurantes') 
-    restaurantes_res = db.relationship('Reserva', backref='restaurantes')
+    restaurantes_res = db.relationship('Reserva', back_populates='restaurante')
     restaurantes_mesa = db.relationship('Mesas', backref='restaurantes')
 
     def __repr__(self):
