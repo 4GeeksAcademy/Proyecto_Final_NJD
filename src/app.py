@@ -19,15 +19,15 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.api
 
-from api.utils import APIException, generate_sitemap
-from api.models import db
-from api.routes import api
-from api.admin import setup_admin
-from api.commands import setup_commands
+from src.api.utils import APIException, generate_sitemap
+from src.api.models import db
+from src.api.routes import src.api
+from src.api.admin import setup_admin
+from src.api.commands import setup_commands
 
 # HARDCODE PARA METER LAS CATEGORIAS Y RESTAURANTES EN CADA RESET / SOLO PARA PRUEBAS
-from api.setup_categorias import cargar_categorias_iniciales
-from api.setup_restaurantes import cargar_restaurantes_iniciales  
+from src.api.setup_categorias import cargar_categorias_iniciales
+from src.api.setup_restaurantes import cargar_restaurantes_iniciales  
 
 # from models import Person
 

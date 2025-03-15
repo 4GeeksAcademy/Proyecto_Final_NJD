@@ -3,8 +3,8 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import request, jsonify, Blueprint
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
-from api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
-from api.utils import validar_horario_reserva, generate_sitemap, APIException
+from src.api.models import db, Usuario, Reserva, Restaurantes_Favoritos, Valoracion, Restaurantes, Categorias
+from src.api.utils import validar_horario_reserva, generate_sitemap, APIException
 from flask_cors import CORS
 from datetime import datetime, timezone
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -454,7 +454,7 @@ def get_restaurantes_por_categoria(categoria_id):
 # CREAR RESERVA
 
 from datetime import datetime
-from api.utils import validar_horario_reserva  
+from src.api.utils import validar_horario_reserva  
 
 @api.route('/usuario/reservas', methods=['POST'])
 @jwt_required()

@@ -1,5 +1,5 @@
 from sqlalchemy.exc import ProgrammingError  
-from api.models import db, Categorias
+from src.api.models import db, Categorias
 
 def cargar_categorias_iniciales():
     try:
