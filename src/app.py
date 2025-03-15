@@ -21,7 +21,7 @@ import cloudinary.api
 
 from src.api.utils import APIException, generate_sitemap
 from src.api.models import db
-from src.api.routes import src.api
+from src.api.routes import api
 from src.api.admin import setup_admin
 from src.api.commands import setup_commands
 
