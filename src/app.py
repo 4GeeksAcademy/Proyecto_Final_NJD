@@ -59,14 +59,10 @@ app.config.update(dict(
 mail.init_app(app)
 
 # database configuration
-is_production = os.environ.get('RENDER', False)
 db_url = os.getenv("DATABASE_URL")
 
-if is_production:
-    # En producción (Render), usar SQLite con almacenamiento persistente
-    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////var/data/database.db"
-elif db_url is not None:
-    # En desarrollo con DATABASE_URL definido
+if db_url is not None:
+    # Usar la URL de base de datos proporcionada (de Neon)
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
         "postgres://", "postgresql://")
 else:
@@ -155,7 +151,6 @@ def send_mail():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 
 # this only runs if `$ python src/main.py` is executed
