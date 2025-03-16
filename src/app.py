@@ -58,12 +58,19 @@ app.config.update(dict(
 # Inicio Mail
 mail.init_app(app)
 
-# database condiguration
+# database configuration
+is_production = os.environ.get('RENDER', False)
 db_url = os.getenv("DATABASE_URL")
-if db_url is not None:
+
+if is_production:
+    # En producción (Render), usar SQLite con almacenamiento persistente
+    app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////var/data/database.db"
+elif db_url is not None:
+    # En desarrollo con DATABASE_URL definido
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
         "postgres://", "postgresql://")
 else:
+    # Fallback para desarrollo sin DATABASE_URL
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
