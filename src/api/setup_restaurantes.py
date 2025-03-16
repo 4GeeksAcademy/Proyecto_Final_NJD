@@ -1,5 +1,5 @@
 from sqlalchemy.exc import ProgrammingError
-from api.models import db, Restaurantes
+from src.api.models import db, Restaurantes
 
 mock_restaurantes = [
                 { "nombre": "Trattoria Bella", "telefono": "123 123 123", "email": "tratoriabella@gmail.com","horario_mañana_inicio": "12:00", "horario_mañana_fin": "15:30", "horario_tarde_inicio": "20:00", "horario_tarde_fin": "22:30", "cubiertos": 100, "reservas_por_dia": 30, "cantidad_mesas": 30, "categorias_id": 1, "direccion": "Calle Mayor 45, Madrid", "image": "https://i0.wp.com/travelandleisure-es.com/wp-content/uploads/2024/04/TAL-ristorante-seating-ITLNRESTAURANTS0424-5403b234cdbd4026b2e98bed659b1634.webp?fit=750%2C500&ssl=1"},
