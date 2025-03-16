@@ -9,7 +9,7 @@
 	"scripts": {
 		"start": "webpack-dev-server --config webpack.dev.js --port 3000",
 		"build": "webpack --config webpack.prod.js",
-		"serve": "serve dist -s"
+		"serve": "serve -s public"
 	},
 	"author": {
 		"name": "Alejandro Sanchez",
@@ -83,6 +83,5 @@
 		"react-polyfills": "0.0.1",
 		"react-router-dom": "^6.26.2",
 		"sweetalert2": "^11.14.1"
-	},
-	"proxy": "https://proyecto-final-njd.onrender.com/"
+	}
 }
