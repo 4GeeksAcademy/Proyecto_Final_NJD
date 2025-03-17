@@ -1,20 +1,23 @@
+from dotenv import load_dotenv  # <-- Importar dotenv
+import os
 from sqlalchemy.exc import ProgrammingError  # <-- Línea añadida para manejar el error si las tablas no están listas
+
+# Cargar variables desde el archivo .env
+load_dotenv()
+
+# Comprobar si Flask está reconociendo las variables
+print(f"🔹 DATABASE_URL: {os.getenv('DATABASE_URL')}")
 
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
-import os
 from flask import Flask, request, jsonify, url_for, send_from_directory
 from flask_migrate import Migrate
 from flask_swagger import swagger
-
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
-from flask_cors import CORS  # <-- Importar CORS
-#API Email:
-from flask_mail import Mail, Message
-
-#Cloudinary:
+from flask_cors import CORS  
+from flask_mail import Mail, Message  # API Email
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -24,12 +27,8 @@ from src.api.models import db
 from src.api.routes import api
 from src.api.admin import setup_admin
 from src.api.commands import setup_commands
-
-# HARDCODE PARA METER LAS CATEGORIAS Y RESTAURANTES EN CADA RESET / SOLO PARA PRUEBAS
 from src.api.setup_categorias import cargar_categorias_iniciales
 from src.api.setup_restaurantes import cargar_restaurantes_iniciales  
-
-# from models import Person
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
@@ -42,7 +41,6 @@ CORS(app)
 # Instancia de Mail API email
 mail = Mail()
 
-#API email
 # Configuración de Flask-Mail
 app.config.update(dict(
     DEBUG=False,
@@ -50,33 +48,30 @@ app.config.update(dict(
     MAIL_PORT=587,
     MAIL_USE_TLS=True,
     MAIL_USE_SSL=False,
-    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),  # esto en .env
-    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),  # esto en .env
-    MAIL_DEFAULT_SENDER = 'hoynococino.ceo@gmail.com'
+    MAIL_USERNAME=os.getenv("MAIL_USERNAME"),  
+    MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),  
+    MAIL_DEFAULT_SENDER='hoynococino.ceo@gmail.com'
 ))
 
-# Inicio Mail
 mail.init_app(app)
 
-# database configuration
+# Configuración de la base de datos
 db_url = os.getenv("DATABASE_URL")
 
 if db_url is not None:
-    # Usar la URL de base de datos proporcionada (de Neon)
     app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
         "postgres://", "postgresql://")
 else:
-    # Fallback para desarrollo sin DATABASE_URL
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JWT_SECRET_KEY'] = 'nelvb' 
+app.config['JWT_SECRET_KEY'] = 'nelvb'  
 app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)  
 
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
-# CARGAR CATEGORIAS Y RESTAURANTES INICIALES SI NO ESTÁN EN LA BASE DE DATOS / SOLO PARA PRUEBAS
+# CARGAR CATEGORÍAS Y RESTAURANTES INICIALES SOLO SI NO ESTÁN EN LA BASE DE DATOS
 with app.app_context():
     try:
         cargar_categorias_iniciales()
@@ -95,9 +90,7 @@ cloudinary.config(
 )
 
 setup_admin(app)
-
 setup_commands(app)
-
 app.register_blueprint(api, url_prefix='/api')
 
 @app.errorhandler(APIException)
@@ -127,12 +120,10 @@ def send_mail():
     reservation_time = data.get('reservation_time')  
 
     try:
-        # Crear el mensaje de correo
         msg = Message(subject="Confirmación de Reserva",
                       sender=os.getenv("MAIL_USERNAME"),
                       recipients=[user_email])
 
-        # Cuerpo del correo en HTML
         msg.html = f"""
             <h3>Confirmación de tu reserva</h3>
             <p>Gracias por reservar en <strong>{restaurant_name}</strong>.</p>
@@ -144,7 +135,6 @@ def send_mail():
             <p>Nos vemos pronto!</p>
         """
 
-        # Enviar el correo
         mail.send(msg)
 
         return jsonify({"message": "Correo enviado exitosamente"}), 200
@@ -152,8 +142,6 @@ def send_mail():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-# this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
     app.run(host='0.0.0.0', port=PORT, debug=True)
