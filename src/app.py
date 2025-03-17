@@ -1,16 +1,12 @@
-from dotenv import load_dotenv  # <-- Importar dotenv
+from dotenv import load_dotenv
 import os
-from sqlalchemy.exc import ProgrammingError  # <-- Línea añadida para manejar el error si las tablas no están listas
+from sqlalchemy.exc import ProgrammingError
 
-# Detectar si estamos en Render
-EN_PRODUCCION = os.getenv("RENDER") == "1"
+# Cargar variables desde el archivo .env principal
+load_dotenv()
 
-# Seleccionar el archivo .env adecuado
-env_file = ".env.production" if EN_PRODUCCION else ".env.local"
-load_dotenv(env_file)
-
-# Mostrar en consola qué archivo se está cargando
-print(f"🔹 Cargando configuración desde {env_file}")
+# Mostrar en consola la configuración
+print(f"🔹 Cargando configuración desde .env")
 print(f"🔹 DATABASE_URL: {os.getenv('DATABASE_URL')}")
 print(f"🔹 BACKEND_URL: {os.getenv('BACKEND_URL')}")
 
@@ -42,7 +38,8 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-CORS(app)  
+# Configuración de CORS mejorada para permitir solicitudes desde cualquier origen a las rutas /api/*
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 # Instancia de Mail API email
 mail = Mail()
@@ -90,9 +87,9 @@ jwt = JWTManager(app)
 
 # Configuración de Cloudinary
 cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET")
+    cloud_name=os.getenv("REACT_APP_CLOUDINARY_CLOUD_NAME"),
+    api_key=os.getenv("REACT_APP_CLOUDINARY_API_KEY"),
+    api_secret=os.getenv("REACT_APP_CLOUDINARY_API_SECRET")
 )
 
 setup_admin(app)
