@@ -32,7 +32,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             cambiarContraseña: async (data) => {
                 const token = sessionStorage.getItem('token');
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + '/api/restaurante/cambiar_contrasena', {
+                    const response = await fetch(process.env.BACKEND_URL + '/restaurante/cambiar_contrasena', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             cambiarContraseñaUser: async (data) => {
                 const token = sessionStorage.getItem('token');
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + '/api/usuario/cambiar_contrasena', {
+                    const response = await fetch(process.env.BACKEND_URL + '/usuario/cambiar_contrasena', {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // CREAR RESERVA
             crearReserva: async function (data) {
-                const url = `${process.env.BACKEND_URL}/api/usuario/reservas`;
+                const url = `${process.env.BACKEND_URL}/usuario/reservas`;
                 const token = sessionStorage.getItem("token");
 
                 const bodyData = {
@@ -111,7 +111,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // OBTENER RESERVAS
             obtenerReservas: async function (token, usuario_id) {
-                const url = `${process.env.BACKEND_URL}/api/usuario/${usuario_id}/reservas`;
+                const url = `${process.env.BACKEND_URL}/usuario/${usuario_id}/reservas`;
                 try {
                     const response = await fetch(url, {
                         method: 'GET',
@@ -137,7 +137,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // ACTUALIZAR RESERVAS
             actualizarReserva: async function (reserva_id, data, token) {
-                const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;
+                const url = `${process.env.BACKEND_URL}/reservas/${reserva_id}`;
                 try {
                     const response = await fetch(url, {
                         method: 'PUT',
@@ -168,7 +168,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             // BORRAR RESERVAS
             eliminarReserva: async function (reserva_id, token) {
-                const url = `${process.env.BACKEND_URL}/api/reservas/${reserva_id}`;
+                const url = `${process.env.BACKEND_URL}/reservas/${reserva_id}`;
                 try {
                     const response = await fetch(url, {
                         method: 'DELETE',
@@ -196,7 +196,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // REGISTRO DE USUARIO
             signupUsuario: async (formData) => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/signup", {
+                    const response = await fetch(process.env.BACKEND_URL + "/signup", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -227,7 +227,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // LOGIN USUARIO
             loginUsuario: async (email, password) => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/login", {
+                    const response = await fetch(process.env.BACKEND_URL + "/login", {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json',
@@ -264,7 +264,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 console.log(formData)
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${userId}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -294,7 +294,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             obtenerDatosUsuario: async (userId) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${userId}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
@@ -322,7 +322,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             eliminarUsuario: async (userId) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${userId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${userId}`, {
                         method: "DELETE",
                         headers: {
                             "Authorization": `Bearer ${token}`
@@ -344,7 +344,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER CATEGORÍAS
             obtenerCategorias: async () => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/categorias`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/categorias`);
                     const data = await response.json();
                     if (response.ok) {
                         setStore({ categorias: data });
@@ -361,7 +361,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             obtenerUnaCategoria: async (categoria_id) => {
                 try {
                     console.log(`Intentando obtener la categoría con ID: ${categoria_id}`);
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/categorias/${categoria_id}`);
                     if (!response.ok) {
                         throw new Error("Error al obtener la categoría");
                     }
@@ -378,7 +378,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER RESTAURANTES POR CATEGORIA
             obtenerRestaurantesPorCategoria: async (categoria_id) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/categorias/${categoria_id}/restaurantes`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/categorias/${categoria_id}/restaurantes`);
                     if (!response.ok) {
                         throw new Error("Error al obtener los restaurantes por categoría");
                     }
@@ -394,7 +394,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // LOGIN RESTAURANTE
             loginRestaurante: async (formData) => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/login/restaurante", {
+                    const response = await fetch(process.env.BACKEND_URL + "/login/restaurante", {
                         method: 'POST',
                         headers: {
                             'Content-type': 'application/json',
@@ -423,7 +423,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // REGISTRAR UN RESTAURANTE DATOS INICIALES
             signupRestaurante: async (formData) => {
                 try {
-                    const response = await fetch(process.env.BACKEND_URL + "/api/signup/restaurante", {
+                    const response = await fetch(process.env.BACKEND_URL + "/signup/restaurante", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({
@@ -453,7 +453,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             completarRegistroRestaurante: async (restauranteId, formData) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/completar`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurante/${restauranteId}/completar`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -493,7 +493,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     };
                     console.log(formData)
 
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -533,7 +533,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER RESTAURANTES
             obtenerRestaurantes: async () => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes`);
                     const data = await response.json();
                     setStore({ restaurantes: data });
                 } catch (error) {
@@ -543,7 +543,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             getRestaurante: async (restauranteId) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}`);
                     if (!response.ok) {
                         throw new Error("Error al obtener los detalles del restaurante");
                     }
@@ -558,7 +558,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             obtenerValoracionRestaurante: async (restauranteId) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurante/${restauranteId}/valoracion`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurante/${restauranteId}/valoracion`);
                     const data = await response.json();
                     setStore({ valoraciones: data });
                 } catch (error) {
@@ -569,7 +569,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER UN RESTAURANTES POR ID
             obtenerRestaurantesPorId: async (restaurante_id) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restaurante_id}`);
                     const data = await response.json();
                     setStore({ restaurantes: data });
                 } catch (error) {
@@ -581,7 +581,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             eliminarRestaurante: async (restauranteId) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}`, {
                         method: "DELETE",
                         headers: {
                             "Authorization": `Bearer ${token}`
@@ -603,7 +603,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             obtenerFavoritosDelUsuario: async (usuario_id) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`);
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${usuario_id}/favoritos`);
                     const data = await response.json();
                     setStore({ restaurantes_favoritos: data.restaurantes_favoritos });
                     return data
@@ -619,7 +619,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     const token = sessionStorage.getItem('token');
                     const user_id = sessionStorage.getItem('user_id');
 
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos/${favorito_id}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${usuario_id}/favoritos/${favorito_id}`, {
                         method: 'DELETE',
                         headers: {
                             "Content-Type": "application/json"
@@ -647,7 +647,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
             agregarFavorito: async (usuario_id, restaurante_id) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/${usuario_id}/favoritos`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/usuario/${usuario_id}/favoritos`, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
@@ -688,7 +688,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                         const data = await response.json();
 
                         const token = sessionStorage.getItem('token');
-                        const apiResponse = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                        const apiResponse = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}/imagen`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json',
@@ -713,7 +713,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER IMÁGENES DE UN RESTAURANTE POR SU ID (GET)
             obtenerImagenesRestaurante: async function (restauranteId) {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagenes`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}/imagenes`, {
                         method: 'GET'
                     });
                     if (response.ok) {
@@ -731,7 +731,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             actualizarImagenRestaurante: async function (restauranteId, nuevaImagenUrl) {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/imagen`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}/imagen`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
@@ -759,7 +759,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             deleteImageRestaurante: async (restaurante_id, imageURL) => {
                 try {
                     const response = await fetch(
-                        `${process.env.BACKEND_URL}/api/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,
+                        `${process.env.BACKEND_URL}/restaurantes/${restaurante_id}/imagen?url_imagen=${encodeURIComponent(imageURL)}`,
                         {
                             method: "DELETE",
                             headers: {
@@ -784,7 +784,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             // OBTENER DESCRIPCIÓN DEL RESTAURANTE
             obtenerDescripcionRestaurante: async (restauranteId) => {
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/descripcion`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}/descripcion`, {
                         method: "GET"
                     });
 
@@ -804,7 +804,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             actualizarDescripcionRestaurante: async (restauranteId, descripcion) => {
                 const token = sessionStorage.getItem("token");
                 try {
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restauranteId}/descripcion`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restauranteId}/descripcion`, {
                         method: "PUT",
                         headers: {
                             "Content-Type": "application/json",
