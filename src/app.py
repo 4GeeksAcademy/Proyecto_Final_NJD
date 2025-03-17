@@ -2,11 +2,17 @@ from dotenv import load_dotenv  # <-- Importar dotenv
 import os
 from sqlalchemy.exc import ProgrammingError  # <-- Línea añadida para manejar el error si las tablas no están listas
 
-# Cargar variables desde el archivo .env
-load_dotenv()
+# Detectar si estamos en Render
+EN_PRODUCCION = os.getenv("RENDER") == "1"
 
-# Comprobar si Flask está reconociendo las variables
+# Seleccionar el archivo .env adecuado
+env_file = ".env.production" if EN_PRODUCCION else ".env.local"
+load_dotenv(env_file)
+
+# Mostrar en consola qué archivo se está cargando
+print(f"🔹 Cargando configuración desde {env_file}")
 print(f"🔹 DATABASE_URL: {os.getenv('DATABASE_URL')}")
+print(f"🔹 BACKEND_URL: {os.getenv('BACKEND_URL')}")
 
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
