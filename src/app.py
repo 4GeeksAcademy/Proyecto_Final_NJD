@@ -39,7 +39,8 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Configuración de CORS mejorada para permitir solicitudes desde cualquier origen a las rutas /api/*
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, supports_credentials=True)
+
 
 @app.after_request
 def add_cors_headers(response):
