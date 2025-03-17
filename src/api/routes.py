@@ -10,6 +10,8 @@ from datetime import datetime, timezone
 from werkzeug.security import check_password_hash, generate_password_hash
 import re 
 import cloudinary.uploader
+from src.api.setup_categorias import cargar_categorias_iniciales
+from src.api.setup_restaurantes import cargar_restaurantes_iniciales
 
 api = Blueprint('api', __name__)
 
@@ -435,8 +437,13 @@ def get_categorias():
 
 @api.route('/categorias/<int:categoria_id>', methods=['GET'])
 def get_categoria(categoria_id):
-    categoria = Categorias.query.get_or_404(categoria_id)  
-    return jsonify(categoria.serialize()), 200  
+    try:
+        categoria = Categorias.query.get(categoria_id)
+        if not categoria:
+            return jsonify({'error': 'Categoría no encontrada'}), 404
+        return jsonify(categoria.serialize()), 200
+    except Exception as e:
+        return jsonify({'error': f'Error al obtener la categoría: {str(e)}'}), 500
 
 
 # OBTENER RESTAURANTE POR SU CATEGORIA
@@ -446,9 +453,10 @@ def get_restaurantes_por_categoria(categoria_id):
     restaurantes = Restaurantes.query.filter_by(categorias_id=categoria_id).all()
 
     if not restaurantes:
-        return jsonify({"message": "No se encontraron restaurantes para esta categoría"}), 404
+        return jsonify({"message": "No se encontraron restaurantes para esta categoría"}), 200  # Cambiar de 404 a 200
 
     return jsonify([restaurante.serialize() for restaurante in restaurantes]), 200
+
 
 
 # CREAR RESERVA
@@ -891,3 +899,18 @@ def get_descripcion_restaurante(restaurante_id):
         return jsonify({'msg': 'Restaurante no encontrado'}), 404
 
     return jsonify({'descripcion': restaurante.descripcion}), 200
+
+
+@api.route('/initialize-data', methods=['GET'])
+def initialize_data():
+    try:
+        cargar_categorias_iniciales()
+        cargar_restaurantes_iniciales()
+        categorias = Categorias.query.all()
+        return jsonify({
+            "message": "Datos iniciales cargados correctamente",
+            "categorias_count": len(categorias),
+            "categorias": [c.serialize() for c in categorias]
+        }), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

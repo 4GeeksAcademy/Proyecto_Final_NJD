@@ -33,22 +33,23 @@ from src.api.setup_categorias import cargar_categorias_iniciales
 from src.api.setup_restaurantes import cargar_restaurantes_iniciales  
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
-static_file_dir = os.path.join(os.path.dirname(
-    os.path.realpath(__file__)), '../public/')
+static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Configuración de CORS mejorada para permitir solicitudes desde cualquier origen a las rutas /api/*
-CORS(app, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
-
-@app.after_request
-def add_cors_headers(response):
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    return response
-
+@app.before_request
+def handle_options_request():
+    """ Permitir que las solicitudes OPTIONS pasen sin autenticación """
+    if request.method == "OPTIONS":
+        response = jsonify({"message": "Preflight OK"})
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        return response, 200
 
 # Instancia de Mail API email
 mail = Mail()
@@ -70,10 +71,10 @@ mail.init_app(app)
 # Configuración de la base de datos
 db_url = os.getenv("DATABASE_URL")
 
-if db_url is not None:
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace(
-        "postgres://", "postgresql://")
+if db_url:
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_url.replace("postgres://", "postgresql://")
 else:
+    print("⚠️ WARNING: DATABASE_URL no está definida en el .env")
     app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:////tmp/test.db"
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -94,11 +95,18 @@ with app.app_context():
 
 jwt = JWTManager(app)
 
-# Configuración de Cloudinary
+# Configuración de Cloudinary con verificación de variables de entorno
+cloud_name = os.getenv("REACT_APP_CLOUDINARY_CLOUD_NAME")
+api_key = os.getenv("REACT_APP_CLOUDINARY_API_KEY")
+api_secret = os.getenv("REACT_APP_CLOUDINARY_API_SECRET")
+
+if not cloud_name or not api_key or not api_secret:
+    print("⚠️ WARNING: Variables de Cloudinary no están definidas en .env")
+
 cloudinary.config(
-    cloud_name=os.getenv("REACT_APP_CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("REACT_APP_CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("REACT_APP_CLOUDINARY_API_SECRET")
+    cloud_name=cloud_name,
+    api_key=api_key,
+    api_secret=api_secret
 )
 
 setup_admin(app)
