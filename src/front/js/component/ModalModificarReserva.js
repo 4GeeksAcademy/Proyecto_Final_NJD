@@ -23,7 +23,7 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
         event.preventDefault();
         try {
             const token = sessionStorage.getItem('token');
-            const response = await fetch(`${process.env.BACKEND_URL}/api/reservas/${reserva.id}`, {
+            const response = await fetch(`${process.env.BACKEND_URL}/reservas/${reserva.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -76,7 +76,7 @@ export const ModalModificarReserva = ({ isOpen, onClose, reserva, actualizarRese
             if (result.isConfirmed) {
                 try {
                     const token = sessionStorage.getItem('token');
-                    const response = await fetch(`${process.env.BACKEND_URL}/api/reservas/${reserva.id}`, {
+                    const response = await fetch(`${process.env.BACKEND_URL}/reservas/${reserva.id}`, {
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${token}`

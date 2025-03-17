@@ -38,7 +38,7 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch(`${process.env.BACKEND_URL}/api/usuario/reservas`, {
+            const response = await fetch(`${process.env.BACKEND_URL}/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -164,7 +164,7 @@ export const RestaurantDetail = () => {
 
         const fetchRestaurantFromBackend = async (restaurantId) => {
             try {
-                const response = await fetch(`${process.env.BACKEND_URL}/api/restaurantes/${restaurantId}`);
+                const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restaurantId}`);
                 const data = await response.json();
                 if (response.ok) {
                     const categoryData = await actions.obtenerUnaCategoria(data.categorias_id);
