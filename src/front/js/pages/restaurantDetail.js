@@ -33,9 +33,11 @@ export const RestaurantDetail = () => {
     
     const openModal = () => {
         const token = sessionStorage.getItem("token");
+        console.log("Token en openModal:", token);
         if (token) {
             setIsModalOpen(true);
         } else {
+            console.log("No token, mostrando alerta.");
             Swal.fire({
                 title: "Registro requerido",
                 text: "Debes estar registrado para realizar una reserva.",
@@ -211,7 +213,7 @@ export const RestaurantDetail = () => {
         return () => {
             isMounted = false;
         };
-    }, [id]); // 🔥 Solo depende de `id`
+    }, [id]);
     
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;

@@ -2,43 +2,86 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { Context } from "../store/appContext";
+import Spinner from "../component/Spinner";
 import "../../styles/vistaPrivadaUsuario.css";
-import "../../styles/restaurantSearch.css"
+import "../../styles/restaurantSearch.css";
 
 export const RestaurantSearch = () => {
     const { categoria_id } = useParams();
     const { store, actions } = useContext(Context);
+    const [loading, setLoading] = useState(true); 
     const [searchQuery, setSearchQuery] = useState("");
     const [favorites, setFavorites] = useState([]);
     const [nombreCategoria, setNombreCategoria] = useState('');
+    const [filteredRestaurants, setFilteredRestaurants] = useState([]);
     const navigate = useNavigate();
     const imagenPorDefecto = "https://via.placeholder.com/300x200?text=Imagen+No+Disponible";
 
+    // Primer useEffect para cargar los datos
     useEffect(() => {
-        actions.obtenerRestaurantesPorCategoria(categoria_id);
-
-        actions.obtenerUnaCategoria(categoria_id)
-            .then(data => {
+        const loadData = async () => {
+            try {
+                console.log("Cargando restaurantes para la categoría:", categoria_id);
+                // Iniciar la carga de restaurantes
+                const restaurantPromise = actions.obtenerRestaurantesPorCategoria(categoria_id);
+                
+                // Obtener datos de la categoría
+                const data = await actions.obtenerUnaCategoria(categoria_id);
+                console.log("Categoría recibida:", data);
+                
                 if (data) {
                     setNombreCategoria(data.nombre_de_categoria);
                 }
-            })
-            .catch(error => {
-                console.error("Error al obtener la categoría", error);
-            });
+                
+                // Esperar a que se completen los restaurantes si devuelve una promesa
+                if (restaurantPromise instanceof Promise) {
+                    await restaurantPromise;
+                }
+            } catch (error) {
+                console.error("Error al cargar datos:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
 
+        loadData();
         window.scrollTo(0, 0);
-    }, [categoria_id]);
+        
+        // Cleanup function
+        return () => {
+            // Cualquier limpieza necesaria
+        };
+    }, [categoria_id, actions]);
 
-    const filteredRestaurants = Array.isArray(store.restaurantes)
-        ? store.restaurantes.filter(restaurant =>
-            restaurant.nombre.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            restaurant.direccion?.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-        : [];
+    // Segundo useEffect para filtrar restaurantes
+    useEffect(() => {
+        if (Array.isArray(store.restaurantes)) {
+            const filtered = store.restaurantes.filter(restaurant =>
+                (restaurant.nombre?.toLowerCase() || '').includes(searchQuery.toLowerCase()) ||
+                (restaurant.direccion?.toLowerCase() || '').includes(searchQuery.toLowerCase())
+            );
+            setFilteredRestaurants(filtered);
+            
+            if (filtered.length === 0) {
+                console.log("No hay restaurantes disponibles");
+            }
+        } else {
+            setFilteredRestaurants([]);
+            console.log("No hay restaurantes disponibles (array no válido)");
+        }
+    }, [store.restaurantes, searchQuery]);
 
+    // Efecto para logging (solo en desarrollo)
+    useEffect(() => {
+        console.log("Restaurantes favoritos:", store.restaurantes_favoritos);
+        console.log("Restaurantes filtrados:", filteredRestaurants);
+    }, [store.restaurantes_favoritos, filteredRestaurants]);
+
+    // Manejador para explorar otros tipos de comida
     const handleOtherCuisineClick = () => {
         navigate("/home");
+        
+        // Ejecutamos el scroll después de la navegación
         setTimeout(() => {
             const scrollTarget = document.getElementById("cuisine-scroll");
             if (scrollTarget) {
@@ -48,39 +91,56 @@ export const RestaurantSearch = () => {
     };
 
     const toggleFavorite = (restaurant) => {
-        const user_id = sessionStorage.getItem('user_id');
+        const user_id = sessionStorage.getItem('user_id');  // Comprobar si el usuario está logueado
 
         if (!user_id) {
             Swal.fire({
-                title: "Registro requerido",
-                text: "Debes estar registrado para agregar a favoritos.",
+                title: "Inicia sesión para agregar a favoritos",
+                text: "Debes iniciar sesión para agregar este restaurante a favoritos.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Registrarse",
+                confirmButtonText: "Iniciar sesión",
                 cancelButtonText: "Cancelar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const signupModal = new bootstrap.Modal(document.getElementById("signupModal"));
-                    signupModal.show();
+                    // Si el usuario acepta, mostramos el modal de login
+                    try {
+                        const loginModal = document.getElementById("loginModal");
+                        if (loginModal) {
+                            const bootstrap = window.bootstrap || { Modal: class {} };
+                            const loginModalInstance = new bootstrap.Modal(loginModal);
+                            loginModalInstance.show();
+                        } else {
+                            // Si el modal de login no está disponible, redirigir a la página de login
+                            navigate("/login");
+                        }
+                    } catch (error) {
+                        console.error("Error al mostrar el modal:", error);
+                        navigate("/login");
+                    }
                 }
             });
             return;
         }
 
+        // Si ya está logueado, se agrega o elimina de favoritos
         const isFavorite = store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id);
 
         if (isFavorite) {
             actions.eliminarFavorito(user_id, restaurant.id);
-            setFavorites(store.restaurantes_favoritos.filter(fav => fav.restaurante_id !== restaurant.id));
         } else {
             actions.agregarFavorito(user_id, restaurant.id);
-            setFavorites([...store.restaurantes_favoritos, restaurant]);
         }
+        
+        // No necesitamos actualizar favorites manualmente aquí, ya que el store
+        // se actualizará y el useEffect con dependencia en store.restaurantes_favoritos
+        // actualizará el estado automáticamente
     };
 
-    useEffect(() => {
-        console.log(filteredRestaurants)
-    }, [store.restaurantes_favoritos, filteredRestaurants]);
+    // Spinner cuando los datos están siendo cargados
+    if (loading) {
+        return <Spinner />; // Aquí se renderiza el spinner mientras los datos se están cargando
+    }
 
     return (
         <div className="area-privada">
@@ -114,19 +174,18 @@ export const RestaurantSearch = () => {
                                         <Link to={`/restaurant/detail/${restaurant.id}`}>
                                             <h3>{restaurant.nombre}</h3>
                                         </Link>
-                                        <p>{restaurant.direccion}</p>
+                                        <p>{restaurant.direccion || 'Dirección no disponible'}</p>
                                         <p><strong>⭐ Valoración:</strong> {restaurant.rating || 'No disponible'} </p>
                                         <p><strong>💰 Rango de precios:</strong> {restaurant.priceRange || 'No disponible'}</p>
                                     </div>
                                     <div className="favorite-button-container">
                                         <button
-                                            className={`favorite-button ${store.restaurantes_favoritos.includes(restaurant) ? 'favorited' : ''}`}
+                                            className={`favorite-button ${store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id) ? 'favorited' : ''}`}
                                             onClick={() => toggleFavorite(restaurant)}
                                         >
                                             {store.restaurantes_favoritos.some(fav => fav.restaurante_id === restaurant.id) ? '❤️ Favorito' : '🤍 Agregar a Favoritos'}
                                         </button>
                                     </div>
-
                                 </div>
                             ))
                         ) : (
