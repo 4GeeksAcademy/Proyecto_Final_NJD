@@ -15,7 +15,6 @@ import { About } from "./pages/aboutUs";
 import { AreaPrivadaUsuario } from "./pages/vistaPrivadaUsuario";
 import { VistaPrivadaRestaurante } from "./pages/vistaPrivadaRestaurante";
 import VistaCloudinary from "./pages/vistaCloudinary";
-import ErrorBoundary from "./component/ErrorBoundary";
 
 const Layout = () => {
     const basename = process.env.BASENAME || "";
@@ -28,7 +27,6 @@ const Layout = () => {
         <BrowserRouter basename={basename}>
             <ScrollToTop>
                 <Navbar />
-                <ErrorBoundary>
                 <Routes>
                     <Route element={<Home />} path="/" />
                     <Route element={<Home />} path="/home" />
@@ -43,7 +41,6 @@ const Layout = () => {
                     <Route element={<VistaCloudinary />} path="/vistaCloudinary/:restaurante_id" />
                     <Route element={<h1>Not found!</h1>} path="*" />
                 </Routes>
-                </ErrorBoundary>
                 <Footer />
             </ScrollToTop>
         </BrowserRouter>
