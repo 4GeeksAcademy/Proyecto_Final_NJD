@@ -1,15 +1,13 @@
-// import react into the bundle
 import React from "react";
-import ReactDOM from "react-dom/client"; // Actualizamos la importación
+import ReactDOM from "react-dom/client";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-
-// include your index.scss file into the bundle
-import "../styles/index.css";
+import "../styles/index.css"; 
 import "../styles/aboutUs.css";
+import Layout from "./layout";  
 
-// import your own components
-import Layout from "./layout";
+console.log('Variables de entorno:');
+console.log('BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
+console.log('BASENAME:', process.env.BASENAME);
 
-// render your react application
-const root = ReactDOM.createRoot(document.querySelector("#app")); // Usamos createRoot
-root.render(<Layout />); // Renderizamos el Layout con createRoot
+const root = ReactDOM.createRoot(document.querySelector("#app"));
+root.render(<Layout />);

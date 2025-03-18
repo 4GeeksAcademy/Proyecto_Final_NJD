@@ -29,8 +29,8 @@ from src.api.models import db
 from src.api.routes import api
 from src.api.admin import setup_admin
 from src.api.commands import setup_commands
-from src.api.setup_categorias import cargar_categorias_iniciales
-from src.api.setup_restaurantes import cargar_restaurantes_iniciales  
+# from src.api.setup_categorias import cargar_categorias_iniciales
+# from src.api.setup_restaurantes import cargar_restaurantes_iniciales  
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(os.path.realpath(__file__)), '../public/')
@@ -84,14 +84,14 @@ app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(hours=24)
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
 
-# CARGAR CATEGORÍAS Y RESTAURANTES INICIALES SOLO SI NO ESTÁN EN LA BASE DE DATOS
-with app.app_context():
-    try:
-        cargar_categorias_iniciales()
-        db.session.commit()  
-        cargar_restaurantes_iniciales()
-    except ProgrammingError:
-        print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  
+# # CARGAR CATEGORÍAS Y RESTAURANTES INICIALES SOLO SI NO ESTÁN EN LA BASE DE DATOS
+# with app.app_context():
+#     try:
+#         cargar_categorias_iniciales()
+#         db.session.commit()  
+#         cargar_restaurantes_iniciales()
+#     except ProgrammingError:
+#         print("No se pueden cargar los datos iniciales porque las tablas no están listas.")  
 
 jwt = JWTManager(app)
 

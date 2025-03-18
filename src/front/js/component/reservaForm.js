@@ -23,7 +23,7 @@ const ReservaForm = () => {
             reservation_time: reservationTime
         };
 
-        fetch(`${process.env.BACKEND_URL}/send-mail`, {
+        fetch(`${process.env.REACT_APP_BACKEND_URL}/send-mail`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

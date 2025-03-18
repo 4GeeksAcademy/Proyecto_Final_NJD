@@ -50,7 +50,7 @@ const VistaCloudinary = () => {
       return;
     }
     try {
-      const response = await fetch(`${process.env.BACKEND_URL}/restaurantes/${restaurante_id}/imagen`, {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/restaurantes/${restaurante_id}/imagen`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

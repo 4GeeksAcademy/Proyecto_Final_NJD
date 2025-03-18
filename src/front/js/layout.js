@@ -3,8 +3,6 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 import { Home } from "./pages/home";
-import { Demo } from "./pages/demo";
-import { Single } from "./pages/single";
 import injectContext from "./store/appContext";
 import { Navbar } from "./component/navbar";
 import { Footer } from "./component/footer";
@@ -21,23 +19,22 @@ import VistaCloudinary from "./pages/vistaCloudinary";
 const Layout = () => {
     const basename = process.env.BASENAME || "";
 
-    if (!process.env.BACKEND_URL || process.env.BACKEND_URL === "") return <BackendURL />;
+    if (!process.env.REACT_APP_BACKEND_URL || process.env.REACT_APP_BACKEND_URL === "") return <BackendURL />;
+    console.log("BASENAME:", basename);
+
 
     return (
         <BrowserRouter basename={basename}>
-            <ScrollToTop> {/* ScrollToTop envolviendo las rutas */}
+            <ScrollToTop>
                 <Navbar />
                 <Routes>
                     <Route element={<Home />} path="/" />
                     <Route element={<Home />} path="/home" />
-                    <Route element={<Demo />} path="/demo" />
-                    <Route element={<Single />} path="/single/:theid" />
                     <Route element={<RestaurantSearch />} path="/restaurantes/:categoria_id" />
                     <Route element={<RegistroCompletoRestaurante />} path="/registro_restaurante" />
                     <Route element={<AreaPrivadaUsuario />} path="/private/:user_id" />
                     <Route element={<PrivateView />} path="/private" />
                     <Route element={<RestaurantDetail />} path="/restaurant/detail/:id" />
-                    <Route element={<PrivateView />} path="/private" />
                     <Route element={<FAQ />} path="/faq" />
                     <Route element={<About />} path="/about" />
                     <Route element={<VistaPrivadaRestaurante />} path="/vistaPrivadaRestaurante/:restaurante_id" />

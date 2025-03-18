@@ -38,7 +38,7 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await fetch(`${process.env.BACKEND_URL}/usuario/reservas`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
             if (response.ok) {
                 const data = await response.json();
                 // Enviar correo de confirmación
-                fetch(`${process.env.BACKEND_URL}/send-mail`, {
+                fetch(`${process.env.REACT_APP_BACKEND_URL}/send-mail`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
