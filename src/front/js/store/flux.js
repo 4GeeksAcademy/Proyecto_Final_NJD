@@ -1,4 +1,22 @@
 const getState = ({ getStore, getActions, setStore }) => {
+    const isProduction = process.env.NODE_ENV === 'production';
+
+    // Función de log segura
+    const safeLog = (message, data) => {
+        if (!isProduction) {
+            if (data && (data.access_token || data.refresh_token)) {
+                // Ocultar tokens en los logs
+                const sanitizedData = {
+                    ...data,
+                    access_token: data.access_token ? "[TOKEN OCULTO]" : undefined,
+                    refresh_token: data.refresh_token ? "[TOKEN OCULTO]" : undefined
+                };
+                console.log(message, sanitizedData);
+            } else {
+                console.log(message, data);
+            }
+        }
+    };
     return {
         store: {
             reservas: [],
@@ -223,7 +241,6 @@ const getState = ({ getStore, getActions, setStore }) => {
             },
 
 
-
             // LOGIN USUARIO
             loginUsuario: async (email, password) => {
                 try {
@@ -238,18 +255,19 @@ const getState = ({ getStore, getActions, setStore }) => {
                         })
                     });
             
+                    console.log("Respuesta del servidor:", response);
+                    console.log("Estado de la respuesta:", response.status);
+            
                     const data = await response.json();
-                    console.log("📌 Data recibida:", data);  // Verifica la respuesta del backend
+                    console.log("Datos recibidos:", data);
             
                     if (response.ok) {
-                        // Guardamos el user_id en sessionStorage
                         sessionStorage.setItem('token', data.access_token);
                         sessionStorage.setItem('user_name', data.user_name);
-                        sessionStorage.setItem('user_id', data.user_id);  // Asegúrate de que user_id es correcto
-                        localStorage.setItem('usuario', data.user_id);   // Asegúrate de que user_id es correcto
+                        sessionStorage.setItem('user_id', data.user_id);
+                        localStorage.setItem('usuario', data.user_id);
             
-                        // Verificación de que el user_id se ha guardado correctamente
-                        console.log("usuario_id guardado en sessionStorage:", sessionStorage.getItem('user_id')); 
+                        console.log("usuario_id guardado en sessionStorage:", sessionStorage.getItem('user_id'));
             
                         return { success: true, data: data };
                     } else if (response.status === 404) {
@@ -260,12 +278,10 @@ const getState = ({ getStore, getActions, setStore }) => {
                         return { success: false, error: data.msg || 'Error al iniciar sesión' };
                     }
                 } catch (error) {
+                    console.error("Error completo de login:", error);
                     return { success: false, error: 'Error de conexión' };
                 }
             },
-            
-            
-            
 
 
             modificarUsuario: async (userId, formData) => {
@@ -300,23 +316,48 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 
             obtenerDatosUsuario: async (userId) => {
+                if (!userId) {
+                    console.error("ID de usuario no proporcionado");
+                    return null;
+                }
+            
                 const token = sessionStorage.getItem("token");
+                
+                if (!token) {
+                    console.error("No hay token de autenticación disponible");
+                    return null;
+                }
+                
+                // Añade esta verificación para ver qué tipo de token estás enviando
+                console.log("Token usado en obtenerDatosUsuario:", token);
+                
                 try {
                     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/usuario/${userId}`, {
                         method: "GET",
                         headers: {
                             "Content-Type": "application/json",
+                            // Intenta con este formato específico para el token
                             "Authorization": `Bearer ${token}`
                         }
                     });
-
+                    
+                    console.log("Código de estado de la respuesta:", response.status);
+                    
                     if (response.ok) {
                         const data = await response.json();
                         console.log("Datos obtenidos del usuario:", data);
                         return data;
                     } else {
-                        const errorData = await response.json();
-                        console.error("Error al obtener los datos del usuario:", errorData);
+                        const errorText = await response.text();
+                        let errorData;
+                        
+                        try {
+                            errorData = JSON.parse(errorText);
+                        } catch (e) {
+                            errorData = { msg: errorText };
+                        }
+                        
+                        console.error(`Error al obtener los datos del usuario (${response.status}):`, errorData);
                         return null;
                     }
                 } catch (error) {
@@ -353,7 +394,7 @@ const getState = ({ getStore, getActions, setStore }) => {
             obtenerCategorias: async () => {
                 try {
                     console.log('URL de solicitud:', `${process.env.REACT_APP_BACKEND_URL}/categorias`);
-                    
+
                     const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/categorias`, {
                         method: 'GET',
                         headers: {
@@ -361,16 +402,16 @@ const getState = ({ getStore, getActions, setStore }) => {
                             'Accept': 'application/json'
                         }
                     });
-            
+
                     console.log('Estatus de respuesta:', response.status);
-                    
+
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
-            
+
                     const data = await response.json();
                     console.log('Datos recibidos:', data);
-                    
+
                     setStore({ categorias: data });
                 } catch (error) {
                     console.error("Error al cargar categorías", error);
@@ -416,7 +457,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const url = `${process.env.REACT_APP_BACKEND_URL}/login/restaurante`;
                     console.log("Fetching URL (login restaurante):", url);
-            
+
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: {
@@ -427,9 +468,9 @@ const getState = ({ getStore, getActions, setStore }) => {
                             password: formData.password,
                         })
                     });
-            
+
                     const data = await response.json();
-            
+
                     if (response.ok) {
                         sessionStorage.setItem('restaurant_name', data.restaurant_name);
                         sessionStorage.setItem('restaurant_id', data.restaurant_id);
@@ -441,7 +482,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: 'Error de conexión' };
                 }
             },
-            
+
 
 
             // REGISTRAR UN RESTAURANTE DATOS INICIALES
@@ -449,7 +490,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                 try {
                     const url = `${process.env.REACT_APP_BACKEND_URL}/signup/restaurante`;
                     console.log("Fetching URL (signup restaurante):", url);
-            
+
                     const response = await fetch(url, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -460,7 +501,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                             telefono: formData.phone,
                         }),
                     });
-            
+
                     if (response.ok) {
                         const data = await response.json();
                         return { success: true, message: "Restaurante registrado con éxito", data: data };
@@ -474,7 +515,7 @@ const getState = ({ getStore, getActions, setStore }) => {
                     return { success: false, message: "Error de conexión" };
                 }
             },
-            
+
 
 
             // COMPLETAR REGISTRO RESTAURANTE
@@ -634,15 +675,15 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("⚠️ usuario_id es undefined o null, no se puede hacer fetch.");
                     return;
                 }
-            
+
                 const url = `${process.env.REACT_APP_BACKEND_URL}/usuario/${usuario_id}/favoritos`;
                 console.log("🔍 URL fetch:", url);
-            
+
                 try {
                     const response = await fetch(url);
                     const text = await response.text(); // Obtenemos el texto para verificar si es JSON o HTML
                     console.log("📌 Response text:", text); // Imprime la respuesta antes de convertirla a JSON
-                    
+
                     const data = JSON.parse(text); // Convertimos manualmente
                     setStore({ restaurantes_favoritos: data.restaurantes_favoritos });
                     return data;
@@ -650,8 +691,8 @@ const getState = ({ getStore, getActions, setStore }) => {
                     console.log("❌ Error en obtenerFavoritosDelUsuario:", error);
                 }
             },
-            
-            
+
+
 
             // ELIMINAR FAV
 

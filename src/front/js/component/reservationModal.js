@@ -17,6 +17,7 @@ const ReservationModal = ({ isOpen, onClose, onSubmit }) => {
         aria-labelledby="reservationModalLabel"
         aria-hidden="true">
         onClick={handleBackdropClick}
+        
   
         <div className="modal-dialog">
           <div className="modal-content">

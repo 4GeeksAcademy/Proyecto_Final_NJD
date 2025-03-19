@@ -38,14 +38,37 @@ app = Flask(__name__)
 app.url_map.strict_slashes = False
 
 # Configuración de CORS mejorada para permitir solicitudes desde cualquier origen a las rutas /api/*
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "http://localhost:3000", 
+            "https://localhost:3000",
+            "https://special-guide-wrvw97jwq69j2vgwp-3000.app.github.dev",
+            "https://proyecto-final-njd-1.onrender.com"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+    }
+}, supports_credentials=True)
+
 
 @app.before_request
 def handle_options_request():
     """ Permitir que las solicitudes OPTIONS pasen sin autenticación """
     if request.method == "OPTIONS":
         response = jsonify({"message": "Preflight OK"})
-        response.headers["Access-Control-Allow-Origin"] = "*"
+        # Usa el origen de la solicitud si está en la lista permitida
+        origin = request.headers.get('Origin', '')
+        allowed_origins = [
+            "http://localhost:3000", 
+            "https://localhost:3000",
+            "https://special-guide-wrvw97jwq69j2vgwp-3000.app.github.dev",
+            "https://proyecto-final-njd-1.onrender.com"
+        ]
+        
+        if origin in allowed_origins:
+            response.headers["Access-Control-Allow-Origin"] = origin
+        
         response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, X-Requested-With"
         response.headers["Access-Control-Allow-Credentials"] = "true"
@@ -95,6 +118,27 @@ db.init_app(app)
 
 jwt = JWTManager(app)
 
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header, jwt_payload):
+    jti = jwt_payload.get('jti')
+    print("Token JTI:", jti)
+    print("Token payload:", jwt_payload)
+    
+    # Puedes implementar lógica de revocación si lo necesitas
+    # Por ejemplo, mantener una lista negra de tokens
+    # revoked_tokens = set()
+    # return jti in revoked_tokens
+    
+    return False
+
+@jwt.expired_token_loader
+def my_expired_token_callback(jwt_header, jwt_payload):
+    print("Token expirado:", jwt_payload)
+    return jsonify({
+        'msg': 'El token ha expirado',
+        'error': 'token_expired'
+    }), 401
+
 # Configuración de Cloudinary con verificación de variables de entorno
 cloud_name = os.getenv("REACT_APP_CLOUDINARY_CLOUD_NAME")
 api_key = os.getenv("REACT_APP_CLOUDINARY_API_KEY")
@@ -116,6 +160,17 @@ app.register_blueprint(api, url_prefix='/api')
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
+
+@app.errorhandler(500)
+def handle_500_error(e):
+    import traceback
+    error_trace = traceback.format_exc()
+    print("Error interno del servidor:")
+    print(error_trace)
+    return jsonify({
+        "error": "Error interno del servidor",
+        "mensaje": str(e)
+    }), 500
 
 @app.route('/')
 def sitemap():

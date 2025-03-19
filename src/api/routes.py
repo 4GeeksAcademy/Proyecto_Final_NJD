@@ -170,54 +170,55 @@ def get_all_users():
     return jsonify([usuario.serialize() for usuario in usuarios]), 200
 
 # OBTENER UN USUARIO
-
-@api.route('/usuario/<int:usuario_id>', methods=['GET'])
+@api.route('/usuario', methods=['GET'])
 @jwt_required()
-def get_user(usuario_id):
-    usuario = Usuario.query.get(usuario_id)
+def get_user():
+    current_user_id = get_jwt_identity()
+    usuario = Usuario.query.get(current_user_id)
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
-    
+        
     return jsonify(usuario.serialize()), 200
 
+
 # ACTUALIZAR USUARIO
-
-@api.route('/usuario/<int:usuario_id>', methods=['PUT'])
+@api.route('/usuario', methods=['PUT'])
 @jwt_required()
-def update_user(usuario_id):
-    body = request.get_json()
-    usuario = Usuario.query.get(usuario_id)
-
+def update_user():
+    current_user_id = get_jwt_identity()
+    usuario = Usuario.query.get(current_user_id)
+    
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
+        
+    body = request.get_json()
     
     # Actualiza datos del usuario
     usuario.nombres = body.get('nombres', usuario.nombres)
     usuario.apellidos = body.get('apellidos', usuario.apellidos)
     usuario.telefono = body.get('telefono', usuario.telefono)
-
+    
     if 'password' in body:
-        usuario.set_password(body['password'])  
-
+        usuario.set_password(body['password'])
+        
     db.session.commit()
-
+    
     return jsonify({'msg': 'Usuario actualizado con éxito'}), 200
 
 # ELIMINAR UN USUARIO
-
-@api.route('/usuario/<int:usuario_id>', methods=['DELETE'])
+@api.route('/usuario', methods=['DELETE'])
 @jwt_required()
-def delete_user(usuario_id):
-    usuario = Usuario.query.get(usuario_id)
-
+def delete_user():
+    current_user_id = get_jwt_identity()
+    usuario = Usuario.query.get(current_user_id)
+    
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
-
+    
     db.session.delete(usuario)
     db.session.commit()
-
+    
     return jsonify({'msg': 'Usuario eliminado con éxito'}), 200
-
 
 
 # REGISTRO BASICO RESTAURANTE

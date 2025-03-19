@@ -13,41 +13,82 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         hora: '',
         restaurante_id: restaurante_id,
         email: '',
-        restaurant_name: ''
+        restaurant_name: '',
+        nombre: '',
+        apellido: '',
+        telefono: ''
     });
     const navigate = useNavigate();
 
     useEffect(() => {
         const userId = sessionStorage.getItem("user_id");
+        console.log("ID de usuario obtenido:", userId);
+        
         const fetchUserData = async () => {
             if (userId) {
-                const userData = await actions.obtenerDatosUsuario(userId);
-                setFormData((prevState) => ({
-                    ...prevState,
-                    nombre: userData.nombres || '',
-                    apellido: userData.apellidos || '',
-                    telefono: userData.telefono || '',
-                    email: userData.email || '',
-                }));
+                try {
+                    console.log("Intentando obtener datos del usuario con ID:", userId);
+                    const userData = await actions.obtenerDatosUsuario(userId);
+                    console.log("Datos de usuario recibidos:", userData);
+                    
+                    if (userData) {
+                        setFormData((prevState) => ({
+                            ...prevState,
+                            nombre: userData.nombres || '',
+                            apellido: userData.apellidos || '',
+                            telefono: userData.telefono || '',
+                            email: userData.email || '',
+                        }));
+                        console.log("FormData actualizado con datos de usuario");
+                    } else {
+                        console.warn("No se recibieron datos de usuario válidos");
+                    }
+                } catch (error) {
+                    console.error("Error al obtener datos del usuario:", error);
+                }
+            } else {
+                console.warn("No hay ID de usuario en sessionStorage");
             }
         };
+        
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
     }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("Enviando formulario con datos:", formData);
+        
+        // Verificar el token
+        const token = sessionStorage.getItem('token');
+        console.log("Token usado en reserva:", token);
+        
+        if (!token) {
+            Swal.fire({
+                title: 'Error de autenticación',
+                text: 'No hay token disponible. Por favor, inicie sesión nuevamente.',
+                icon: 'error',
+                confirmButtonText: 'Aceptar'
+            });
+            return;
+        }
+        
         try {
             const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token'),
+                    'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify(formData)
             });
+            
+            console.log("Respuesta del servidor:", response.status);
+            
             if (response.ok) {
                 const data = await response.json();
+                console.log("Datos de reserva exitosa:", data);
+                
                 // Enviar correo de confirmación
                 fetch(`${process.env.REACT_APP_BACKEND_URL}/send-mail`, {
                     method: 'POST',
@@ -63,6 +104,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 })
                     .then(response => response.json())
                     .then(async data => {
+                        console.log("Respuesta del envío de correo:", data);
+                        
                         if (data.message) {
                             await Swal.fire({
                                 title: "Correo enviado",
@@ -96,16 +139,37 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                     });
                 onClose();
             } else {
-                const errorData = await response.json();
-                // Verificar si el error es por el horario
-                if (errorData.error && errorData.error.includes('fuera del horario permitido')) {
+                const errorText = await response.text();
+                let errorData;
+                
+                try {
+                    errorData = JSON.parse(errorText);
+                } catch (e) {
+                    errorData = { msg: errorText };
+                }
+                
+                console.error("Error en la reserva:", errorData);
+                
+                // Verificar el error de autenticación
+                if (errorData.msg === 'Subject must be a string') {
                     Swal.fire({
-                        title: 'Error en la reserva',
-                        text: 'La reserva está fuera del horario permitido. Por favor, selecciona un horario válido.',
+                        title: 'Error de autenticación',
+                        text: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
                         icon: 'error',
                         confirmButtonText: 'Aceptar'
                     });
-                } else {
+                } 
+                // Verificar si el error es por el horario
+                else if (errorData.error && errorData.error.includes('fuera del horario permitido')) {
+                    Swal.fire({
+                        title: 'Error en la reserva',
+                        text: 'La reserva está fuera del horario permitido. Por favor, seleccione un horario válido.',
+                        icon: 'error',
+                        confirmButtonText: 'Aceptar'
+                    });
+                } 
+                // Mensaje de error genérico
+                else {
                     Swal.fire({
                         title: 'Error',
                         text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
@@ -115,6 +179,8 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 }
             }
         } catch (error) {
+            console.error("Error en la solicitud de reserva:", error);
+            
             Swal.fire({
                 title: 'Error',
                 text: 'Ocurrió un error inesperado.',
@@ -124,8 +190,7 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
         }
     };
 
-
-        const handleChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };

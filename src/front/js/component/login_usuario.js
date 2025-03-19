@@ -40,6 +40,21 @@ export const LoginUsuario = ({ onLogin }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+    
+        console.log('Intentando login con:', {
+            email: email,
+            emailLength: email.length,
+            passwordLength: password.length
+        });
+    
+        try {
+            const result = await actions.loginUsuario(email, password);
+            console.log('Resultado completo del login:', result);
+            console.log('Tipo de resultado:', typeof result);
+            console.log('Propiedades del resultado:', Object.keys(result));
+        } catch (error) {
+            console.error('Error completo de login:', error);
+        }
 
         
         const result = await actions.loginUsuario(email, password);
