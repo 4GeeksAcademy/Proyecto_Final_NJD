@@ -45,6 +45,7 @@
     flex: 1;
     max-width: 300px;
     margin-bottom: 20px;
+    margin-left: 20px;
 }
 
 /* Descripción del restaurante */
@@ -99,6 +100,7 @@
     .restaurant-card {
         max-width: 100%;
         margin-right: 0;
+        margin-left: 0;
     }
 
     .restaurant-buttons {
