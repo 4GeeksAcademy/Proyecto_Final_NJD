@@ -30,7 +30,7 @@ export const RestaurantDetail = () => {
             CartaCloseModal();
         }
     };
-    
+
     const openModal = () => {
         const token = sessionStorage.getItem("token");
         console.log("Token en openModal:", token);
@@ -40,15 +40,15 @@ export const RestaurantDetail = () => {
             console.log("No token, mostrando alerta.");
             Swal.fire({
                 title: "Registro requerido",
-                text: "Debes estar registrado para realizar una reserva.",
+                text: "Debes iniciar sesión para realizar una reserva.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: "Registrarse",
+                confirmButtonText: "Iniciar Sesión",
                 cancelButtonText: "Cancelar",
             }).then((result) => {
                 if (result.isConfirmed) {
-                    const signupModal = new bootstrap.Modal(document.getElementById("signupModal"));
-                    signupModal.show();
+                    const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
+                    loginModal.show();
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     navigate("/");
                 }
@@ -166,14 +166,14 @@ export const RestaurantDetail = () => {
 
     useEffect(() => {
         let isMounted = true;
-    
+
         const fetchRestaurantFromBackend = async (restaurantId) => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/restaurantes/${restaurantId}`);
                 const text = await response.text();
                 console.log("API Response:", text); // Log para ver qué responde el backend
                 const data = JSON.parse(text);
-    
+
                 if (response.ok && isMounted) {
                     const categoryData = await actions.obtenerUnaCategoria(data.categorias_id);
                     if (isMounted) {
@@ -195,9 +195,9 @@ export const RestaurantDetail = () => {
                 if (isMounted) setError("Error de conexión con el servidor");
             }
         };
-    
+
         const foundRestaurant = mockRestaurants.find((r) => r.id === parseInt(id));
-    
+
         if (foundRestaurant) {
             if (isMounted) {
                 setRestaurant(foundRestaurant);
@@ -209,12 +209,12 @@ export const RestaurantDetail = () => {
         } else {
             fetchRestaurantFromBackend(id);
         }
-    
+
         return () => {
             isMounted = false;
         };
     }, [id]);
-    
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     if (!restaurant) return <div>No restaurant found</div>;

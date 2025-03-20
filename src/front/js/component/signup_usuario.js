@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import "../../styles/index.css";
 import { Context } from "../store/appContext";
 
-export const SignupUsuario = () => {
+export const SignupUsuario = ({ onLogin }) => {
     const { actions } = useContext(Context);
     const [formData, setFormData] = useState({
         firstName: "",
@@ -57,51 +57,36 @@ export const SignupUsuario = () => {
         const result = await actions.signupUsuario(formData);
 
         if (result.success) {
-            setSuccessMessage("Usuario registrado con éxito");
-            setErrorMessage("");
-            Swal.fire({
-                title: "Usuario registrado con éxito",
-                text: "Serás redirigido al login.",
-                icon: "success",
-                confirmButtonText: "Aceptar",
-            }).then(() => {
-                sessionStorage.setItem("signup_email", formData.email);
-                sessionStorage.setItem("signup_password", formData.password);
-               
-                const signupModal = document.getElementById("signupModal");
-                const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                signupModalInstance.hide();
-                setSuccessMessage("");  
+            const signupModal = document.getElementById("signupModal");
+            const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
+            signupModalInstance.hide();
 
-                const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                loginModal.show();
-            });
+            // Realizar login automático
+            const loginResult = await actions.loginUsuario(formData.email, formData.password);
+            
+            if (loginResult.success) {
+                sessionStorage.setItem('token', loginResult.data.access_token);
+                sessionStorage.setItem('user_name', loginResult.data.user_name);
+                actions.actualizarNombreUsuario(loginResult.data.user_name);
+                
+                // Llamar a onLogin para actualizar Navbar
+                onLogin(loginResult.data.user_name, loginResult.data.user_id);
 
-            setFormData({
-                firstName: "",
-                lastName: "",
-                email: "",
-                password: "",
-                repeatPassword: "",
-                phone: "",
-            });
+                Swal.fire({
+                    title: "Usuario registrado con éxito",
+                    text: "Serás redirigido a tu área privada.",
+                    icon: "success",
+                    confirmButtonText: "Aceptar",
+                }).then(() => {
+                    navigate('/private');
+                });
+            }
         } else if (result.message === "El email ya existe") {
             Swal.fire({
                 title: "El email ya existe",
-                text: "Serás redirigido a la página de inicio de sesión.",
+                text: "Por favor, inicia sesión o utiliza otro correo.",
                 icon: "warning",
                 confirmButtonText: "Aceptar",
-            }).then(() => {
-
-                sessionStorage.setItem("signup_email", formData.email);
-                sessionStorage.setItem("signup_password", formData.password);
-
-                const signupModal = document.getElementById("signupModal");
-                const signupModalInstance = bootstrap.Modal.getInstance(signupModal);
-                signupModalInstance.hide();
-
-                const loginModal = new bootstrap.Modal(document.getElementById("loginModal"));
-                loginModal.show();
             });
         } else {
             setErrorMessage(result.message || "Error al registrar el usuario");
@@ -203,4 +188,3 @@ export const SignupUsuario = () => {
         </div>
     );
 };
-  

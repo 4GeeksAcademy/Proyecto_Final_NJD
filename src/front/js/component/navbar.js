@@ -1,19 +1,19 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import logoImage from "../../img/logoblanco.png";
 import { LoginUsuario } from "./login_usuario";
 import { SignupUsuario } from "./signup_usuario";
 import '../../styles/navbar.css';
-import "../../styles/index.css"; 
+import "../../styles/index.css";
 import { Context } from "../store/appContext";
 
 export const Navbar = () => {
     const [loggedIn, setLoggedIn] = useState(false);
     const [userName, setUserName] = useState("");
-    const [userId, setUserId] = useState(null);  
+    const [userId, setUserId] = useState(null);
     const [isRestaurant, setIsRestaurant] = useState(false);
-    const navigate = useNavigate(); 
-    const {store} = useContext(Context)
+    const navigate = useNavigate();
+    const { store } = useContext(Context)
 
 
 
@@ -21,23 +21,23 @@ export const Navbar = () => {
         const handleStorageChange = () => {
             const token = sessionStorage.getItem("token");
             const storedUserName = sessionStorage.getItem("user_name");
-            const storedUserId = sessionStorage.getItem("user_id");  
+            const storedUserId = sessionStorage.getItem("user_id");
             const storedRestaurantName = sessionStorage.getItem("restaurant_name");
 
             if (token && storedRestaurantName) {
                 setIsRestaurant(true);
                 setUserName(storedRestaurantName);
                 setLoggedIn(true);
-            } 
+            }
             else if (token && storedUserName && storedUserId) {
                 setIsRestaurant(false);
                 setUserName(storedUserName);
-                setUserId(storedUserId);  
+                setUserId(storedUserId);
                 setLoggedIn(true);
             } else {
                 setLoggedIn(false);
                 setUserName("");
-                setUserId(null);  
+                setUserId(null);
                 setIsRestaurant(false);
             }
         };
@@ -56,7 +56,7 @@ export const Navbar = () => {
             sessionStorage.setItem("restaurant_name", userName);
         } else {
             sessionStorage.setItem("user_name", userName);
-            sessionStorage.setItem("user_id", userId);  
+            sessionStorage.setItem("user_id", userId);
         }
 
         setUserName(userName);
@@ -75,7 +75,7 @@ export const Navbar = () => {
 
         setLoggedIn(false);
         setUserName("");
-        setUserId(null);  
+        setUserId(null);
         setIsRestaurant(false);
 
         navigate("/");
@@ -114,7 +114,7 @@ export const Navbar = () => {
                                             <i
                                                 className="fa-solid fa-utensils"
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
-                                                onClick={handlePrivateAreaRestaurante} 
+                                                onClick={handlePrivateAreaRestaurante}
                                             ></i>
                                             Area privada restaurante {store.restoName}
                                         </span>
@@ -128,7 +128,7 @@ export const Navbar = () => {
                                             <i
                                                 className="fa-solid fa-user"
                                                 style={{ cursor: "pointer", marginRight: "8px" }}
-                                                onClick={handlePrivateAreaNavigation}  
+                                                onClick={handlePrivateAreaNavigation}
                                             ></i>
                                             Hola {store.userName}
                                         </span>
@@ -160,7 +160,7 @@ export const Navbar = () => {
                             <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <LoginUsuario onLogin={handleLogin} /> 
+                            <LoginUsuario onLogin={handleLogin} />
                         </div>
                     </div>
                 </div>
@@ -174,7 +174,7 @@ export const Navbar = () => {
                             <button type="button" className="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                            <SignupUsuario /> 
+                            <SignupUsuario onLogin={handleLogin} />
                         </div>
                     </div>
                 </div>
