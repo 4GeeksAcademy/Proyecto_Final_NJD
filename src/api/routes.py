@@ -160,7 +160,13 @@ def validate_token():
     if user is None:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
 
-    return jsonify({'msg': 'Token válido', 'user_id': user.id, 'email': user.email}), 200
+    return jsonify({
+        'msg': 'Token válido',
+        'user_id': user.id,
+        'email': user.email,
+        'nombres': user.nombres
+    }), 200 
+
 
 # OBTENER TODOS LOS USUARIOS
 
@@ -169,12 +175,11 @@ def get_all_users():
     usuarios = Usuario.query.all()
     return jsonify([usuario.serialize() for usuario in usuarios]), 200
 
-# OBTENER UN USUARIO
-@api.route('/usuario', methods=['GET'])
+# OBTENER UN USUARIO POR ID
+@api.route('/usuario/<int:usuario_id>', methods=['GET'])
 @jwt_required()
-def get_user():
-    current_user_id = get_jwt_identity()
-    usuario = Usuario.query.get(current_user_id)
+def get_user_by_id(usuario_id):
+    usuario = Usuario.query.get(usuario_id)
     if not usuario:
         return jsonify({'msg': 'Usuario no encontrado'}), 404
         

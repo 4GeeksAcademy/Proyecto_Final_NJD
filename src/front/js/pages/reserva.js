@@ -23,14 +23,14 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     useEffect(() => {
         const userId = sessionStorage.getItem("user_id");
         console.log("ID de usuario obtenido:", userId);
-        
+
         const fetchUserData = async () => {
             if (userId) {
                 try {
                     console.log("Intentando obtener datos del usuario con ID:", userId);
                     const userData = await actions.obtenerDatosUsuario(userId);
                     console.log("Datos de usuario recibidos:", userData);
-                    
+
                     if (userData) {
                         setFormData((prevState) => ({
                             ...prevState,
@@ -50,20 +50,23 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                 console.warn("No hay ID de usuario en sessionStorage");
             }
         };
-        
+
         fetchUserData();
         actions.obtenerRestaurantesPorId(restaurante_id);
     }, [restaurante_id]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("Enviando formulario con datos:", formData);
-        
+        console.log("Iniciando envío del formulario");
+        console.log("Datos del formulario:", formData);
+    
         // Verificar el token
         const token = sessionStorage.getItem('token');
+        console.log("Token disponible:", !!token);
         console.log("Token usado en reserva:", token);
-        
+    
         if (!token) {
+            console.log("No hay token disponible, mostrando error");
             Swal.fire({
                 title: 'Error de autenticación',
                 text: 'No hay token disponible. Por favor, inicie sesión nuevamente.',
@@ -72,24 +75,32 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
             });
             return;
         }
-        
+    
         try {
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/usuario/reservas`, {
+            console.log("Preparando solicitud fetch");
+            console.log("URL a usar:", `${process.env.REACT_APP_BACKEND_URL}/api/usuario/reservas`);
+            console.log("Datos a enviar:", JSON.stringify(formData));
+            
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': 'Bearer ' + token,
                 },
                 body: JSON.stringify(formData)
             });
-            
-            console.log("Respuesta del servidor:", response.status);
-            
+    
+            console.log("Respuesta del servidor - status:", response.status);
+            console.log("Respuesta del servidor - ok:", response.ok);
+    
             if (response.ok) {
                 const data = await response.json();
                 console.log("Datos de reserva exitosa:", data);
-                
+    
                 // Enviar correo de confirmación
+                console.log("Preparando envío de correo");
+                console.log("URL para correo:", `${process.env.REACT_APP_BACKEND_URL}/send-mail`);
+                
                 fetch(`${process.env.REACT_APP_BACKEND_URL}/send-mail`, {
                     method: 'POST',
                     headers: {
@@ -102,11 +113,15 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                         reservation_time: formData.hora
                     })
                 })
-                    .then(response => response.json())
+                    .then(response => {
+                        console.log("Respuesta inicial del correo - status:", response.status);
+                        return response.json();
+                    })
                     .then(async data => {
                         console.log("Respuesta del envío de correo:", data);
-                        
+    
                         if (data.message) {
+                            console.log("Correo enviado con éxito, mostrando mensaje");
                             await Swal.fire({
                                 title: "Correo enviado",
                                 text: "Correo de confirmación enviado correctamente.",
@@ -122,65 +137,52 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
                                 cancelButtonText: 'Área privada'
                             }).then((result) => {
                                 if (result.isConfirmed) {
+                                    console.log("Navegando a página principal");
                                     navigate('/');
                                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                                     const currentUserId = sessionStorage.getItem("user_id");
                                     if (currentUserId) {
+                                        console.log("Navegando a área privada, user_id:", currentUserId);
                                         navigate(`/private/${currentUserId}`);
                                     }
                                 }
                             });
                         } else {
-                            console.log("Hubo un problema enviando el correo.", data);
+                            console.log("Problema con el correo:", data);
                         }
                     })
                     .catch(error => {
-                        console.error("Error enviando el correo: ", error);
+                        console.error("Error enviando el correo:", error);
                     });
                 onClose();
             } else {
+                console.log("La respuesta no fue exitosa, procesando error");
                 const errorText = await response.text();
-                let errorData;
+                console.log("Texto del error:", errorText);
                 
+                let errorData;
                 try {
                     errorData = JSON.parse(errorText);
+                    console.log("Error parseado:", errorData);
                 } catch (e) {
+                    console.log("No se pudo parsear el error como JSON");
                     errorData = { msg: errorText };
                 }
-                
-                console.error("Error en la reserva:", errorData);
-                
-                // Verificar el error de autenticación
-                if (errorData.msg === 'Subject must be a string') {
-                    Swal.fire({
-                        title: 'Error de autenticación',
-                        text: 'Su sesión ha expirado. Por favor, inicie sesión nuevamente.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
-                } 
-                // Verificar si el error es por el horario
-                else if (errorData.error && errorData.error.includes('fuera del horario permitido')) {
-                    Swal.fire({
-                        title: 'Error en la reserva',
-                        text: 'La reserva está fuera del horario permitido. Por favor, seleccione un horario válido.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
-                } 
-                // Mensaje de error genérico
-                else {
-                    Swal.fire({
-                        title: 'Error',
-                        text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
-                        icon: 'error',
-                        confirmButtonText: 'Aceptar'
-                    });
-                }
+    
+                console.error("Error final en la reserva:", errorData);
+    
+                // Mostrar mensaje de error genérico
+                console.log("Mostrando error genérico");
+                Swal.fire({
+                    title: 'Error',
+                    text: 'No se pudo realizar la reserva. Inténtelo de nuevo más tarde.',
+                    icon: 'error',
+                    confirmButtonText: 'Aceptar'
+                });
             }
         } catch (error) {
             console.error("Error en la solicitud de reserva:", error);
-            
+    
             Swal.fire({
                 title: 'Error',
                 text: 'Ocurrió un error inesperado.',

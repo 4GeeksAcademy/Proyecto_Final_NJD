@@ -5,6 +5,10 @@ from sqlalchemy.exc import ProgrammingError
 # Cargar variables desde el archivo .env principal
 load_dotenv()
 
+print(f"🔹 MAIL_USERNAME: {os.getenv('MAIL_USERNAME')}")
+print(f"🔹 MAIL_PASSWORD: {os.getenv('MAIL_PASSWORD')}")
+
+
 # Mostrar en consola la configuración
 print(f"🔹 Cargando configuración desde .env")
 print(f"🔹 DATABASE_URL: {os.getenv('DATABASE_URL')}")
@@ -194,10 +198,15 @@ def send_mail():
     reservation_date = data.get('reservation_date')  
     reservation_time = data.get('reservation_time')  
 
+    sender_email = os.getenv("MAIL_USERNAME")
+    print(f"📩 Enviando correo desde: {sender_email}")  # Agregar esto para depuración
+
     try:
-        msg = Message(subject="Confirmación de Reserva",
-                      sender=os.getenv("MAIL_USERNAME"),
-                      recipients=[user_email])
+        msg = Message(
+            subject="Confirmación de Reserva",
+            sender=sender_email,  # Verifica que no sea None
+            recipients=[user_email]
+        )
 
         msg.html = f"""
             <h3>Confirmación de tu reserva</h3>
@@ -215,8 +224,6 @@ def send_mail():
         return jsonify({"message": "Correo enviado exitosamente"}), 200
 
     except Exception as e:
+        print(f"🚨 Error al enviar correo: {e}")  # Depuración en consola
         return jsonify({"error": str(e)}), 500
 
-if __name__ == '__main__':
-    PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
