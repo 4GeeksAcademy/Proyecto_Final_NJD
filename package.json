@@ -38,6 +38,7 @@
 		"babel-eslint": "^10.1.0",
 		"babel-loader": "^8.2.3",
 		"babel-plugin-transform-class-properties": "^6.10.2",
+		"babel-plugin-transform-remove-console": "^6.9.4",
 		"bc-console": "0.0.2",
 		"css-loader": "^6.5.1",
 		"dotenv-webpack": "^7.0.3",
