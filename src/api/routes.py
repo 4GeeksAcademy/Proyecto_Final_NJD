@@ -103,8 +103,8 @@ def login():
     if not user.check_password(password):
         return jsonify({'msg': 'Contraseña incorrecta'}), 401
 
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
 
     return jsonify({
         'access_token': access_token,
@@ -473,6 +473,7 @@ from src.api.utils import validar_horario_reserva
 @api.route('/usuario/reservas', methods=['POST'])
 @jwt_required()
 def crear_reserva():
+    print('hola')
     body = request.get_json()
     print(body)
     usuario_id = get_jwt_identity()

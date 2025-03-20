@@ -78,10 +78,10 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     
         try {
             console.log("Preparando solicitud fetch");
-            console.log("URL a usar:", `${process.env.REACT_APP_BACKEND_URL}/api/usuario/reservas`);
+            console.log("URL a usar:", `${process.env.REACT_APP_BACKEND_URL}api/usuario/reservas`);
             console.log("Datos a enviar:", JSON.stringify(formData));
             
-            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/usuario/reservas`, {
+            const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}api/usuario/reservas`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
