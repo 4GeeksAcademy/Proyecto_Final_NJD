@@ -99,9 +99,9 @@ export const Reserva = ({ restaurante_id, isOpen, onClose }) => {
     
                 // Enviar correo de confirmación
                 console.log("Preparando envío de correo");
-                console.log("URL para correo:", `${process.env.REACT_APP_BACKEND_URL}/send-mail`);
+                console.log("URL para correo:", `${process.env.REACT_APP_BACKEND_URL}send-mail`);
                 
-                fetch(`${process.env.REACT_APP_BACKEND_URL}/send-mail`, {
+                fetch(`${process.env.REACT_APP_BACKEND_URL}send-mail`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

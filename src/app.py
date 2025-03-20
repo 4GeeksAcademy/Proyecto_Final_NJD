@@ -52,6 +52,16 @@ CORS(app, resources={
         ],
         "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
         "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
+    },
+    r"/send-mail": {  # Añadir ruta específica para send-mail
+        "origins": [
+            "http://localhost:3000", 
+            "https://localhost:3000",
+            "https://special-guide-wrvw97jwq69j2vgwp-3000.app.github.dev",
+            "https://proyecto-final-njd-1.onrender.com"
+        ],
+        "methods": ["POST", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization", "X-Requested-With"]
     }
 }, supports_credentials=True)
 
